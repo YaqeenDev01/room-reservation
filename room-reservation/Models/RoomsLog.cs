@@ -4,7 +4,6 @@ namespace room_reservation.Models
 {
     public class RoomsLog
     {
-        [Key]
         public int Id { get; set; }
         public int RoomId { get; set; }
         public string GrantdBy { get; set; }

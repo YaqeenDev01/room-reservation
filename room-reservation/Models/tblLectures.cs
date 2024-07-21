@@ -13,10 +13,10 @@ namespace room_reservation.Models
         [Required]
         public string Semester { get; set; }
         [Required]
-        public TimeOnly LectureTime { get; set; }
+        public TimeSpan LectureTime { get; set; }
         [Required]
-        public DateOnly LectureDate { get; set; }
+        public DateTime LectureDate { get; set; }
         [Required]
-        public TimeOnly LectureDuration { get; set; }
+        public TimeSpan LectureDuration { get; set; }
     }
 }

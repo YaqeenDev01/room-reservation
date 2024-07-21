@@ -15,11 +15,11 @@ namespace room_reservation.Models
         [Required]
         public string PhoneNumber { get; set; }
         [Required]
-        public DateOnly BookingDate { get; set; }
+        public DateTime BookingDate { get; set; }
         [Required]
-        public TimeOnly BookingStart { get; }
+        public TimeSpan BookingStart { get; }
         [Required]
-        public TimeOnly BookingEnd { get; }
+        public TimeSpan BookingEnd { get; }
         [Required]
         public int Duration { get; }
         [Required]
