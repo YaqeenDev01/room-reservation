@@ -1,0 +1,98 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+<div class="block mb-4">
+    <div class="block-header border-bottom px-4 py-3">
+        <h5 class="m-0">ادارة الادوار</h5>
+        <div class="d-flex gap-2">
+            <div class="form-group">
+                <input type="text" class="form-control table__quick_search"
+                       placeholder="البحث السريع ...">
+            </div>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                    data-bs-target="#add_section">
+                إضافة دور
+            </button>
+            <!-- Add Section Modal -->
+            <div class="modal fade" id="add_section" tabindex="-1"
+                 aria-labelledby="add_sectionLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="add_sectionLabel">إضافة دور</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+
+                            <div class="form-group">
+                                <label for="">اسم المستخدم</label>
+                                <select name="" id="" class="form-select">
+                                    <option value="">عبد الرحمن ١</option>
+                                    <option value="">عبد الرحمن ٢</option>
+                                    <option value="">عبد الرحمن ٣</option>
+                                </select>
+                            </div>
+
+                            <label for="">اختر الدور</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value=""
+                                       id="flexCheckDefault">
+                                <label class="form-check-label" for="flexCheckDefault">
+                                    مشرف
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value=""
+                                       id="flexCheckChecked" checked>
+                                <label class="form-check-label" for="flexCheckChecked">
+                                    مدير نظام
+                                </label>
+                            </div>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary"
+                                    data-bs-dismiss="modal">
+                                إلغاء
+                            </button>
+                            <button type="button" class="btn btn-primary">حفظ</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="block-body">
+        <table class="table table-hover js-dataTable">
+            <thead>
+                <tr>
+                    <th>اسم المستخدم</th>
+                    <th>الدور</th>
+                    <th class=""></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="cursor-pointer" goto="order_details.html">
+                    <td>عبد الرحمن ١</td>
+                    <td>مدير نظام</td>
+                    <td class="action_td text-end">
+                        <a href="" class="btn btn-sm btn-success">تعديل</a>
+                        <a href="" class="btn btn-sm btn-danger">حذف</a>
+                    </td>
+                </tr>
+                <tr class="cursor-pointer" goto="order_details.html">
+                    <td>عبد الرحمن ٢</td>
+                    <td>مشرف</td>
+                    <td class="action_td text-end">
+                        <a href="" class="btn btn-sm btn-success">تعديل</a>
+                        <a href="" class="btn btn-sm btn-danger">حذف</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -7,4 +7,16 @@
     <RootNamespace>room_reservation</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Include="Views\Home\Users.cshtml" />
+    <None Include="wwwroot\Assets\lib\selectize\.github\codeql\codeql-config.yml" />
+    <None Include="wwwroot\Assets\lib\selectize\.github\dependabot.yml" />
+    <None Include="wwwroot\Assets\lib\selectize\.github\FUNDING.yml" />
+    <None Include="wwwroot\Assets\lib\selectize\.github\ISSUE_TEMPLATE.md" />
+    <None Include="wwwroot\Assets\lib\selectize\.github\workflows\codeql-analysis.yml" />
+    <None Include="wwwroot\Assets\lib\selectize\.github\workflows\node.js.yml" />
+    <None Include="wwwroot\Assets\lib\selectize\.github\workflows\stale.yml" />
+    <None Include="wwwroot\Assets\lib\selectize\.github\workflows\UpdateContributors.yml" />
+  </ItemGroup>
+
 </Project>

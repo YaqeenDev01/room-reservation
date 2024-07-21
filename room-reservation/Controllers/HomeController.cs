@@ -17,7 +17,23 @@ namespace room_reservation.Controllers
         {
             return View();
         }
+        public IActionResult Orders() {
 
+            return View();
+        }
+        public IActionResult Users()
+        {
+            return View();
+        }
+        public IActionResult Add_order()
+        {
+            return View();
+        }
+
+        public IActionResult Rules()
+        {
+            return View();
+        }
         public IActionResult Privacy()
         {
             return View();
