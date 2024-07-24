@@ -8,7 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="Views\Home\Users.cshtml" />
     <None Include="wwwroot\Assets\lib\selectize\.github\codeql\codeql-config.yml" />
     <None Include="wwwroot\Assets\lib\selectize\.github\dependabot.yml" />
     <None Include="wwwroot\Assets\lib\selectize\.github\FUNDING.yml" />

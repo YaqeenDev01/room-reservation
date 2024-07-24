@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using room_reservation;
+using room_reservation.Domain;
 using room_reservation.Models;
 using System.Configuration;
 
@@ -39,6 +40,8 @@ builder.Services.Configure<CookiePolicyOptions>(options =>
     options.HttpOnly = HttpOnlyPolicy.Always;
     options.Secure = CookieSecurePolicy.None;
 });
+builder.Services.AddScoped<PermissionDomain>();
+builder.Services.AddScoped<UserDomain>();
 
 var app = builder.Build();
 // Configure the HTTP request pipeline.  
