@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using room_reservation.Domain;
+using room_reservation.Models;
 using System.Security.Cryptography.X509Certificates;
 
 namespace room_reservation.Controllers
@@ -18,6 +19,14 @@ namespace room_reservation.Controllers
             return View(_UserDomain.getAllUsers());
         }
 
-    }  
+        [HttpPost]
+        public IActionResult AddUser(tblUsers user)
+        {
+            _UserDomain.AddUser(user);
+            return RedirectToAction(nameof(Index));
+        }
+
+
+    }
 } 
 

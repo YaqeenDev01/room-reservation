@@ -15,5 +15,16 @@ namespace room_reservation.Domain
         {
             return _context.tblUsers;
         }
+        public int AddUser(tblUsers user)
+        {
+            user.PhoneNumber = "567890768";
+            user.FullNameEN = "MMMMM";
+            user.Password = "4356789";
+            user.IsDeleted = false;
+            _context.tblUsers.Add(user);
+            _context.SaveChanges();
+            return 1;
+        }
+
     }
 }

@@ -1,7 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using room_reservation.Domain;
 using room_reservation.Models;
+using room_reservation.ViewModel;
 
 //Each table has its own domain except for those that don't have pages. For examples, users or roles that will be added manually.
 namespace room_reservation.Domain
@@ -14,14 +18,51 @@ namespace room_reservation.Domain
         {
            _context = context;
         }
-        public IEnumerable<tblPermissions> getAllPermissions()
+
+
+        public async Task<IEnumerable<PermissionViewModel>> getAllPermissions()
         {
-            return _context.tblPermissions;//=select * from tblPermissions;
+
+            return await _context.tblPermissions.Join(
+                _context.tblRoles,
+                permission => permission.RoleId,
+                role => role.Id,
+                (permission, role) => new PermissionViewModel
+                {
+                    Id = permission.Id,
+                    Email = permission.Email,
+                    RoleId = permission.RoleId,
+                    RoleName = role.RoleNameAR
+                    
+
+                }).ToListAsync();
         }
-        /*public List<tblRoles> getAllPermissionRoles()
+        public async Task<string> AddPermission(PermissionViewModel permission)
         {
-            return _Context.tblRoles;
-        }*/
+            try
+            {
+                var permissionInfo = new tblPermissions
+                {
+                    Email = permission.Email,
+                    RoleId = permission.RoleId,
+                    guid = new Guid(),
+                    IsDeleted = false
+                    
+                   
+                };
+                
+                _context.Add(permissionInfo);
+                await _context.SaveChangesAsync();
+                return"added successfully";
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+                return ex.Message;
+            }
+           
+        }
+
 
     }
 }
