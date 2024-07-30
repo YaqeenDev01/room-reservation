@@ -1,0 +1,44 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model BuildingViewModel
+<h1> تعديل معلومات المبنى </h1>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <input hidden asp-for="Guid" />
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="BuildingNameAr" class="control-lable"></label>
+                <input asp-for="BuildingNameAr" class="form-control" />
+                <span asp-validation-for="BuildingNameAr" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="BuildingNameEn" class="control-lable"></label>
+                <input asp-for="BuildingNameEn" class="form-control" />
+                <span asp-validation-for="BuildingNameEn" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="BuildingNo" class="control-lable"></label>
+                <input asp-for="BuildingNo" class="form-control" />
+                <span asp-validation-for="BuildingNo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Code" class="control-lable"></label>
+                <input asp-for="Code" class="form-control" />
+                <span asp-validation-for="Code" class="text-danger"></span>
+            </div>
+           @*  <div class="form-group">
+                <label asp-for="Floors" class="control-lable"></label>
+                <input asp-for="Floors" class="form-control" />
+                <span asp-validation-for="Floors" class="text-danger"></span>
+            </div> *@
+            <div class="form-group">
+                <input type="submit" value="تعديل" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>

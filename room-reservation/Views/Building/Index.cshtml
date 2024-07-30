@@ -1,19 +1,18 @@
-﻿@model IEnumerable<room_reservation.Models.tblUsers>;
+﻿@model IEnumerable< room_reservation.ViewModel.BuildingViewModel>;
 @{
 
 }
-
 <div class="block mb-4">
     <div class="block-header border-bottom px-4 py-3">
-        <h5 class="m-0">ادارةالمستخدمين</h5>
+        <h5 class="m-0"> ادارة المباني  </h5>
         <div class="d-flex gap-2">
             <div class="form-group">
                 <input type="text" class="form-control table__quick_search"
                        placeholder="البحث السريع ...">
             </div>
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+            <button type="button" asp-action="Add" class="btn btn-primary" data-bs-toggle="modal"
                     data-bs-target="#add_section">
-                إضافة مستخدم
+                        إضافة  مبنى  
             </button>
             <!-- Add Section Modal -->
             <div class="modal fade" id="add_section" tabindex="-1"
@@ -28,11 +27,11 @@
                         <div class="modal-body">
 
                             <div class="form-group">
-                                <label for="">اسم المستخدم</label>
+                                <label for="">اسم المبنى </label>
                                 <input type="text" name="" id="" class="form-control">
                             </div>
                             <div class="form-group">
-                                <label for="">البريد الإلكتروني</label>
+                                <label for="">رقم المبنى </label>
                                 <input type="text" name="" id="" class="form-control">
                             </div>
 
@@ -53,42 +52,36 @@
         <table class="table table-hover js-dataTable">
             <thead>
                 <tr>
-                    <th>Full Name</th>
-                    <th>البريد الإلكتروني</th>
-                    <th>user type </th>
+                    <th>@Html.DisplayNameFor(m => m.BuildingNameAr)</th>
+                    <th>@Html.DisplayNameFor(m => m.BuildingNameEn)</th>
+                    <th>@Html.DisplayNameFor(m => m.BuildingNo)</th>
+                    <th>@Html.DisplayNameFor(m => m.Code)</th>
+                    <th>@Html.DisplayNameFor(m => m.Id)</th>
+                    <@* th>@Html.DisplayNameFor(m => m.Floors)</th> *@
                     <th class=""></th>
                 </tr>
             </thead>
             <tbody>
-                @{
-                    foreach (var x in Model)
-                    {
-
+                    @foreach(var x in Model){
                         <tr>
-                            <td>
-                                @x.FullNameEN
-
-                            </td>
-                            <td>
-                                @x.Email
-
-                            </td>
-                            <td>
-                                @x.UserType
-
-                            </td>
-                            <td>
-                                <a asp-action="Edit" asp-route-id="@x.Id">Edit</a>
-                                <a asp-action="Details" asp-route-id="@x.Id">Details</a>
-                                <a asp-action="Delete" asp-route-id="@x.Id">Delete</a>
+                            <td>@x.BuildingNameAr</td>
+                            <td>@x.BuildingNameEn </td>
+                            <td>@x.BuildingNo </td>
+                            <td>@x.Code </td>
+                            <td>@x.Id </td>
+@*                             <td>@x.Floors </td>
+ *@                            <td> 
+                        <a asp-action="Edit" asp-route-id="@x.Guid" class="btn btn-danger">تعديل </a>
+                        <form asp-action="Delete" asp-route-id="@x.Guid" method="post" style="display:inline;">
+                        <button type="submit" class="btn btn-danger">حذف</button>
+                        </form>
+                            
                             </td>
                         </tr>
                     }
-                }
+                
                
             </tbody>
         </table>
     </div>
 </div>
-
-
