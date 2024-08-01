@@ -1,42 +1,69 @@
-﻿using Microsoft.EntityFrameworkCore;
-using room_reservation.Models;
+﻿using room_reservation.Models;
+using room_reservation.ViewModel;
 
 namespace room_reservation.Domain
 {
     public class UserDomain
     {
         private readonly KFUSpaceContext _context;
-        
+
         public UserDomain(KFUSpaceContext context)
         {
             _context = context;
         }
         //return list of data 
-        public IEnumerable<tblUsers> getUsers()
+        public IEnumerable<tblUsers> getAllUsers()
         {
-            return _context.tblUsers.Include(R => R.UserType).Where(X => X.IsDeleted == false);
+            return _context.tblUsers;
         }
-         
-        public List<tblUsers> getAllUsers() {
-        return _context.tblUsers.ToList();
+ 
+        public List<tblUsers> getUsers()
+        {
+            return _context.tblUsers.ToList();
+        }
+        public int InsertUser(UserViewModel user)
+        {
+            // user.Guid=Guid.NewGuid();
+            tblUsers userInfo = new tblUsers();
+            userInfo.FullNameEN = user.FullNameEN;
+            userInfo.FullNameAR = user.FullNameAR;
+            userInfo.Email = user.Email;
+            userInfo.PhoneNumber = user.PhoneNumber;
+            userInfo.Password = user.Password;
+            userInfo.UserType = user.UserType;
+           
+            _context.tblUsers.Add(userInfo);
+            _context.SaveChanges();
+            return 1;
+             
+
+        }
+        public tblUsers getUserById(int id) {
+            return _context.tblUsers.SingleOrDefault(x=> x.Id == id);
         }
 
-        public int InsertUser(tblUsers users)
+
+        public int EditUser(tblUsers user)
         {
-            users.IsDeleted = false;
-            _context.Add(users);
-            _context.SaveChanges();
-            return 1;
-        }
-        public int AddUser(tblUsers user)
-        {
-            user.PhoneNumber = "567890768";
-            user.FullNameEN = "MMMMM";
-            user.Password = "4356789";
+
+            // user.Guid=Guid.NewGuid();
             user.IsDeleted = false;
-            _context.tblUsers.Add(user);
+            _context.tblUsers.Update(user);
             _context.SaveChanges();
             return 1;
+
+
+        }
+        public int DeleteUser(tblUsers user)
+        {
+            // user.Guid=Guid.NewGuid();
+
+            user.IsDeleted = false;
+            _context.tblUsers.Remove(user);
+            _context.SaveChanges();
+            return 1;
+
+
         }
 
     }
