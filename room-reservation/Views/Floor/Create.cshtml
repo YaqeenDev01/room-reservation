@@ -1,0 +1,48 @@
+@model room_reservation.ViewModel.FloorViewModel;
+@{
+    ViewData["Title"] = "Create";
+}
+
+
+<!-- span is the validation for each input as required-->
+
+
+
+
+
+<div class="block mb-4">
+    <div class="block-header border-bottom px-4 py-4">
+        <h5 class="m-0">إضافة طابق</h5>
+    </div>
+    <div class="block-body py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <form asp-action="Create">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="row">
+                        <!--select from drop down list building no-->
+                       
+                      
+                        <!-- START ITEM -->
+                        <div class="col-md-6">
+                            <div class="mb-4">
+                                <label asp-for="FloorNo" class="cobtrol-label"></label>
+                                <input asp-for="FloorNo" class="form-control" />
+                                <span asp-validation-for="FloorNo" class="text-danger"></span>
+                            </div>
+                        </div><!-- END ITEM -->
+
+                
+                        
+
+                    </div>
+                    <div class="d-flex justify-content-end">
+                        <button type="submit" class="btn btn-primary px-5" title="save">حفظ</button>
+                    </div>
+                </form>
+
+
+            </div>
+        </div>
+    </div>
+</div>

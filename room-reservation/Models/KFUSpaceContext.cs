@@ -37,6 +37,8 @@ namespace  room_reservation.Models
            .Build();
             optionsBuilder.UseSqlServer(configuration.GetConnectionString("DBCS"));
         }
+
+    
     }
 
 
