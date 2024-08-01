@@ -19,32 +19,49 @@ namespace room_reservation.Domain
            _context = context;
         }
 
-
+        
         public async Task<IEnumerable<PermissionViewModel>> getAllPermissions()
         {
+            return await _context.tblPermissions.Include(x => x.Role).Include(y => y.Building).Select(z => new PermissionViewModel
+            {
+                Id = z.Id,
+                Email = z.Email,
+                RoleId = z.RoleId,
+                RoleName = z.Role.RoleNameAR,
+                BuildingNum = z.Building.BuildingNo,
+                BuildingName = z.Building.BuildingNameAr
+            }).ToListAsync();
 
-            return await _context.tblPermissions.Join(
-                _context.tblRoles,
-                permission => permission.RoleId,
-                role => role.Id,
-                (permission, role) => new PermissionViewModel
+
+            
+        }
+
+        public async Task<PermissionViewModel> GetPermissionByGuid(Guid guid)
+        {
+            return _context.tblPermissions.Where(x => x.guid == guid).Select(
+                x => new PermissionViewModel
                 {
-                    Id = permission.Id,
-                    Email = permission.Email,
-                    RoleId = permission.RoleId,
-                    RoleName = role.RoleNameAR
+                    guid = x.guid,
+                    Email = x.Email,
+                    RoleId = x.RoleId,
+                    BuildingId = x.BuildingId,
                     
 
-                }).ToListAsync();
+                }
+                ).FirstOrDefault();    
+                
         }
+
         public async Task<string> AddPermission(PermissionViewModel permission)
         {
+            
             try
             {
                 var permissionInfo = new tblPermissions
                 {
                     Email = permission.Email,
                     RoleId = permission.RoleId,
+                    BuildingId = permission.BuildingId,
                     guid = new Guid(),
                     IsDeleted = false
                     

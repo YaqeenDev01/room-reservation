@@ -23,15 +23,16 @@ namespace room_reservation.ViewModel
 
         public tblBuildings Building { get; set; }
         public int? BuildingId { get; set; }
+        
+        public string BuildingName { get; set; }
+        public int BuildingNum { get; set; }
 
         public IEnumerable<SelectListItem> Roles { get; set; }
+        public IEnumerable<SelectListItem> Buildings { get; set; }
+
 
 
     }
 
-    public class RoleViewModel
-    {
-        public int Id { get; set; }
-        public string RoleName { get; set; }
-    }
+
 }

@@ -43,7 +43,6 @@ builder.Services.Configure<CookiePolicyOptions>(options =>
 builder.Services.AddScoped<PermissionDomain>();
 builder.Services.AddScoped<UserDomain>();
 builder.Services.AddScoped<BuildingDomain>();
-
 builder.Services.AddScoped<RoleDomain>();
 
 
