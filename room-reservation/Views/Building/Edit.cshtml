@@ -4,6 +4,35 @@
 @{
 }
 @model BuildingViewModel
+<script>
+    @{
+        if (@ViewData["Successful"] != null)
+        {
+            <Text>
+                                                                                    var result = '@Html.Raw(ViewData["Successful"])';
+            Swal.fire(result, '', 'success')
+                .then(
+                    function () {
+                        window.location.href = '@Url.Action("Index", "Building")';
+                    }
+                );
+            </Text>
+        }
+        else if (@ViewData["Falied"] != null)
+        {
+            <Text>
+                                                                                    var result = '@Html.Raw(ViewData["Falied"])';
+            Swal.fire(result, '', 'error')
+                .then(
+                    function () {
+                        window.location.href = '@Url.Action("Index", "Building")';
+                    }
+                );
+            </Text>
+        }
+    }
+</script>
+
 <h1> تعديل معلومات المبنى </h1>
 <hr />
 <div class="row">

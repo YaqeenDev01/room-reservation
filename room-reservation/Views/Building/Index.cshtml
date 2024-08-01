@@ -10,10 +10,11 @@
                 <input type="text" class="form-control table__quick_search"
                        placeholder="البحث السريع ...">
             </div>
-            <button type="button" asp-action="Add" class="btn btn-primary" data-bs-toggle="modal"
+           <!-- <button type="button" asp-action="Add" class="btn btn-primary" data-bs-toggle="modal"
                     data-bs-target="#add_section">
                         إضافة  مبنى  
-            </button>
+            </button>-->
+            <a href="@Url.Action("Add","Building")" class ="btn btn-primary">إضافة مبنى</a>
             <!-- Add Section Modal -->
             <div class="modal fade" id="add_section" tabindex="-1"
                  aria-labelledby="add_sectionLabel" aria-hidden="true">
@@ -59,8 +60,9 @@
                     <th>@Html.DisplayNameFor(m => m.Id)</th>
                     <@* th>@Html.DisplayNameFor(m => m.Floors)</th> *@
                     <th class=""></th>
+
                 </tr>
-            </thead>
+            </thead> 
             <tbody>
                     @foreach(var x in Model){
                         <tr>
@@ -71,10 +73,8 @@
                             <td>@x.Id </td>
 @*                             <td>@x.Floors </td>
  *@                            <td> 
-                        <a asp-action="Edit" asp-route-id="@x.Guid" class="btn btn-danger">تعديل </a>
-                        <form asp-action="Delete" asp-route-id="@x.Guid" method="post" style="display:inline;">
-                        <button type="submit" class="btn btn-danger">حذف</button>
-                        </form>
+                        <a asp-action="Edit" asp-route-id="@x.Guid" class="btn btn-primary">تعديل</a>
+                            <a asp-action="Delet" asp-route-id="@x.Guid" class="btn btn-danger" method="post" style="display:inline;" onsubmit="return confirm('هل أنت متأكد من الحذف؟');"> حذف </a>
                             
                             </td>
                         </tr>
@@ -84,4 +84,4 @@
             </tbody>
         </table>
     </div>
-</div>
+</div> 

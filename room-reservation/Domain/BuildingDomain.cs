@@ -14,7 +14,7 @@ namespace room_reservation.Domain
 
         public async Task<IEnumerable<BuildingViewModel>> GetAllBuilding()
         {
-            return await _context.tblBuildings.Select(x => new BuildingViewModel
+            return await _context.tblBuildings.Where(x => x.IsDeleted == false).Select(x => new BuildingViewModel
             {
                 Id = x.Id,
                 BuildingNameEn = x.BuildingNameEn,
@@ -24,14 +24,11 @@ namespace room_reservation.Domain
                 Guid = x.Guid,
                 //Floors = x.Floors,
                 //Permissions = x.Permissions,
+
             }).ToListAsync();
         }
 
-        public async Task<IEnumerable<tblBuildings>> getAllBuilding()
-        {
-            return await _context.tblBuildings.ToListAsync();
-        }
-        public string InsertBuilding(BuildingViewModel buildings)
+        public int InsertBuilding(BuildingViewModel buildings)
         {
             try
             {
@@ -45,41 +42,19 @@ namespace room_reservation.Domain
 
                 _context.tblBuildings.Add(buildings1);
                 _context.SaveChanges();
-                return "successful";
+                return 1;
             }
             catch (Exception ex)
             {
-                // تسجيل الخطأ أو معالجته هنا
-                return $"Error: {ex.Message}";
+                return 0;
             }
-        }
-     
-        public tblBuildings getBuildingByGuid(Guid id)
-
-        {
-            return _context.tblBuildings.FirstOrDefault(x => x.Guid == id);
-        }
-
-        public string updatBuilding(BuildingViewModel buildings)
-        {
-            tblBuildings buildings1 =getBuildingByGuid(buildings.Guid);
-            buildings1.Id = buildings.Id;
-            buildings1.BuildingNameEn = buildings.BuildingNameEn;
-            buildings1.BuildingNameAr = buildings.BuildingNameAr;
-            buildings1.Code = buildings.Code;
-            buildings1.BuildingNo = buildings.BuildingNo;
-            buildings1.Guid = buildings1.Guid;
-
-            _context.tblBuildings.Update(buildings1);
-            _context.SaveChanges();
-            return "sucssful";
         }
         public BuildingViewModel getBuildingByid(Guid id)
         {
-            var buildingId= _context.tblBuildings.FirstOrDefault(x => x.Guid == id);
+            var buildingId = _context.tblBuildings.FirstOrDefault(x => x.Guid == id && x.IsDeleted == false);
             BuildingViewModel models = new BuildingViewModel
             {
-                Id = buildingId.Id,
+                Guid = buildingId.Guid,
                 BuildingNameAr = buildingId.BuildingNameAr,
                 BuildingNo = buildingId.BuildingNo,
                 BuildingNameEn = buildingId.BuildingNameEn,
@@ -87,26 +62,48 @@ namespace room_reservation.Domain
             };
             return models;
         }
+        public tblBuildings getBuildingByGuid(Guid id)
 
-        public string DeletBulding(BuildingViewModel buildings)
+        {
+            return _context.tblBuildings.FirstOrDefault(x => x.Guid == id);
+        }
+
+        public int updatBuilding(BuildingViewModel buildings)
         {
             try
             {
-                tblBuildings buildings1 = getBuildingByGuid(buildings.Guid);
-                buildings1.Id = buildings.Id;
-                buildings1.BuildingNameEn = buildings.BuildingNameEn;
-                buildings1.BuildingNameAr = buildings.BuildingNameAr;
-                buildings1.Code = buildings.Code;
-                buildings1.BuildingNo = buildings.BuildingNo;
+                tblBuildings buildingsinfo = getBuildingByGuid(buildings.Guid);
 
-                _context.tblBuildings.Remove(buildings1);
+                buildingsinfo.BuildingNameEn = buildings.BuildingNameEn;
+                buildingsinfo.BuildingNameAr = buildings.BuildingNameAr;
+                buildingsinfo.Code = buildings.Code;
+                buildings.BuildingNo = buildings.BuildingNo;
+
+                _context.Update(buildingsinfo );
                 _context.SaveChanges();
-                return "successful";
+                return 1;
             }
             catch (Exception ex)
             {
-                // تسجيل الخطأ أو معالجته هنا
-                return $"Error: {ex.Message}";
+                return 0;
+            }
+        }
+
+        public int DeleteBuilding(Guid id)
+        {
+            try
+            {
+                tblBuildings buildinginfo = getBuildingByGuid(id);
+
+                buildinginfo.IsDeleted = true;
+                _context.tblBuildings.Update(buildinginfo);
+                _context.SaveChanges();
+
+                return 1;
+            }
+            catch (Exception ex)
+            {
+                return 0;
             }
         }
     }

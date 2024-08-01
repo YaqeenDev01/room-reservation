@@ -22,21 +22,45 @@ namespace room_reservation.Controllers
         }
 
         [HttpGet]
-        public IActionResult add()
+        public IActionResult Add()
         {
             return View();
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult add(BuildingViewModel building)
+        public IActionResult Add(BuildingViewModel building)
         {
-            if (ModelState.IsValid)
+            try
             {
-               _BuildingDomain.InsertBuilding(building);
-                return RedirectToAction(nameof(Index));
+                if (ModelState.IsValid)
+                {
+                    int cheek= _BuildingDomain.InsertBuilding(building);
+                    if (cheek == 1)
+                    {
+                        ViewData["successful"] = "تمت الإضافة بنجاح";
+                        return View(building);
+                    }
+                }
+                else
+                {
+                    ViewData["Failed"] = "حدث خطأ أثناء معالجة طلبك، الرجاء المحاولة في وقت لاحق.";
+                }
             }
-            return View();
+            catch (Exception ex)
+            {
+                ViewData["Failed"] = "حدث خطأ أثناء معالجة طلبك، الرجاء المحاولة في وقت لاحق.";
+                
+            }
+            return View(building);
         }
+        //public IActionResult add(BuildingViewModel building)
+        //{
+        //    if (ModelState.IsValid)
+        //    _BuildingDomain.InsertBuilding(building);
+        //     return RedirectToAction(nameof(Index));
+        //    }
+        //    return View();
+        //}
 
         [HttpGet]
         public IActionResult Edit(Guid id)
@@ -48,24 +72,48 @@ namespace room_reservation.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit( BuildingViewModel building)
         {
+            try
+            {
                 if (ModelState.IsValid)
                 {
-                    _BuildingDomain.updatBuilding(building);
-                    return RedirectToAction(nameof(Index));
-                }    
-                return View();
-        }
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public IActionResult Delet(BuildingViewModel building)
-        {
-            if (ModelState.IsValid)
-            {
-                _BuildingDomain.DeletBulding(building);
-                return RedirectToAction(nameof(Index));
+                    int cheek = _BuildingDomain.updatBuilding(building);
+                    if (cheek == 1)
+                    {
+                        ViewData["successful"] = "تمت الإضافة بنجاح";
+                        return View(building);
+                    }
+                }
+                else
+                {
+                    ViewData["Failed"] = "حدث خطأ أثناء معالجة طلبك، الرجاء المحاولة في وقت لاحق.";
+                }
             }
-            return View();
+            catch (Exception ex)
+            {
+                ViewData["Failed"] = "حدث خطأ أثناء معالجة طلبك، الرجاء المحاولة في وقت لاحق.";
 
+            }
+            return View(building);
+        }
+
+        [HttpGet]
+        public IActionResult Delete(Guid id)
+        {
+             _BuildingDomain.DeleteBuilding(id);
+
+            return View();
         }
     }
+    //public IActionResult Delet(BuildingViewModel building)
+    //{
+    //    if (ModelState.IsValid)
+    //    {
+    //        _BuildingDomain.DeleteBuilding(building);
+    //        return RedirectToAction(nameof(Index));
+    //    }
+    //    return View();
+
+    //}
+
+
 }
