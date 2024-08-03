@@ -1,0 +1,33 @@
+﻿@model IEnumerable<room_reservation.ViewModel.RoomViewModel>;
+
+<h1>Room List</h1>
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create New Room</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Room Number</th>
+            <th>Capacity</th>
+            <th>Location</th>
+            <th>Is Available</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.RoomNo</td>
+                <td>@item.SeatCapacity</td>
+                <td>@item.Floor</td>
+                <td>@item.FloorId</td>
+                <td>@item.IsActive</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,34 @@
+﻿@model room_reservation.ViewModel.RoomViewModel
+
+<h1>Edit Room</h1>
+
+<form asp-action="Edit">
+    <div class="form-group">
+        <label asp-for="RoomNo" class="control-label"></label>
+        <input asp-for="RoomNo" class="form-control" />
+        <span asp-validation-for="RoomNo" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="SeatCapacity" class="control-label"></label>
+        <input asp-for="SeatCapacity" class="form-control" />
+        <span asp-validation-for="SeatCapacity" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="IsActive" class="control-label"></label>
+        <input asp-for="IsActive" type="checkbox" class="form-control" />
+        <span asp-validation-for="IsActive" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="FloorId" class="control-label"></label>
+        <select asp-for="FloorId" class="form-control" asp-items="ViewBag.Floors"></select>
+        <span asp-validation-for="FloorId" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="RoomTypeId" class="control-label"></label>
+        <select asp-for="RoomTypeId" class="form-control" asp-items="ViewBag.RoomTypes"></select>
+        <span asp-validation-for="RoomTypeId" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Save" class="btn btn-primary" />
+    </div>
+</form>
