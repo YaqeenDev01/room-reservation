@@ -20,7 +20,7 @@ using System.ComponentModel.DataAnnotations;
         [DisplayName("حالة الغرفة")]
         public bool IsActive { get; set; }
 
-        public Guid Guid { get; set; } = Guid.NewGuid();
+        public Guid Guid { get; set; } 
         public tblFloors Floor { get; set; }
 
         [Required(ErrorMessage = "هذا الحقل مطلوب")]

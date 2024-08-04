@@ -1,34 +1,62 @@
 ﻿@model room_reservation.ViewModel.RoomViewModel
+@{
+    ViewData["Title"] = "Create";
+}
 
-<h1>Create Room</h1>
-
-<form asp-action="Create">
-    <div class="form-group">
-        <label asp-for="RoomNo" class="control-label"></label>
-        <input asp-for="RoomNo" class="form-control" />
-        <span asp-validation-for="RoomNo" class="text-danger"></span>
+<div class="block mb-4">
+    <div class="block-header border-bottom px-4 py-4">
+        <h5 class="m-0">إضافة غرفة</h5>
     </div>
-    <div class="form-group">
-        <label asp-for="SeatCapacity" class="control-label"></label>
-        <input asp-for="SeatCapacity" class="form-control" />
-        <span asp-validation-for="SeatCapacity" class="text-danger"></span>
+    <div class="block-body py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <form asp-action="Create">
+                    <div class="row">
+                        <!-- START ITEM -->
+                        <div class="col-md-6">
+                            <div class="mb-4">
+                                <label asp-for="RoomNo" class="control-label"></label>
+                                <input asp-for="RoomNo" class="form-control" />
+                                <span asp-validation-for="RoomNo" class="text-danger"></span>
+                            </div>
+                        </div><!-- END ITEM -->
+                        <!-- START ITEM -->
+                        <div class="col-md-6">
+                            <div class="mb-4">
+                                <label asp-for="RoomType" class="control-label"></label>
+                                <select asp-for="RoomType" class="form-control" asp-items="ViewBag.RoomTypes"></select>
+                                <span asp-validation-for="RoomType" class="text-danger"></span>
+                            </div>
+                        </div><!-- END ITEM -->
+                        <!-- START ITEM -->
+                        <div class="col-md-6">
+                            <div class="mb-4">
+                                <label asp-for="FloorId" class="control-label"></label>
+                                <select asp-for="FloorId" class="form-control" asp-items="ViewBag.Floors"></select>
+                                <span asp-validation-for="FloorId" class="text-danger"></span>
+                            </div>
+                        </div><!-- END ITEM -->
+                        <!-- START ITEM -->
+                        <div class="col-md-6">
+                            <div class="mb-4">
+                                <label asp-for="SeatCapacity" class="control-label"></label>
+                                <input asp-for="SeatCapacity" class="form-control" />
+                                <span asp-validation-for="SeatCapacity" class="text-danger"></span>
+                            </div>
+                        </div><!-- START ITEM -->
+                        <div class="col-md-6">
+                            <div class="mb-4">
+                                <label asp-for="IsActive" class="control-label"></label>
+                                <input asp-for="IsActive" class="form-control" type="checkbox" />
+                                <span asp-validation-for="IsActive" class="text-danger"></span>
+                            </div>
+                        </div><!-- END ITEM -->
+                    </div>
+                    <div class="d-flex justify-content-end">
+                        <button type="submit" class="btn btn-primary px-5" title="save">حفظ</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
-    <div class="form-group">
-        <label asp-for="IsActive" class="control-label"></label>
-        <input asp-for="IsActive" type="checkbox" class="form-control" />
-        <span asp-validation-for="IsActive" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="FloorId" class="control-label"></label>
-        <select asp-for="FloorId" class="form-control" asp-items="ViewBag.Floors"></select>
-        <span asp-validation-for="FloorId" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="RoomTypeId" class="control-label"></label>
-        <select asp-for="RoomTypeId" class="form-control" asp-items="ViewBag.RoomTypes"></select>
-        <span asp-validation-for="RoomTypeId" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <input type="submit" value="Create" class="btn btn-primary" />
-    </div>
-</form>
+</div>

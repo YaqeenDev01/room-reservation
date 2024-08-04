@@ -5,25 +5,34 @@ using room_reservation.ViewModel;
 
 namespace room_reservation.Controllers
 {
-    public class _RoomController : Controller
+    public class RoomController : Controller
     {
         private readonly RoomDomain _RoomDomain;
 
-        public _RoomController(RoomDomain RoomDomain)
+        public RoomController(RoomDomain RoomDomain)
         {
             _RoomDomain = RoomDomain;
         }
+
         public IActionResult Index()
         {
-            var rooms = _RoomDomain.getAllRooms();
-            return View(rooms);
+            try
+            {
+                var rooms = _RoomDomain.GetAllRooms();
+                return View(rooms);
+            }
+            catch 
+            {
+                TempData["ErrorMessage"] = "An error occurred while retrieving the rooms. Please try again later.";
+                return RedirectToAction("Index");
+            }
         }
 
         [HttpGet]
         public IActionResult Create()
         {
-            ViewBag.Floors = new SelectList(_RoomDomain.getAllFloors(), "Id", "FloorNo");
-            ViewBag.RoomTypes = new SelectList(_RoomDomain.getAllRoomTypes(), "Id", "RoomAR");
+            ViewBag.Floors = new SelectList(_RoomDomain.GetAllFloors(), "Id", "FloorNo");
+            ViewBag.RoomTypes = new SelectList(_RoomDomain.GetAllRoomTypes(), "Id", "RoomAR");
             return View();
         }
 
@@ -36,21 +45,22 @@ namespace room_reservation.Controllers
                 _RoomDomain.InsertRoom(room);
                 return RedirectToAction(nameof(Index));
             }
-            ViewBag.Floors = new SelectList(_RoomDomain.getAllFloors(), "Id", "FloorNo");
-            ViewBag.RoomTypes = new SelectList(_RoomDomain.getAllRoomTypes(), "Id", "RoomAR");
+
+            ViewBag.Floors = new SelectList(_RoomDomain.GetAllFloors(), "Id", "FloorNo");
+            ViewBag.RoomTypes = new SelectList(_RoomDomain.GetAllRoomTypes(), "Id", "RoomAR");
             return View(room);
         }
 
         [HttpGet]
-        public IActionResult Edit(int id)
+        public IActionResult Edit(Guid guid)
         {
-            var room = _RoomDomain.GetRoomById(id);
+            var room = _RoomDomain.GetRoomById(guid);
             if (room == null)
             {
                 return NotFound();
             }
-            ViewBag.Floors = new SelectList(_RoomDomain.getAllFloors(), "Id", "FloorNo", room.FloorId);
-            ViewBag.RoomTypes = new SelectList(_RoomDomain.getAllRoomTypes(), "Id", "RoomAR", room.RoomTypeId);
+            ViewBag.Floors = new SelectList(_RoomDomain.GetAllFloors(), "Id", "FloorNo", room.FloorId);
+            ViewBag.RoomTypes = new SelectList(_RoomDomain.GetAllRoomTypes(), "Id", "RoomAR", room.RoomTypeId);
             return View(room);
         }
 
@@ -63,8 +73,9 @@ namespace room_reservation.Controllers
                 _RoomDomain.EditRoom(room);
                 return RedirectToAction(nameof(Index));
             }
-            ViewBag.Floors = new SelectList(_RoomDomain.getAllFloors(), "Id", "FloorNo", room.FloorId);
-            ViewBag.RoomTypes = new SelectList(_RoomDomain.getAllRoomTypes(), "Id", "RoomAR", room.RoomTypeId);
+
+            ViewBag.Floors = new SelectList(_RoomDomain.GetAllFloors(), "Id", "FloorNo", room.FloorId);
+            ViewBag.RoomTypes = new SelectList(_RoomDomain.GetAllRoomTypes(), "Id", "RoomAR", room.RoomTypeId);
             return View(room);
         }
     }
