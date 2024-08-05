@@ -9,7 +9,7 @@ using System.ComponentModel.DataAnnotations;
         public int Id { get; set; }
 
         [Required(ErrorMessage ="هذا الحقل مطلوب")]
-        [DisplayName("رقم الغرفة")]
+        [DisplayName("رقم القاعة")]
         public int RoomNo { get; set; }
 
         [Required(ErrorMessage = "هذا الحقل مطلوب")]
@@ -17,7 +17,7 @@ using System.ComponentModel.DataAnnotations;
         public int SeatCapacity { get; set; }
 
         [Required(ErrorMessage = "هذا الحقل مطلوب")]
-        [DisplayName("حالة الغرفة")]
+        [DisplayName("حالة القاعة")]
         public bool IsActive { get; set; }
 
         public Guid Guid { get; set; } 
@@ -27,8 +27,8 @@ using System.ComponentModel.DataAnnotations;
         [DisplayName("رقم الدور")]
         public int FloorId { get; set; }
 
-        [Required(ErrorMessage = "هذا الحقل مطلوب")]
-        [DisplayName("نوع الغرفة")]
+      //  [Required(ErrorMessage = "هذا الحقل مطلوب")]
+        [DisplayName("نوع القاعة")]
         public tblRoomType RoomType { get; set; }
         public int RoomTypeId { get; set; }        
         public bool IsDeleted { get; set; }

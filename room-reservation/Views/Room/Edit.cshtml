@@ -2,20 +2,20 @@
 
 <h1>Edit Room</h1>
 
-<form asp-action="Edit">
+<form asp-action="Edit" method="post" id="editRoomForm">
     <div class="form-group">
         <label asp-for="RoomNo" class="control-label"></label>
-        <input asp-for="RoomNo" class="form-control" />
+        <input asp-for="RoomNo" type="number" class="form-control" />
         <span asp-validation-for="RoomNo" class="text-danger"></span>
     </div>
     <div class="form-group">
         <label asp-for="SeatCapacity" class="control-label"></label>
-        <input asp-for="SeatCapacity" class="form-control" />
+        <input asp-for="SeatCapacity" type="number" class="form-control" />
         <span asp-validation-for="SeatCapacity" class="text-danger"></span>
     </div>
     <div class="form-group">
         <label asp-for="IsActive" class="control-label"></label>
-        <input asp-for="IsActive" type="checkbox" class="form-control" />
+        <input asp-for="IsActive" type="text" class="form-control" />
         <span asp-validation-for="IsActive" class="text-danger"></span>
     </div>
     <div class="form-group">
@@ -32,3 +32,24 @@
         <input type="submit" value="Save" class="btn btn-primary" />
     </div>
 </form>
+
+@section Scripts {
+    <script>
+        document.getElementById("editRoomForm").addEventListener("submit", function (event) {
+            event.preventDefault();
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, save it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    event.target.submit();
+                }
+            });
+        });
+    </script>
+}

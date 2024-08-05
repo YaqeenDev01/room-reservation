@@ -19,7 +19,7 @@ namespace room_reservation.Domain
         {
             return _context.tblRooms.Select(r => new RoomViewModel
             {
-                Guid = r.Guid,
+                Guid = r.guid,
                 RoomNo = r.RoomNo,
                 SeatCapacity = r.SeatCapacity,
                 IsActive = r.IsActive,
@@ -32,12 +32,12 @@ namespace room_reservation.Domain
 
         public RoomViewModel GetRoomById(Guid Guid)
         {
-            var room = _context.tblRooms.SingleOrDefault(r => r.Guid == Guid);
+            var room = _context.tblRooms.SingleOrDefault(r => r.guid == Guid);
             if (room == null) return null;
 
             return new RoomViewModel
             {
-                Guid = room.Guid,
+                Guid = room.guid,
                 RoomNo = room.RoomNo,
                 SeatCapacity = room.SeatCapacity,
                 IsActive = room.IsActive,
@@ -52,15 +52,15 @@ namespace room_reservation.Domain
         {
             try
             {
-                tblRooms roomInfo = new tblRooms
-                {
-                    RoomNo = room.RoomNo,
-                    SeatCapacity = room.SeatCapacity,
-                    IsActive = room.IsActive,
-                    FloorId = room.FloorId,
-                    RoomTypeId = room.RoomTypeId,
-                    Guid = room.Guid
-                };
+                tblRooms roomInfo = new tblRooms();
+
+                roomInfo.RoomNo = room.RoomNo;
+                roomInfo.SeatCapacity = room.SeatCapacity;
+                roomInfo.IsActive = room.IsActive;
+                roomInfo.FloorId = room.FloorId;
+                roomInfo.RoomTypeId = room.RoomTypeId;
+                roomInfo.guid = room.Guid;
+                
 
                 _context.tblRooms.Add(roomInfo);
                 _context.SaveChanges();
@@ -68,7 +68,7 @@ namespace room_reservation.Domain
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error inserting room: {ex.Message}");
+                Console.WriteLine($"حدث خطأ {ex.Message}");
                 return 0;
             }
         }
@@ -77,7 +77,7 @@ namespace room_reservation.Domain
         {
             try
             {
-                var roomInfo = _context.tblRooms.SingleOrDefault(r => r.Guid == room.Guid);
+                var roomInfo = _context.tblRooms.SingleOrDefault(r => r.guid == room.Guid);
                 if (roomInfo == null) return 0;
 
                 roomInfo.RoomNo = room.RoomNo;
@@ -96,7 +96,24 @@ namespace room_reservation.Domain
                 return 0;
             }
         }
+        public int DeleteRoom(Guid guid)
+        {
+            try
+            {
+                var room = _context.tblRooms.SingleOrDefault(r => r.guid == guid && !r.IsDeleted);
+                if (room == null) return 0;
 
+                room.IsDeleted = true;
+                _context.tblRooms.Update(room);
+                _context.SaveChanges();
+                return 1;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error deleting room: {ex.Message}");
+                return 0;
+            }
+        }
 
         public IEnumerable<tblFloors> GetAllFloors()
         {

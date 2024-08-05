@@ -1,16 +1,16 @@
 ﻿@model IEnumerable<room_reservation.ViewModel.RoomViewModel>;
 
-<h1>قائمة الغرف</h1>
+<h1>قائمة القاعات</h1>
 <p>
-    <a asp-action="Create" class="btn btn-primary">Create New Room</a>
+    <a asp-action="Create" class="btn btn-primary">اضافة قاعة</a>
 </p>
 <table class="table">
     <thead>
         <tr>
-            <th>رقم الغرفة</th>
+            <th>رقم القاعة</th>
             <th>عدد المقاعد</th>
             <th>الدور</th>
-            <th>حالة الغرفة</th>
+            <th>حالة القاعة</th>
             <th></th>
         </tr>
     </thead>
@@ -24,8 +24,8 @@
                 <td>@item.FloorId</td>
                 <td>@item.IsActive</td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.Guid" class="btn btn-warning">Edit</a>
-                    <a asp-action="Delete" asp-route-id="@item.Guid" class="btn btn-danger">Delete</a>
+                    <a asp-action="Edit" asp-route-id="@item.Guid" class="btn btn-warning">تعديل</a>
+                    <a asp-action="Delete" asp-route-id="@item.Guid" class="btn btn-danger">حذف</a>
                 </td>
             </tr>
         }

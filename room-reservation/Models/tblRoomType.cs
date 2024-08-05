@@ -7,7 +7,7 @@ namespace room_reservation.Models
         public int Id { get; set; }
         public string RoomAR { get; set; }
         public string RoomEN { get; set; }
-        public Guid Guid { get; set; } //
+        public Guid guid { get; set; } //
         public bool IsDeleted { get; set; }
 
         

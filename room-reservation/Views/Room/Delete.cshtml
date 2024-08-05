@@ -1,5 +1,40 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿@model room_reservation.ViewModel.RoomViewModel
+
+<h1>حذف قاعة</h1>
+
+<div>
+    <h4>هل أنت متأكد من رغبتك بالحذف؟</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            رقم القاعة
+        </dt>
+        <dd class="col-sm-10">
+            @Model.RoomNo
+        </dd>
+        <dt class="col-sm-2">
+            عدد المقاعد
+        </dt>
+        <dd class="col-sm-10">
+            @Model.SeatCapacity
+        </dd>
+        <dt class="col-sm-2">
+            الطابق
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Floor.FloorNo
+        </dd>
+        <dt class="col-sm-2">
+            نوع القاعة
+        </dt>
+        <dd class="col-sm-10">
+            @Model.RoomType.RoomAR
+        </dd>
+    </dl>
+
+    <form asp-action="DeleteConfirmed">
+        <input type="hidden" asp-for="Id" />
+        <button type="submit" class="btn btn-danger">حذف</button>
+        <a asp-action="Index" class="btn btn-secondary">الغاء</a>
+    </form>
+</div>
