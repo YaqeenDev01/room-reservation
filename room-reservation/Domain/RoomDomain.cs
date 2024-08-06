@@ -15,11 +15,11 @@ namespace room_reservation.Domain
             _context = context;
         }
 
-        public IEnumerable<RoomViewModel> GetAllRooms()
+        public async Task<IEnumerable<RoomViewModel>> GetAllRooms()
         {
-            return _context.tblRooms.Select(r => new RoomViewModel
+            return _context.tblRooms.Where(r => !r.IsDeleted).Select(r => new RoomViewModel
             {
-                Guid = r.guid,
+                Id = r.Id,
                 RoomNo = r.RoomNo,
                 SeatCapacity = r.SeatCapacity,
                 IsActive = r.IsActive,
@@ -30,9 +30,9 @@ namespace room_reservation.Domain
             }).ToList();
         }
 
-        public RoomViewModel GetRoomById(Guid Guid)
+        public async Task<RoomViewModel> GetRoomById(Guid guid)
         {
-            var room = _context.tblRooms.SingleOrDefault(r => r.guid == Guid);
+            var room = _context.tblRooms.SingleOrDefault(r => r.guid == guid && !r.IsDeleted);
             if (room == null) return null;
 
             return new RoomViewModel
@@ -48,28 +48,29 @@ namespace room_reservation.Domain
             };
         }
 
-        public int InsertRoom(RoomViewModel room)
+        public async Task<string> InsertRoom(RoomViewModel room)
         {
             try
             {
-                tblRooms roomInfo = new tblRooms();
+                var roomInfo = new tblRooms
+                {
+                    guid = new Guid(),
+                    RoomNo = room.RoomNo,
+                    SeatCapacity = room.SeatCapacity,
+                    IsActive = room.IsActive,
+                    FloorId = room.FloorId,
+                    RoomTypeId = room.RoomTypeId,
+                    IsDeleted = false
+                };
 
-                roomInfo.RoomNo = room.RoomNo;
-                roomInfo.SeatCapacity = room.SeatCapacity;
-                roomInfo.IsActive = room.IsActive;
-                roomInfo.FloorId = room.FloorId;
-                roomInfo.RoomTypeId = room.RoomTypeId;
-                roomInfo.guid = room.Guid;
-                
-
-                _context.tblRooms.Add(roomInfo);
-                _context.SaveChanges();
-                return 1;
+                _context.Add(roomInfo);
+                _context.SaveChangesAsync();
+                return "added";
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"حدث خطأ {ex.Message}");
-                return 0;
+                Console.WriteLine($"Error inserting room: {ex.Message}");
+                return ex.Message;
             }
         }
 
@@ -77,14 +78,14 @@ namespace room_reservation.Domain
         {
             try
             {
-                var roomInfo = _context.tblRooms.SingleOrDefault(r => r.guid == room.Guid);
+                var roomInfo = _context.tblRooms.SingleOrDefault(r => r.guid == room.Guid && !r.IsDeleted);
                 if (roomInfo == null) return 0;
 
                 roomInfo.RoomNo = room.RoomNo;
                 roomInfo.SeatCapacity = room.SeatCapacity;
                 roomInfo.IsActive = room.IsActive;
                 roomInfo.FloorId = room.FloorId;
-                roomInfo.RoomType = room.RoomType;
+                roomInfo.RoomTypeId = room.RoomTypeId;
 
                 _context.tblRooms.Update(roomInfo);
                 _context.SaveChanges();
@@ -96,6 +97,7 @@ namespace room_reservation.Domain
                 return 0;
             }
         }
+
         public int DeleteRoom(Guid guid)
         {
             try

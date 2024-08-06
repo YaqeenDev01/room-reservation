@@ -1,85 +1,76 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.Extensions.Logging;
 using room_reservation.Domain;
+using room_reservation.Models;
 using room_reservation.ViewModel;
-using System;
 
 namespace room_reservation.Controllers
 {
     public class RoomController : Controller
     {
-        private readonly RoomDomain _RoomDomain;
+        private readonly RoomDomain _roomDomain;
 
-        public RoomController(RoomDomain RoomDomain)
+        public RoomController(RoomDomain roomDomain)
         {
-            _RoomDomain = RoomDomain;
+            _roomDomain = roomDomain;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            try
-            {
-                var rooms = _RoomDomain.GetAllRooms();
-                return View(rooms);
-            }
-            catch
-            {
-                TempData["ErrorMessage"] = "حصل خطأ. حاول مرة أخرى";
-                return RedirectToAction("Index");
-            }
+            var rooms = await _roomDomain.GetAllRooms();
+            return View(rooms);
         }
 
-        [HttpGet]
+        public async Task<IActionResult> Details(Guid id)
+        {
+            var room = await _roomDomain.GetRoomById(id);
+            if (room == null)
+            {
+                return NotFound();
+            }
+
+            return View(room);
+        }
+
         public IActionResult Create()
         {
-            ViewBag.Floors = new SelectList(_RoomDomain.GetAllFloors(), "Id", "FloorNo");
-            ViewBag.RoomTypes = new SelectList(_RoomDomain.GetAllRoomTypes(), "Id", "RoomAR");
+          //  ViewBag.Floors = _roomDomain.GetAllFloors();
+          //  ViewBag.RoomTypes = _roomDomain.GetAllRoomTypes();
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(RoomViewModel room)
+        public async Task<IActionResult> Create(RoomViewModel room)
         {
-            ViewBag.Floors = new SelectList(_RoomDomain.GetAllFloors(), "Id", "FloorNo");
-            ViewBag.RoomTypes = new SelectList(_RoomDomain.GetAllRoomTypes(), "Id", "RoomAR");
-
             if (ModelState.IsValid)
             {
-                try
+                var result = await _roomDomain.InsertRoom(room);
+                if (result == "added")
                 {
-                    if (bool.TryParse(room.IsActive.ToString(), out bool isActive))
-                    {
-                        room.IsActive = isActive;
-                        _RoomDomain.InsertRoom(room);
-                        return RedirectToAction(nameof(Index));
-                    }
-                    else
-                    {
-                        ModelState.AddModelError("IsActive", "من فضلك، أدخل قيمة صحيحة.");
-                    }
+                    TempData["SuccessMessage"] = "Room created successfully!";
+                    return RedirectToAction(nameof(Index));
                 }
-                catch (Exception ex)
+                else
                 {
-                    throw new Exception($" {ex.Message}");
+                    ModelState.AddModelError("", $"An error occurred while saving the room: {result}");
                 }
             }
 
+          //  ViewBag.Floors = _roomDomain.GetAllFloors();
+          //  ViewBag.RoomTypes = _roomDomain.GetAllRoomTypes();
             return View(room);
-        
         }
 
-        [HttpGet]
-        public IActionResult Edit(Guid guid)
+        public async Task<IActionResult> Edit(Guid id)
         {
-            var room = _RoomDomain.GetRoomById(guid);
+            var room = await _roomDomain.GetRoomById(id);
             if (room == null)
             {
                 return NotFound();
             }
-            ViewBag.Floors = new SelectList(_RoomDomain.GetAllFloors(), "Id", "FloorNo", room.FloorId);
-            ViewBag.RoomTypes = new SelectList(_RoomDomain.GetAllRoomTypes(), "Id", "RoomAR", room.RoomTypeId);
+
+            ViewBag.Floors = _roomDomain.GetAllFloors();
+            ViewBag.RoomTypes = _roomDomain.GetAllRoomTypes();
             return View(room);
         }
 
@@ -89,40 +80,48 @@ namespace room_reservation.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (bool.TryParse(room.IsActive.ToString(), out bool isActive))
+                var result = _roomDomain.EditRoom(room);
+                if (result == 1)
                 {
-                    room.IsActive = isActive;
-                    _RoomDomain.EditRoom(room);
+                    TempData["SuccessMessage"] = "Room updated successfully!";
                     return RedirectToAction(nameof(Index));
                 }
                 else
                 {
-                    ModelState.AddModelError("IsActive", "من فضلك، أضف قيمة صحيحة");
+                    ModelState.AddModelError("", "An error occurred while updating the room.");
                 }
             }
 
-            ViewBag.Floors = new SelectList(_RoomDomain.GetAllFloors(), "Id", "FloorNo", room.FloorId);
-            ViewBag.RoomTypes = new SelectList(_RoomDomain.GetAllRoomTypes(), "Id", "RoomAR", room.RoomTypeId);
+            ViewBag.Floors = _roomDomain.GetAllFloors();
+            ViewBag.RoomTypes = _roomDomain.GetAllRoomTypes();
             return View(room);
         }
 
-        [HttpGet]
-        public IActionResult Delete(Guid guid)
+        public IActionResult Delete(Guid id)
         {
-            var room = _RoomDomain.GetRoomById(guid);
+            var room = _roomDomain.GetRoomById(id).Result;
             if (room == null)
             {
                 return NotFound();
             }
+
             return View(room);
         }
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public IActionResult DeleteConfirmed(Guid guid)
+        public IActionResult DeleteConfirmed(Guid id)
         {
-            _RoomDomain.DeleteRoom(guid);
-            TempData["SuccessMessage"] = "تم الحذف بنجاح";
+            var result = _roomDomain.DeleteRoom(id);
+            if (result == 1)
+            {
+                TempData["SuccessMessage"] = "Room deleted successfully!";
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "An error occurred while deleting the room.";
+            }
+
             return RedirectToAction(nameof(Index));
         }
     }

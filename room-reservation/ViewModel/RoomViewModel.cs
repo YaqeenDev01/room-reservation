@@ -23,13 +23,16 @@ using System.ComponentModel.DataAnnotations;
         public Guid Guid { get; set; } 
         public tblFloors Floor { get; set; }
 
-        [Required(ErrorMessage = "هذا الحقل مطلوب")]
+       // [Required(ErrorMessage = "هذا الحقل مطلوب")]
         [DisplayName("رقم الدور")]
         public int FloorId { get; set; }
+     
 
-      //  [Required(ErrorMessage = "هذا الحقل مطلوب")]
-        [DisplayName("نوع القاعة")]
+
         public tblRoomType RoomType { get; set; }
+
+        //[Required(ErrorMessage = "هذا الحقل مطلوب")]
+        [DisplayName("نوع القاعة")]
         public int RoomTypeId { get; set; }        
         public bool IsDeleted { get; set; }
         }
