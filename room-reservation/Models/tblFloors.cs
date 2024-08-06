@@ -9,6 +9,7 @@ namespace room_reservation.Models
         public int FloorNo { get; set; }
         
         public Guid Guid { get; set; } 
+       
         public bool IsDeleted { get; set; }
         public tblBuildings Building { get; set; }
         public int BuildingId { get; set; }

@@ -1,48 +1,84 @@
 @model room_reservation.ViewModel.FloorViewModel;
 @{
-    ViewData["Title"] = "Create";
+ViewData["Title"] = "إضافة طابق";
 }
+<script>
+    @{
+    if (@ViewData["Successful"] != null)
+    {
+    <Text>
+    var result = '@Html.Raw(ViewData["Successful"])';
+    Swal.fire(result, '', 'success')
+        .then(
+            function () {
+                window.location.href = '@Url.Action("Index", "Floor")';
+            }
+        );
+    </Text>
+    }
+    else if (@ViewData["Failed"] != null)
+    {
+    <Text>
+    var result = '@Html.Raw(ViewData["Failed"])';
+    Swal.fire(result, '', 'error');
+    </Text>
+    }
+    }
+</script>
 
 
 <!-- span is the validation for each input as required-->
 
 
+<div class="block-header border-bottom px-4 py-4">
+    <h5 class="m-0">إضافة طابق</h5>
+</div>
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="row">
+                <!--select from drop down list building no-->
 
+                <!-- START ITEM -->
+                <div class="col-md-6">
+                    <div class="mb-4">
+                        <label asp-for="BuildingId" class="mb-1"> أسم المبنى</label>
+                        <select asp-for="BuildingId" type="text" class="form-control" asp-items="@ViewBag.buildingsName"> </select>
+                        <span asp-validation-for="BuildingId" class="text-danger">  </span>
 
+                    </div>
+                </div><!-- END ITEM -->
+                <!-- START ITEM -->
+                <div class="col-md-6">
+                    <div class="mb-4">
+                        <label asp-for="BuildingId" class="mb-1"> رقم المبنى </label>
+                        <select asp-for="BuildingId" type="text" class="form-control" asp-items="@ViewBag.buildingsNo"> </select>
+                        <span asp-validation-for="BuildingId" class="text-danger">  </span>
 
-<div class="block mb-4">
-    <div class="block-header border-bottom px-4 py-4">
-        <h5 class="m-0">إضافة طابق</h5>
-    </div>
-    <div class="block-body py-5">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <form asp-action="Create">
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                    <div class="row">
-                        <!--select from drop down list building no-->
-                       
-                      
-                        <!-- START ITEM -->
-                        <div class="col-md-6">
-                            <div class="mb-4">
-                                <label asp-for="FloorNo" class="cobtrol-label"></label>
-                                <input asp-for="FloorNo" class="form-control" />
-                                <span asp-validation-for="FloorNo" class="text-danger"></span>
-                            </div>
-                        </div><!-- ssEND ITEM -->
+                    </div>
+                </div><!-- END ITEM -->
+               
+         
+                <!-- START ITEM -->
+                <div class="col-md-6">
+                    <div class="mb-4">
+                        <label asp-for="FloorNo" class="cobtrol-label"></label>
+                        <input asp-for="FloorNo" type="number" class="form-control" />
+                        <span asp-validation-for="BuildingId" class="text-danger"></span>
+                    </div>
+                </div><!-- ssEND ITEM -->
 
                 
                         
 
-                    </div>
-                    <div class="d-flex justify-content-end">
-                        <button type="submit" class="btn btn-primary px-5" title="save">حفظ</button>
-                    </div>
-                </form>
-
-
             </div>
-        </div>
+            <div class="d-flex justify-content-end">
+                <button type="submit" class="btn btn-primary px-5" title="save">حفظ</button>
+            </div>
+        </form>
+
+
     </div>
 </div>
+
