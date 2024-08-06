@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using room_reservation.Models;
+using room_reservation.ViewModel;
 
 namespace room_reservation.Domain
 {
@@ -12,13 +13,21 @@ namespace room_reservation.Domain
             _context = context;
         }
 
-
-
-        public async Task<tblRoomType> GetRoomTypeByGuid(Guid guid)
+        public async Task<IEnumerable<RoomTypeViewModel>> GetAllRoomTypes()
         {
             return await _context.tblRoomType
-                .FirstOrDefaultAsync(rt => rt.guid == guid && !rt.IsDeleted);
+                .Where(rt => !rt.IsDeleted)
+                .Select(rt => new RoomTypeViewModel
+                {
+                    Guid = rt.guid,
+                    RoomAR = rt.RoomAR,
+                    IsDeleted = rt.IsDeleted
+                })
+                .ToListAsync();
         }
 
+
+
+  
     }
 }

@@ -33,7 +33,7 @@ namespace room_reservation.ViewModel
         [DisplayName("نوع الغرفة")]
         public int RoomTypeId { get; set; }
 
-        public tblRoomType RoomType { get; set; }
+        public tblRoomType RoomAR { get; set; }
         public string RoomTypeName { get; set; }
 
         public List<SelectListItem> Floors { get; set; }
