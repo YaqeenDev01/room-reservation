@@ -1,58 +1,63 @@
 ﻿@model room_reservation.ViewModel.RoomViewModel
 
-<h1>إنشاء قاعة</h1>
+@{
+    ViewData["Title"] = "Add Room";
+}
 
-<form asp-action="Create" method="post" id="createRoomForm">
-    <div class="form-group">
-        <label asp-for="RoomNo" class="control-label"></label>
-        <input asp-for="RoomNo" type="number" class="form-control" />
-        <span asp-validation-for="RoomNo" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="SeatCapacity" class="control-label"></label>
-        <input asp-for="SeatCapacity" type="number" class="form-control" />
-        <span asp-validation-for="SeatCapacity" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <div class="form-check">
-            <input asp-for="IsActive" type="checkbox" class="form-check-input" />
-            <label asp-for="IsActive" class="form-check-label"></label>
-        </div>
-        <span asp-validation-for="IsActive" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="FloorId" class="control-label"></label>
-        <select asp-for="FloorId" class="form-control" asp-items="ViewBag.Floors"></select>
-        <span asp-validation-for="FloorId" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="RoomTypeId" class="control-label"></label>
-        <select asp-for="RoomTypeId" class="form-control" asp-items="ViewBag.RoomTypes"></select>
-        <span asp-validation-for="RoomTypeId" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <input type="submit" value="إنشاء" class="btn btn-primary" />
-    </div>
-</form>
+<h1>Add Room</h1>
 
-@section Scripts {
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="AddRoom" method="post">
+            <div class="form-group">
+                <label asp-for="RoomNo" class="control-label"></label>
+                <input asp-for="RoomNo" class="form-control" />
+                <span asp-validation-for="RoomNo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SeatCapacity" class="control-label"></label>
+                <input asp-for="SeatCapacity" class="form-control" />
+                <span asp-validation-for="SeatCapacity" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="IsActive" class="control-label"></label>
+                <input asp-for="IsActive" class="form-control" />
+                <span asp-validation-for="IsActive" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FloorId" class="control-label"></label>
+                <select asp-for="FloorId" class="form-control" asp-items="@ViewBag.Floors"></select>
+                <span asp-validation-for="FloorId" class="text-danger"></span>
+            </div>
+ @*            <div class="form-group">
+                <label asp-for="RoomTypeId" class="control-label"></label>
+                <select asp-for="RoomTypeId" class="form-control" asp-items="@ViewBag"></select>
+                <span asp-validation-for="RoomTypeId" class="text-danger"></span>
+            </div> *@
+            <div class="form-group">
+                <input type="submit" value="Add Room" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+@* @section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/lib/sweetalert/sweetalert.min.js"></script>
     <script>
-        document.getElementById("createRoomForm").addEventListener("submit", function (event) {
+        document.querySelector("form").addEventListener("submit", function (event) {
             event.preventDefault();
-            Swal.fire({
-                title: 'هل أنت متأكد؟',
-                text: "",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'نعم'
-            }).then((result) => {
-                if (result.isConfirmed) {
+            swal({
+                title: "Are you sure?",
+                text: "You are about to add a new room!",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            }).then((willSubmit) => {
+                if (willSubmit) {
                     event.target.submit();
                 }
             });
         });
     </script>
-}
+} *@

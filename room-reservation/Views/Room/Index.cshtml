@@ -1,31 +1,38 @@
-﻿@model IEnumerable<room_reservation.ViewModel.RoomViewModel>;
+﻿@model IEnumerable<room_reservation.ViewModel.RoomViewModel>
 
-<h1>قائمة القاعات</h1>
+@{
+    ViewData["Title"] = "Rooms";
+}
+
+<h1>Rooms</h1>
+
 <p>
-    <a asp-action="Create" class="btn btn-primary">اضافة قاعة</a>
+    <a asp-action="AddRoom" class="btn btn-primary">Add New Room</a>
 </p>
+
 <table class="table">
     <thead>
         <tr>
-            <th>رقم القاعة</th>
-            <th>عدد المقاعد</th>
-            <th>الدور</th>
-            <th>حالة القاعة</th>
+            <th>Room No</th>
+            <th>Seat Capacity</th>
+            <th>Is Active</th>
+            <th>Floor No</th>
+            <th>Room Type</th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @foreach (var room in Model)
         {
             <tr>
-                <td>@item.RoomNo</td>
-                <td>@item.SeatCapacity</td>
-                <td>@item.Floor</td>
-                <td>@item.FloorId</td>
-                <td>@item.IsActive</td>
+                <td>@room.RoomNo</td>
+                <td>@room.SeatCapacity</td>
+                <td>@room.IsActive</td>
+                <td>@room.FloorNo</td>
+                <td>@room.RoomTypeName</td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.Guid" class="btn btn-warning">تعديل</a>
-                    <a asp-action="Delete" asp-route-id="@item.Guid" class="btn btn-danger">حذف</a>
+                    <a asp-action="Edit" asp-route-guid="@room.Guid">Edit</a> |
+                    <a asp-action="Delete" asp-route-guid="@room.Guid">Delete</a>
                 </td>
             </tr>
         }

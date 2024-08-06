@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using room_reservation.Domain;
-using room_reservation.Models;
 using room_reservation.ViewModel;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace room_reservation.Controllers
 {
@@ -16,104 +19,152 @@ namespace room_reservation.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var rooms = await _roomDomain.GetAllRooms();
-            return View(rooms);
-        }
-
-        public async Task<IActionResult> Details(Guid id)
-        {
-            var room = await _roomDomain.GetRoomById(id);
-            if (room == null)
+            try
             {
-                return NotFound();
+                var rooms = await _roomDomain.GetAllRooms();
+                return View(rooms);
             }
-
-            return View(room);
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Error: {ex.Message}";
+                return RedirectToAction("Index");
+            }
         }
 
-        public IActionResult Create()
+        [HttpGet]
+        public async Task<IActionResult> AddRoom()
         {
-          //  ViewBag.Floors = _roomDomain.GetAllFloors();
-          //  ViewBag.RoomTypes = _roomDomain.GetAllRoomTypes();
-            return View();
+            var floors = await _roomDomain.GetAllFloors();
+            var roomTypes = await _roomDomain.GetAllRoomTypes();
+
+            var roomViewModel = new RoomViewModel
+            {
+                Floors = floors.Select(x => new SelectListItem
+                {
+                    Value = x.Id.ToString(),
+                    Text = x.FloorNo.ToString()
+                }).ToList(),
+
+                RoomTypes = roomTypes.Select(x => new SelectListItem
+                {
+                    Value = x.Id.ToString(),
+                    Text = x.RoomAR
+                }).ToList()
+            };
+
+            return View(roomViewModel);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(RoomViewModel room)
+        public async Task<IActionResult> AddRoom(RoomViewModel room)
         {
             if (ModelState.IsValid)
             {
                 var result = await _roomDomain.InsertRoom(room);
-                if (result == "added")
+                if (result == "1")
                 {
-                    TempData["SuccessMessage"] = "Room created successfully!";
+                    TempData["SuccessMessage"] = "Room added successfully!";
                     return RedirectToAction(nameof(Index));
                 }
                 else
                 {
-                    ModelState.AddModelError("", $"An error occurred while saving the room: {result}");
+                    ModelState.AddModelError("", "An error occurred while saving the room.");
                 }
             }
 
-          //  ViewBag.Floors = _roomDomain.GetAllFloors();
-          //  ViewBag.RoomTypes = _roomDomain.GetAllRoomTypes();
+            var floors = await _roomDomain.GetAllFloors();
+            var roomTypes = await _roomDomain.GetAllRoomTypes();
+
+            room.Floors = floors.Select(x => new SelectListItem
+            {
+                Value = x.Id.ToString(),
+                Text = x.FloorNo.ToString()
+            }).ToList();
+
+            room.RoomTypes = roomTypes.Select(x => new SelectListItem
+            {
+                Value = x.Id.ToString(),
+                Text = x.RoomAR
+            }).ToList();
+
             return View(room);
         }
 
-        public async Task<IActionResult> Edit(Guid id)
+        [HttpGet]
+        public async Task<IActionResult> Edit(Guid guid)
         {
-            var room = await _roomDomain.GetRoomById(id);
+            var room = await _roomDomain.GetRoomByGuid(guid);
             if (room == null)
             {
                 return NotFound();
             }
 
-            ViewBag.Floors = _roomDomain.GetAllFloors();
-            ViewBag.RoomTypes = _roomDomain.GetAllRoomTypes();
+            room.Floors = (await _roomDomain.GetAllFloors()).Select(x => new SelectListItem
+            {
+                Value = x.Id.ToString(),
+                Text = x.FloorNo.ToString()
+            }).ToList();
+
+            room.RoomTypes = (await _roomDomain.GetAllRoomTypes()).Select(x => new SelectListItem
+            {
+                Value = x.Id.ToString(),
+                Text = x.RoomAR
+            }).ToList();
+
             return View(room);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(RoomViewModel room)
+        public async Task<IActionResult> Edit(RoomViewModel room)
         {
             if (ModelState.IsValid)
             {
-                var result = _roomDomain.EditRoom(room);
-                if (result == 1)
+                var result = await _roomDomain.EditRoom(room);
+                if (result == "1")
                 {
-                    TempData["SuccessMessage"] = "Room updated successfully!";
+                    TempData["SuccessMessage"] = "Room edited successfully!";
                     return RedirectToAction(nameof(Index));
                 }
                 else
                 {
-                    ModelState.AddModelError("", "An error occurred while updating the room.");
+                    ModelState.AddModelError("", "An error occurred while saving the room.");
                 }
             }
 
-            ViewBag.Floors = _roomDomain.GetAllFloors();
-            ViewBag.RoomTypes = _roomDomain.GetAllRoomTypes();
+            room.Floors = (await _roomDomain.GetAllFloors()).Select(x => new SelectListItem
+            {
+                Value = x.Id.ToString(),
+                Text = x.FloorNo.ToString()
+            }).ToList();
+
+            room.RoomTypes = (await _roomDomain.GetAllRoomTypes()).Select(x => new SelectListItem
+            {
+                Value = x.Id.ToString(),
+                Text = x.RoomAR
+            }).ToList();
+
             return View(room);
         }
 
-        public IActionResult Delete(Guid id)
+        [HttpGet]
+        public async Task<IActionResult> Delete(Guid guid)
         {
-            var room = _roomDomain.GetRoomById(id).Result;
+            var room = await _roomDomain.GetRoomByGuid(guid);
             if (room == null)
             {
                 return NotFound();
             }
-
             return View(room);
         }
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public IActionResult DeleteConfirmed(Guid id)
+        public async Task<IActionResult> DeleteConfirmed(Guid guid)
         {
-            var result = _roomDomain.DeleteRoom(id);
-            if (result == 1)
+            var result = await _roomDomain.DeleteRoom(guid);
+            if (result == "1")
             {
                 TempData["SuccessMessage"] = "Room deleted successfully!";
             }
@@ -121,7 +172,6 @@ namespace room_reservation.Controllers
             {
                 TempData["ErrorMessage"] = "An error occurred while deleting the room.";
             }
-
             return RedirectToAction(nameof(Index));
         }
     }

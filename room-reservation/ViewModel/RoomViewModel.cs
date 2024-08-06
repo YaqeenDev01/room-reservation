@@ -1,15 +1,17 @@
 ﻿using room_reservation.Models;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Collections.Generic;
 
-    namespace room_reservation.ViewModel
+namespace room_reservation.ViewModel
 {
     public class RoomViewModel
     {
-        public int Id { get; set; }
+        public Guid Guid { get; set; } = Guid.NewGuid();
 
-        [Required(ErrorMessage ="هذا الحقل مطلوب")]
-        [DisplayName("رقم القاعة")]
+        [Required(ErrorMessage = "هذا الحقل مطلوب")]
+        [DisplayName("رقم الغرفة")]
         public int RoomNo { get; set; }
 
         [Required(ErrorMessage = "هذا الحقل مطلوب")]
@@ -17,26 +19,24 @@ using System.ComponentModel.DataAnnotations;
         public int SeatCapacity { get; set; }
 
         [Required(ErrorMessage = "هذا الحقل مطلوب")]
-        [DisplayName("حالة القاعة")]
+        [DisplayName("حالة الغرفة")]
         public bool IsActive { get; set; }
 
-        public Guid Guid { get; set; } 
-        public tblFloors Floor { get; set; }
-
-       // [Required(ErrorMessage = "هذا الحقل مطلوب")]
+        [Required(ErrorMessage = "هذا الحقل مطلوب")]
         [DisplayName("رقم الدور")]
         public int FloorId { get; set; }
-     
 
+        public tblFloors Floor { get; set; }
+        public int FloorNo { get; set; }
+
+        [Required(ErrorMessage = "هذا الحقل مطلوب")]
+        [DisplayName("نوع الغرفة")]
+        public int RoomTypeId { get; set; }
 
         public tblRoomType RoomType { get; set; }
+        public string RoomTypeName { get; set; }
 
-        //[Required(ErrorMessage = "هذا الحقل مطلوب")]
-        [DisplayName("نوع القاعة")]
-        public int RoomTypeId { get; set; }        
-        public bool IsDeleted { get; set; }
-        }
+        public List<SelectListItem> Floors { get; set; }
+        public List<SelectListItem> RoomTypes { get; set; }
     }
-
-
-
+}
