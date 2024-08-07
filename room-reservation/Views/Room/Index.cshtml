@@ -4,20 +4,20 @@
     ViewData["Title"] = "Rooms";
 }
 
-<h1>Rooms</h1>
+<h1>القاعات</h1>
 
 <p>
-    <a asp-action="AddRoom" class="btn btn-primary">Add New Room</a>
+    <a asp-action="AddRoom" class="btn btn-primary">اضافة قاعة</a>
 </p>
 
 <table class="table">
     <thead>
         <tr>
-            <th>Room No</th>
-            <th>Seat Capacity</th>
-            <th>Is Active</th>
-            <th>Floor No</th>
-            <th>Room Type</th>
+            <th>رقم القاعة</th>
+            <th>عدد المقاعد</th>
+            <th>حالة القاعة</th>
+            <th>رقم الدور</th>
+            <th>نوع القاعة</th>
             <th></th>
         </tr>
     </thead>
@@ -29,7 +29,7 @@
                 <td>@room.SeatCapacity</td>
                 <td>@room.IsActive</td>
                 <td>@room.FloorId</td>
-                <td>@room.RoomTypeId</td>
+                <td>@room.RoomTypeCollection</td>
                 <td>
                     <a asp-action="Edit" asp-route-guid="@room.Guid">Edit</a> |
                     <a asp-action="Delete" asp-route-guid="@room.Guid">Delete</a>

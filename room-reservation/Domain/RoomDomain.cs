@@ -43,11 +43,11 @@ namespace room_reservation.Domain
             return _context.tblRoomType;
         }
 
-        public async Task<RoomViewModel> GetRoomByGuid(Guid guid)
+        public RoomViewModel GetRoomByGuid(Guid guid)
         {
             try
             {
-                var room =  _context.tblRooms.Include(r => r.Floor).Include(r => r.RoomType)
+                var room =  _context.tblRooms
                     .Where(r => r.guid == guid && !r.IsDeleted)
                     .Select(r => new RoomViewModel
                     {
@@ -130,7 +130,7 @@ namespace room_reservation.Domain
    
 
                 roomInfo.IsDeleted = true;
-                _context.tblRooms.Update(roomInfo);
+                _context.tblRooms.Remove(roomInfo);
                  _context.SaveChanges();
                 return "1";
             }

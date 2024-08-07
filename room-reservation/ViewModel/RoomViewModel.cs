@@ -18,7 +18,7 @@ namespace room_reservation.ViewModel
         [DisplayName("عدد المقاعد")]
         public int SeatCapacity { get; set; }
 
-        [Required(ErrorMessage = "هذا الحقل مطلوب")]
+        //[Required(ErrorMessage = "هذا الحقل مطلوب")]
         [DisplayName("حالة الغرفة")]
         public bool IsActive { get; set; }
 

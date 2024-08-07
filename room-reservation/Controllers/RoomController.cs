@@ -69,19 +69,18 @@ namespace room_reservation.Controllers
             ViewBag.FloorBag = new SelectList(_roomDomain.GetAllFloors(), "Id", "FloorNo");
             ViewBag.RoomTypeBag = new SelectList(_roomDomain.GetAllRoomTypes(), "Id", "RoomAR");
 
-            return View();
+            return View(_roomDomain.GetRoomByGuid(guid));
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult EditRoom(RoomViewModel room)
+        public IActionResult EditRoom(RoomViewModel room)
         {
             ViewBag.FloorBag = new SelectList(_roomDomain.GetAllFloors(), "Id", "FloorNo");
             ViewBag.RoomTypeBag = new SelectList(_roomDomain.GetAllRoomTypes(), "Id", "RoomAR");
 
             if (ModelState.IsValid)
             {
-                string result = _roomDomain.InsertRoom(room);
+                string result = _roomDomain.EditRoom(room);
                 if (result == "1")
                 {
                     ViewData["Successful"] = "تمت العملية بنجاح";
@@ -90,12 +89,13 @@ namespace room_reservation.Controllers
                 {
                     ViewData["Failed"] = result;
                 }
+                _roomDomain.EditRoom(room);
             }
             return View(room);
 
         }
 
-        public IActionResult Delete(Guid guid)
+        public IActionResult DeleteRoom(Guid guid)
         {
             string check = _roomDomain.DeleteRoom(guid);
             if (check == "1")

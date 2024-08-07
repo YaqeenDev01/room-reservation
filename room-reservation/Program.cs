@@ -46,6 +46,9 @@ builder.Services.AddScoped<BuildingDomain>();
 builder.Services.AddScoped<RoleDomain>();
 builder.Services.AddScoped<RoomDomain>();
 builder.Services.AddScoped<lecturesDomain>();
+builder.Services.AddScoped<RoomTypeDomain>();
+
+
 
 
 
