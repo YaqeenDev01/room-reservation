@@ -1,0 +1,102 @@
+﻿@model IEnumerable<room_reservation.ViewModel.LecturesViewModel>
+@{
+    ViewData["Title"] = "Manage Lectures";
+}
+
+<div class="block mb-4">
+    <div class="block-header border-bottom px-4 py-3">
+        <h5 class="m-0">إدارة المحاضرات</h5>
+        <div class="d-flex gap-2">
+            <div class="form-group">
+                <input type="text" class="form-control table__quick_search" placeholder="البحث السريع ...">
+            </div>
+            <a type="button" class="btn btn-primary" href="@Url.Action("Add","Lectures")">
+                إضافة محاضرة
+            </a>
+            <!-- Add Lecture Modal -->
+            <div class="modal fade" id="add_lecture" tabindex="-1" aria-labelledby="add_lectureLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="add_lectureLabel">إضافة محاضرة</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label for="BuildingNo">رقم المبنى</label>
+                                <input type="text" id="BuildingNo" class="form-control" />
+                            </div>
+                            <div class="form-group">
+                                <label for="Semester">الفصل الدراسي</label>
+                                <input type="text" id="Semester" class="form-control" />
+                            </div>
+                            <div class="form-group">
+                                <label for="StartLectureTime">وقت بدء المحاضرة</label>
+                                <input type="time" id="StartLectureTime" class="form-control" />
+                            </div>
+                            <div class="form-group">
+                                <label for="EndLectureTime">وقت انتهاء المحاضرة</label>
+                                <input type="time" id="EndLectureTime" class="form-control" />
+                            </div>
+                            <div class="form-group">
+                                <label for="LectureDate">تاريخ المحاضرة</label>
+                                <input type="datetime-local" id="LectureDate" class="form-control" />
+                            </div>
+                            <div class="form-group">
+                                <label for="LectureDuration">مدة المحاضرة</label>
+                                <input type="number" id="LectureDuration" class="form-control" />
+                            </div>
+                            <div class="form-group">
+                                <label for="RoomNo">رقم القاعة</label>
+                                <input type="text" id="RoomNo" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                إلغاء
+                            </button>
+                            <button type="button" class="btn btn-primary">حفظ</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="block-body">
+        <table class="table table-hover js-dataTable">
+            <thead>
+                <tr>
+                    <th>رقم المبنى</th>
+                    <th>الفصل الدراسي</th>
+                    <th>وقت بدءالمحاضرة</th>
+                    <th>وقت انتهاءالمحاضرة</th>
+                    <th>تاريخ المحاضرة</th>
+                    <th>مدة المحاضرة</th>
+                    <th>رقم القاعة</th>
+                    <th class="text-end"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    foreach (var x in Model)
+                    {
+                        <tr>
+                            <td>@x.BuildingNo</td>
+                            <td>@x.Semester</td>
+                            <td>@x.StartLectureTime</td>
+                            <td>@x.EndLectureTime</td>
+                            <td>@x.LectureDate</td>
+      
+                            <td>@x.RoomNo</td>
+                            <td class="text-end">
+                                <a asp-action="Edit" asp-route-id="@x.Id" class="btn btn-sm btn-success">تعديل</a>
+
+                                <a asp-action="Delete" asp-route-id="@x.Id" class="btn btn-sm btn-danger">حذف</a>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
