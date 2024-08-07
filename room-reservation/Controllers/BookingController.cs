@@ -4,7 +4,7 @@ using room_reservation.ViewModel;
 
 namespace room_reservation.Controllers
 {
-    //h
+    
     public class BookingController : Controller
     {
 
@@ -50,12 +50,12 @@ namespace room_reservation.Controllers
 
         }
         [HttpGet]
-        public IActionResult DetailsBooking(Guid id) {
+        public IActionResult Details(Guid id) {
             return View(_BookingDomain.getBookinggByid(id));
         }
 
         [HttpPost]
-        public IActionResult DetailsBooking(BookingViewModel booking)
+        public IActionResult Details(BookingViewModel booking)
         {
             if (ModelState.IsValid)
             {

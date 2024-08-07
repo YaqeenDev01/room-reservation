@@ -1,11 +1,12 @@
-﻿using room_reservation.Models;
+﻿using System.Collections;
+using room_reservation.Models;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
 using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace room_reservation.ViewModel
 {
-    public class BookingViewModel
+    public class BookingViewModel : IEnumerable
     {
         internal string FullName;
 
@@ -35,6 +36,11 @@ namespace room_reservation.ViewModel
 
         public tblBookingStatues BookingStatues { get; set; }
         public int BookingStatuesId { get; set; }
+        public IEnumerator GetEnumerator()
+        {
+            throw new NotImplementedException();
+        }
+
     }
 }
     

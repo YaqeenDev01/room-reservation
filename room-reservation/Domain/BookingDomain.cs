@@ -12,17 +12,17 @@ namespace room_reservation.Domain {
             _context = context;
         }
 
-        public async Task<IEnumerable<BuildingViewModel>> GetAllBooking()
+        public async Task<IEnumerable<BookingViewModel>> GetAllBooking()
         {
-            return (IEnumerable<BuildingViewModel>)await _context.tblBookings.Select(x => new BookingViewModel
+            return await _context.tblBookings.Select(x=> new BookingViewModel
             {
                 Id = x.Id,
                 BookingDate = x.BookingDate,
                 BookingStart = x.BookingStart,
                 BookingEnd = x.BookingEnd,
                 guid = x.guid,
-
-                //Bookings.BookingStatues = booking.BookingStatues;
+                RoomId = x.RoomId,
+                //Bookings.BookingStatues = booking.BookingStatues
                 //Bookings.RejectReason = booking.RejectReason;
                 //Bookings.Duration = booking.Duration;
                 //Bookings.Email = booking.Email;
@@ -32,7 +32,26 @@ namespace room_reservation.Domain {
 
             }).ToListAsync();
         }
-
+        
+        // public async Task<IEnumerable<LecturesViewModel>> getAlllectures()
+        // {
+        //
+        //     return await _context.tblLectures.Select(x => new LecturesViewModel
+        //     {
+        //         Id = x.Id,
+        //         BuildingNo = x.BuildingNo,
+        //         RoomNo = x.RoomNo,
+        //         LectureDate = x.LectureDate,
+        //         StartLectureTime = x.StartLectureTime,
+        //         EndLectureTime = x.EndLectureTime,
+        //         //LectureDurations = x.LectureDurations,
+        //         Semester = x.Semester
+        //
+        //
+        //     }).ToListAsync();
+        //
+        //
+        // }
         public async Task<IEnumerable<tblBookings>> getAllBooking()
         {
             return await _context.tblBookings.ToListAsync();
