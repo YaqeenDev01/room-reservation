@@ -16,7 +16,6 @@ namespace room_reservation.Domain
         {
             return await _context.tblBuildings.Where(x => x.IsDeleted == false).Select(x => new BuildingViewModel
             {
-                Id = x.Id,
                 BuildingNameEn = x.BuildingNameEn,
                 BuildingNameAr = x.BuildingNameAr,
                 BuildingNo = x.BuildingNo,
@@ -33,7 +32,6 @@ namespace room_reservation.Domain
             try
             {
                 tblBuildings buildings1 = new tblBuildings();
-                buildings1.Id = buildings.Id;
                 buildings1.BuildingNameEn = buildings.BuildingNameEn;
                 buildings1.BuildingNameAr = buildings.BuildingNameAr;
                 buildings1.Code = buildings.Code;
