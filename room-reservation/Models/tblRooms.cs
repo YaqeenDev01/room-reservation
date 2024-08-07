@@ -16,6 +16,7 @@ namespace room_reservation.Models
         public tblRoomType  RoomType { get; set; }
 
         public int RoomTypeId { get; set; }
+        public int BuildingId { get; set; }
         public ICollection<tblFloors> Floors { get; set; }
 
         public ICollection<tblRoomType> RoomTypes { get; set; }
