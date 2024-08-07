@@ -12,8 +12,8 @@ using room_reservation.Models;
 namespace room_reservation.Migrations
 {
     [DbContext(typeof(KFUSpaceContext))]
-    [Migration("20240721103534_addDbFirst")]
-    partial class addDbFirst
+    [Migration("20240806115826_addDb")]
+    partial class addDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -36,7 +36,6 @@ namespace room_reservation.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("BookedBy")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("BookingId")
@@ -46,7 +45,6 @@ namespace room_reservation.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("GrantedBy")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("OperationDate")
@@ -72,14 +70,12 @@ namespace room_reservation.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("GrantdBy")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("OperationDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("OperationType")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -102,14 +98,12 @@ namespace room_reservation.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("GrantdBy")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("OperationDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("OperationType")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -132,22 +126,18 @@ namespace room_reservation.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("GrantedBy")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("GrantedTo")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("OperationType")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("PermissionId")
                         .HasColumnType("int");
 
                     b.Property<string>("PermissionType")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -167,14 +157,12 @@ namespace room_reservation.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("GrantdBy")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("OperationDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("OperationType")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("RoomId")
@@ -233,11 +221,9 @@ namespace room_reservation.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("StatuesAR")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("StatuesEN")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -254,11 +240,9 @@ namespace room_reservation.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("BuildingNameAr")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("BuildingNameEn")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("BuildingNo")
@@ -314,25 +298,25 @@ namespace room_reservation.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("BuildingNo")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<TimeSpan>("EndLectureTime")
+                        .HasColumnType("time");
 
                     b.Property<DateTime>("LectureDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<TimeSpan>("LectureDuration")
-                        .HasColumnType("time");
-
-                    b.Property<TimeSpan>("LectureTime")
-                        .HasColumnType("time");
+                    b.Property<decimal>("LectureDurations")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("RoomNo")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Semester")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<TimeSpan>("StartLectureTime")
+                        .HasColumnType("time");
 
                     b.HasKey("Id");
 
@@ -351,7 +335,6 @@ namespace room_reservation.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsDeleted")
@@ -384,11 +367,9 @@ namespace room_reservation.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("RoleNameAR")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("RoleNameEN")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("guid")
@@ -410,9 +391,6 @@ namespace room_reservation.Migrations
                     b.Property<int>("FloorId")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("Guid")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
@@ -427,6 +405,9 @@ namespace room_reservation.Migrations
 
                     b.Property<int>("SeatCapacity")
                         .HasColumnType("int");
+
+                    b.Property<Guid>("guid")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -445,19 +426,17 @@ namespace room_reservation.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<Guid>("Guid")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
                     b.Property<string>("RoomAR")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("RoomEN")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("guid")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -473,30 +452,24 @@ namespace room_reservation.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FullNameAR")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FullNameEN")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
                     b.Property<string>("Password")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserType")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");

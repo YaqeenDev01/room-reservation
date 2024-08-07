@@ -39,7 +39,7 @@ namespace room_reservation.Controllers
 
                 Buildings = buildings.Select(x => new SelectListItem
                 {
-                    Value = x.Id.ToString(),
+                    
                     Text = x.BuildingNameAr,
 
                 }).ToList()
@@ -50,14 +50,14 @@ namespace room_reservation.Controllers
             permissionViewModel.Roles = (await _RoleDomain.GetAllRoles())
                 .Select(x => new SelectListItem
                 {
-                    Value = x.Id.ToString(),
+                    
                     Text = x.RoleName
                 }).ToList();
 
             permissionViewModel.Buildings = (await _BuildingDomain.GetAllBuilding())
                 .Select(x => new SelectListItem
                 {
-                    Value = x.Id.ToString(),
+                    
                     Text = x.BuildingNameAr
                 }).ToList();
 
