@@ -1,44 +1,15 @@
-﻿@model IEnumerable< room_reservation.ViewModel.BuildingViewModel>;
-@{
-
-}
-<script>
-    @{
-        if (@ViewData["Successful"] != null)
-        {
-            <Text>
-                                            var result = '@Html.Raw(ViewData["Successful"])';
-            Swal.fire(result, '', 'success')
-                .then(
-                    function () {
-                        window.location.href = '@Url.Action("Index", "Building")';
-                    }
-                );
-            </Text>
-        }
-        else if (@ViewData["Failed"] != null)
-        {
-            <Text>
-                                            var result = '@Html.Raw(ViewData["Failed"])';
-            Swal.fire(result, '', 'error');
-            </Text>
-        }
-    }
-</script>
+﻿@model IEnumerable<room_reservation.ViewModel.PermissionViewModel>;
 
 <div class="block mb-4">
     <div class="block-header border-bottom px-4 py-3">
-        <h5 class="m-0"> ادارة المباني  </h5>
+        <h5 class="m-0">إدارة المستخدمين</h5>
         <div class="d-flex gap-2">
             <div class="form-group">
                 <input type="text" class="form-control table__quick_search"
                        placeholder="البحث السريع ...">
             </div>
-           <!-- <button type="button" asp-action="Add" class="btn btn-primary" data-bs-toggle="modal"
-                    data-bs-target="#add_section">
-                        إضافة  مبنى  
-            </button>-->
-            <a href="@Url.Action("Add","Building")" class ="btn btn-primary">إضافة مبنى</a>
+         
+            <a class="btn btn-primary" href="@Url.Action("AddPermission", "Permission")">إضافة صلاحية</a>
             <!-- Add Section Modal -->
             <div class="modal fade" id="add_section" tabindex="-1"
                  aria-labelledby="add_sectionLabel" aria-hidden="true">
@@ -52,11 +23,11 @@
                         <div class="modal-body">
 
                             <div class="form-group">
-                                <label for="">اسم المبنى </label>
+                                <label for="">اسم المستخدم</label>
                                 <input type="text" name="" id="" class="form-control">
                             </div>
                             <div class="form-group">
-                                <label for="">رقم المبنى </label>
+                                <label for="">البريد الإلكتروني</label>
                                 <input type="text" name="" id="" class="form-control">
                             </div>
 
@@ -77,33 +48,45 @@
         <table class="table table-hover js-dataTable">
             <thead>
                 <tr>
-                    <th>@Html.DisplayNameFor(m => m.BuildingNameAr)</th>
-                    <th>@Html.DisplayNameFor(m => m.BuildingNameEn)</th>
-                    <th>@Html.DisplayNameFor(m => m.BuildingNo)</th>
-                    <th>@Html.DisplayNameFor(m => m.Code)</th>
-                    
+                    <th>البريد الإلكتروني</th>
+                    <th>المبنى</th>
+                    <th>رقم المبنى</th>
+                    <th>الصلاحية</th>
                     <th class=""></th>
-
                 </tr>
-            </thead> 
+            </thead>
             <tbody>
-                    @foreach(var x in Model){
+                @{
+                    foreach (var data in Model)
+                    {
+
                         <tr>
-                            <td>@x.BuildingNameAr</td>
-                            <td>@x.BuildingNameEn </td>
-                            <td>@x.BuildingNo </td>
-                            <td>@x.Code </td>
-@*                           
- *@                            <td> 
-                        <a asp-action="Edit" asp-route-id="@x.Guid" class="btn btn-primary">تعديل</a>
-                            <a asp-action="Delet" asp-route-id="@x.Guid" class="btn btn-danger"> حذف </a>
-                            
+                            <td>
+                                @data.Email
+
+                            </td>
+                            <td>
+                                @data.BuildingName
+                            </td>
+                            <td>
+                                @(data.BuildingNum == 0 ? "غير محدد" : data.BuildingNum.ToString())
+                            </td>
+                            <td>
+                                @data.RoleName
+
+                            </td>
+
+                            <td>
+                                <a asp-action="EditPermission" asp-route-id="x.Id" class="btn btn-primary">تعديل</a>
+                                <a asp-action="Delete" asp-route-id="x.Id" class="btn btn-danger">حذف</a>
                             </td>
                         </tr>
                     }
-                
-               
+                }
+
             </tbody>
         </table>
     </div>
-</div> 
+</div>
+
+

@@ -15,8 +15,10 @@ namespace room_reservation.Controllers
             _BuildingDomain = buildingDomain;
 
         }
-        public async Task< IActionResult> Index()
+        public async Task< IActionResult> Index( string successful,string Failed)
         {
+            ViewData["successful"] = successful;
+            ViewData["Failed"] = Failed;
             var buildings = await _BuildingDomain.GetAllBuilding(); 
             return View(buildings);
         }
@@ -30,37 +32,22 @@ namespace room_reservation.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Add(BuildingViewModel building)
         {
-            try
+            if (ModelState.IsValid)
             {
-                if (ModelState.IsValid)
+                int cheek = _BuildingDomain.InsertBuilding(building);
+                if (cheek == 1)
                 {
-                    int cheek= _BuildingDomain.InsertBuilding(building);
-                    if (cheek == 1)
-                    {
-                        ViewData["successful"] = "تمت الإضافة بنجاح";
-                        return View(building);
-                    }
-                }
-                else
-                {
-                    ViewData["Failed"] = "حدث خطأ أثناء معالجة طلبك، الرجاء المحاولة في وقت لاحق.";
+                    ViewData["successful"] = "تمت الإضافة بنجاح";
+                    return View(building);
                 }
             }
-            catch (Exception ex)
-            {
+            else
                 ViewData["Failed"] = "حدث خطأ أثناء معالجة طلبك، الرجاء المحاولة في وقت لاحق.";
-                
-            }
-            return View(building);
+
+           return View(building);
+
         }
-        //public IActionResult add(BuildingViewModel building)
-        //{
-        //    if (ModelState.IsValid)
-        //    _BuildingDomain.InsertBuilding(building);
-        //     return RedirectToAction(nameof(Index));
-        //    }
-        //    return View();
-        //}
+
 
         [HttpGet]
         public IActionResult Edit(Guid id)
@@ -72,14 +59,12 @@ namespace room_reservation.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit( BuildingViewModel building)
         {
-            try
-            {
                 if (ModelState.IsValid)
                 {
                     int cheek = _BuildingDomain.updatBuilding(building);
                     if (cheek == 1)
                     {
-                        ViewData["successful"] = "تمت الإضافة بنجاح";
+                        ViewData["successful"] = "تم التعديل بنجاح";
                         return View(building);
                     }
                 }
@@ -87,23 +72,26 @@ namespace room_reservation.Controllers
                 {
                     ViewData["Failed"] = "حدث خطأ أثناء معالجة طلبك، الرجاء المحاولة في وقت لاحق.";
                 }
-            }
-            catch (Exception ex)
-            {
-                ViewData["Failed"] = "حدث خطأ أثناء معالجة طلبك، الرجاء المحاولة في وقت لاحق.";
 
-            }
             return View(building);
         }
 
-        [HttpGet]
-        public IActionResult Delete(Guid id)
+        public IActionResult Delet(Guid id)
         {
-             _BuildingDomain.DeleteBuilding(id);
+            string successful = "";
+            string Failed = "";
 
-            return View();
+            int cheek = _BuildingDomain.DeleteBuilding(id);
+            if (cheek == 1)
+                successful = "تم الحذف بنجاح";
+                       
+            else
+                 Failed = "حدث خطأ أثناء معالجة طلبك، الرجاء المحاولة في وقت لاحق.";
+
+            return RedirectToAction("Index", new { successful = successful , Failed = Failed });
         }
     }
+
     //public IActionResult Delet(BuildingViewModel building)
     //{
     //    if (ModelState.IsValid)
