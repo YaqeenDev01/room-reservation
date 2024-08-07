@@ -26,15 +26,15 @@ namespace room_reservation.Models
         public Guid guid { get; set; }
 
         public string? RejectReason { get; set; }
-        public int RoomId { get; set; }
+     
         public  bool IsDeleted { get; set; }
 
-        
+        public tblRooms Rooms { get; set; }
+        public int RoomId { get; set; }
+
         public  tblBookingStatues BookingStatues { get; set; }
         public int BookingStatuesId { get; set; }
         
-
-
     }
 }
 
