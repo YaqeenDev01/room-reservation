@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-
 namespace room_reservation.Models
 {
     public class RoomsLog

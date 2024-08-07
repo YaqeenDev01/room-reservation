@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace room_reservation.Migrations
 {
-    public partial class addDbFirst : Migration
+    public partial class addDb : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -15,9 +15,9 @@ namespace room_reservation.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    GrantedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    GrantedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     BookingId = table.Column<int>(type: "int", nullable: false),
-                    BookedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    BookedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     BookingStatus = table.Column<int>(type: "int", nullable: false),
                     OperationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     AdditionalDetails = table.Column<string>(type: "nvarchar(max)", nullable: true)
@@ -33,8 +33,8 @@ namespace room_reservation.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    GrantdBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    OperationType = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    GrantdBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    OperationType = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     BuildingId = table.Column<int>(type: "int", nullable: false),
                     OperationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     AdditionalDetails = table.Column<string>(type: "nvarchar(max)", nullable: true)
@@ -50,8 +50,8 @@ namespace room_reservation.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    OperationType = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    GrantdBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    OperationType = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    GrantdBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     FloorId = table.Column<int>(type: "int", nullable: false),
                     OperationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     AdditionalDetails = table.Column<string>(type: "nvarchar(max)", nullable: true)
@@ -68,11 +68,11 @@ namespace room_reservation.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     PermissionId = table.Column<int>(type: "int", nullable: false),
-                    GrantedTo = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    GrantedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PermissionType = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    GrantedTo = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    GrantedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PermissionType = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    OperationType = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    OperationType = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     AdditionalDetails = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
@@ -87,8 +87,8 @@ namespace room_reservation.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     RoomId = table.Column<int>(type: "int", nullable: false),
-                    GrantdBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    OperationType = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    GrantdBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    OperationType = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     OperationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     AdditionalDetails = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
@@ -103,8 +103,8 @@ namespace room_reservation.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    StatuesAR = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    StatuesEN = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    StatuesAR = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StatuesEN = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -118,8 +118,8 @@ namespace room_reservation.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     BuildingNo = table.Column<int>(type: "int", nullable: false),
-                    BuildingNameAr = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    BuildingNameEn = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    BuildingNameAr = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    BuildingNameEn = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Code = table.Column<int>(type: "int", nullable: false),
                     Guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false)
@@ -135,12 +135,13 @@ namespace room_reservation.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    BuildingNo = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    RoomNo = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Semester = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LectureTime = table.Column<TimeSpan>(type: "time", nullable: false),
+                    BuildingNo = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    RoomNo = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Semester = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StartLectureTime = table.Column<TimeSpan>(type: "time", nullable: false),
+                    EndLectureTime = table.Column<TimeSpan>(type: "time", nullable: false),
                     LectureDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    LectureDuration = table.Column<TimeSpan>(type: "time", nullable: false)
+                    LectureDurations = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -153,8 +154,8 @@ namespace room_reservation.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    RoleNameEN = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    RoleNameAR = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    RoleNameEN = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    RoleNameAR = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false)
                 },
@@ -169,9 +170,9 @@ namespace room_reservation.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    RoomAR = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    RoomEN = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    RoomAR = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    RoomEN = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
@@ -185,12 +186,12 @@ namespace room_reservation.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    FullNameAR = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    FullNameEN = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UserType = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FullNameAR = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FullNameEN = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UserType = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
@@ -220,7 +221,7 @@ namespace room_reservation.Migrations
                         column: x => x.BookingStatuesId,
                         principalTable: "tblBookingStatues",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -242,7 +243,7 @@ namespace room_reservation.Migrations
                         column: x => x.BuildingId,
                         principalTable: "tblBuildings",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -251,7 +252,7 @@ namespace room_reservation.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     RoleId = table.Column<int>(type: "int", nullable: false),
@@ -270,7 +271,7 @@ namespace room_reservation.Migrations
                         column: x => x.RoleId,
                         principalTable: "tblRoles",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -282,7 +283,7 @@ namespace room_reservation.Migrations
                     RoomNo = table.Column<int>(type: "int", nullable: false),
                     SeatCapacity = table.Column<int>(type: "int", nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
-                    Guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     FloorId = table.Column<int>(type: "int", nullable: false),
                     RoomTypeId = table.Column<int>(type: "int", nullable: false)
@@ -295,13 +296,13 @@ namespace room_reservation.Migrations
                         column: x => x.FloorId,
                         principalTable: "tblFloors",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_tblRooms_tblRoomType_RoomTypeId",
                         column: x => x.RoomTypeId,
                         principalTable: "tblRoomType",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(

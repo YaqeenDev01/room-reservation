@@ -8,7 +8,7 @@ namespace room_reservation.Models
         public int RoomNo { get; set; }
         public int SeatCapacity { get; set; }
         public bool IsActive { get; set; }
-        public Guid Guid { get; set; } //
+        public Guid guid { get; set; } 
         public bool IsDeleted { get; set; }
         public tblFloors Floor { get; set; }
         public int FloorId { get; set; }
@@ -16,5 +16,9 @@ namespace room_reservation.Models
         public tblRoomType  RoomType { get; set; }
 
         public int RoomTypeId { get; set; }
+        public ICollection<tblFloors> Floors { get; set; }
+
+        public ICollection<tblRoomType> RoomTypes { get; set; }
     }
+
 }

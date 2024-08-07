@@ -1,18 +1,24 @@
-@* @model TModel *@
-@* *@
-@* @{ *@
-@*     Layout = null; *@
-@* } *@
-@* *@
-@* <!DOCTYPE html> *@
-@* *@
-@* <html> *@
-@* <head> *@
-@*     <title>title</title> *@
-@* </head> *@
-@* <body> *@
-@* <div> *@
-@*        *@
-@* </div> *@
-@* </body> *@
-@* </html> *@
+@model room_reservation.ViewModel.FloorViewModel;
+<script>
+    @{
+        if (@ViewData["Successful"] != null)
+        {
+            <Text>
+            var result = '@Html.Raw(ViewData["Successful"])';
+            Swal.fire(result, '', 'success')
+                .then(
+                    function () {
+                        window.location.href = '@Url.Action("Index", "Floor")';
+                    }
+                );
+            </Text>
+        }
+        else if (@ViewData["Failed"] != null)
+        {
+            <Text>
+            var result = '@Html.Raw(ViewData["Failed"])';
+            Swal.fire(result, '', 'error');
+            </Text>
+        }
+    }
+</script>

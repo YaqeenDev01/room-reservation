@@ -1,36 +1,83 @@
-@* @model TModel
-
+@model room_reservation.ViewModel.FloorViewModel;
 @{
-    Layout = null;
+    ViewData["Title"] = "تحديث بيانات طابق";
 }
+<script>
+    @{
+    if (@ViewData["Successful"] != null)
+    {
+    <Text>
+    var result = '@Html.Raw(ViewData["Successful"])';
+    Swal.fire(result, '', 'success')
+        .then(
+            function () {
+                window.location.href = '@Url.Action("Index", "Floor")';
+            }
+        );
+    </Text>
+    }
+    else if (@ViewData["Failed"] != null)
+    {
+    <Text>
+    var result = '@Html.Raw(ViewData["Failed"])';
+    Swal.fire(result, '', 'error');
+    </Text>
+    }
+    }
+</script>
 
-<!DOCTYPE html>
+<!-- span is the validation for each input as required-->
 
-<html>
-<head>
-    <title>title</title>
-</head>
-<body>
-<div>
-      
+
+<div class="block-header border-bottom px-4 py-4">
+    <h5 class="m-0">تحديث بيانات طابق</h5>
 </div>
-</body>
-</html> *@
-@* @model TModel *@
-@* *@
-@* @{ *@
-@*     Layout = null; *@
-@* } *@
-@* *@
-@* <!DOCTYPE html> *@
-@* *@
-@* <html> *@
-@* <head> *@
-@*     <title>title</title> *@
-@* </head> *@
-@* <body> *@
-@* <div> *@
-@*        *@
-@* </div> *@
-@* </body> *@
-@* </html> *@
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <form asp-action="Edit">
+            <input hidden asp-for="Guid"/>
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="row">
+                <!--select from drop down list building no-->
+
+                <!-- START ITEM -->
+                <div class="col-md-6">
+                    <div class="mb-4">
+                        <label asp-for="BuildingId" class="mb-1"> أسم المبنى</label>
+                        <select asp-for="BuildingId" type="text" class="form-control" asp-items="@ViewBag.buildingsName"> </select>
+                        <span asp-validation-for="BuildingId" class="text-danger"> </span>
+
+                    </div>
+                </div><!-- END ITEM -->
+                <!-- START ITEM -->
+                <div class="col-md-6">
+                    <div class="mb-4">
+                        <label asp-for="BuildingId" class="mb-1"> رقم المبنى </label>
+                        <select asp-for="BuildingId" type="text" class="form-control" asp-items="@ViewBag.buildingsNo"> </select>
+                        <span asp-validation-for="BuildingId" class="text-danger"> </span>
+
+                    </div>
+                </div><!-- END ITEM -->
+
+
+                <!-- START ITEM -->
+                <div class="col-md-6">
+                    <div class="mb-4">
+                        <label asp-for="FloorNo" class="cobtrol-label"></label>
+                        <input asp-for="FloorNo" type="number" class="form-control"/>
+                        <span asp-validation-for="BuildingId" class="text-danger"></span>
+                    </div>
+                </div><!-- ssEND ITEM -->
+
+
+
+
+            </div>
+            <div class="d-flex justify-content-end">
+                <button type="submit" class="btn btn-primary px-5" title="save">حفظ</button>
+            </div>
+        </form>
+
+
+    </div>
+</div>
