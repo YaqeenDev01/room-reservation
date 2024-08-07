@@ -27,9 +27,10 @@ namespace room_reservation.Domain
                     RoomNo = r.RoomNo,
                     SeatCapacity = r.SeatCapacity,
                     IsActive = r.IsActive,
+                    FloorId = r.FloorId,
                     RoomTypeId = r.RoomTypeId,
-                   // FloorCollection = r.FloorCollection,
-                   // RoomTypeCollection = r.RoomTypeCollection,
+                    RoomAR = r.RoomType.RoomAR,
+
                 }).ToListAsync();
         }
 
@@ -55,9 +56,10 @@ namespace room_reservation.Domain
                         RoomNo = r.RoomNo,
                         SeatCapacity = r.SeatCapacity,
                         IsActive = r.IsActive,
+                        FloorId = r.FloorId,
                         RoomTypeId = r.RoomTypeId,
-                        //FloorCollection = r.FloorCollection,
-                        //RoomTypeCollection = r.RoomTypeCollection,
+                        RoomType = r.RoomType,
+
                     })
                     .FirstOrDefault();
 
@@ -88,6 +90,8 @@ namespace room_reservation.Domain
                     roomInfo.IsActive = room.IsActive;
                     roomInfo.FloorId = room.FloorId;
                     roomInfo.RoomTypeId = room.RoomTypeId;
+                    roomInfo.RoomType = room.RoomType;
+                    
 
                 _context.tblRooms.Add(roomInfo);
                  _context.SaveChanges();
@@ -109,8 +113,9 @@ namespace room_reservation.Domain
                 roomInfo.RoomNo = room.RoomNo;
                 roomInfo.SeatCapacity = room.SeatCapacity;
                 roomInfo.IsActive = room.IsActive;
-                //roomInfo.FloorId = room.FloorId;
-                //roomInfo.RoomTypeId = room.RoomTypeId;
+                roomInfo.FloorId = room.FloorId;
+                roomInfo.RoomTypeId = room.RoomTypeId;
+                roomInfo.RoomType = room.RoomType;
 
                 _context.tblRooms.Update(roomInfo);
                  _context.SaveChanges();

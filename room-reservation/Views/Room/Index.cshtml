@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<room_reservation.ViewModel.RoomViewModel>
 
 @{
-    ViewData["Title"] = "Rooms";
+    ViewData["Title"] = "القاعات";
 }
 
 <h1>القاعات</h1>
@@ -29,7 +29,7 @@
                 <td>@room.SeatCapacity</td>
                 <td>@room.IsActive</td>
                 <td>@room.FloorId</td>
-                <td>@room.RoomTypeCollection</td>
+                <td>@room.RoomAR</td>
                 <td>
                     <a asp-action="Edit" asp-route-guid="@room.Guid">Edit</a> |
                     <a asp-action="Delete" asp-route-guid="@room.Guid">Delete</a>
