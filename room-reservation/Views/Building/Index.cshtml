@@ -2,6 +2,30 @@
 @{
 
 }
+<script>
+    @{
+        if (@ViewData["Successful"] != null)
+        {
+            <Text>
+                                            var result = '@Html.Raw(ViewData["Successful"])';
+            Swal.fire(result, '', 'success')
+                .then(
+                    function () {
+                        window.location.href = '@Url.Action("Index", "Building")';
+                    }
+                );
+            </Text>
+        }
+        else if (@ViewData["Failed"] != null)
+        {
+            <Text>
+                                            var result = '@Html.Raw(ViewData["Failed"])';
+            Swal.fire(result, '', 'error');
+            </Text>
+        }
+    }
+</script>
+
 <div class="block mb-4">
     <div class="block-header border-bottom px-4 py-3">
         <h5 class="m-0"> ادارة المباني  </h5>
@@ -10,10 +34,11 @@
                 <input type="text" class="form-control table__quick_search"
                        placeholder="البحث السريع ...">
             </div>
-            <button type="button" asp-action="Add" class="btn btn-primary" data-bs-toggle="modal"
+           <!-- <button type="button" asp-action="Add" class="btn btn-primary" data-bs-toggle="modal"
                     data-bs-target="#add_section">
                         إضافة  مبنى  
-            </button>
+            </button>-->
+            <a href="@Url.Action("Add","Building")" class ="btn btn-primary">إضافة مبنى</a>
             <!-- Add Section Modal -->
             <div class="modal fade" id="add_section" tabindex="-1"
                  aria-labelledby="add_sectionLabel" aria-hidden="true">
@@ -56,11 +81,11 @@
                     <th>@Html.DisplayNameFor(m => m.BuildingNameEn)</th>
                     <th>@Html.DisplayNameFor(m => m.BuildingNo)</th>
                     <th>@Html.DisplayNameFor(m => m.Code)</th>
-                    <th>@Html.DisplayNameFor(m => m.Id)</th>
-                    <@* th>@Html.DisplayNameFor(m => m.Floors)</th> *@
+                    
                     <th class=""></th>
+
                 </tr>
-            </thead>
+            </thead> 
             <tbody>
                     @foreach(var x in Model){
                         <tr>
@@ -68,13 +93,10 @@
                             <td>@x.BuildingNameEn </td>
                             <td>@x.BuildingNo </td>
                             <td>@x.Code </td>
-                            <td>@x.Id </td>
-@*                             <td>@x.Floors </td>
+@*                           
  *@                            <td> 
-                        <a asp-action="Edit" asp-route-id="@x.Guid" class="btn btn-danger">تعديل </a>
-                        <form asp-action="Delete" asp-route-id="@x.Guid" method="post" style="display:inline;">
-                        <button type="submit" class="btn btn-danger">حذف</button>
-                        </form>
+                        <a asp-action="Edit" asp-route-id="@x.Guid" class="btn btn-primary">تعديل</a>
+                            <a asp-action="Delet" asp-route-id="@x.Guid" class="btn btn-danger"> حذف </a>
                             
                             </td>
                         </tr>
@@ -84,4 +106,4 @@
             </tbody>
         </table>
     </div>
-</div>
+</div> 

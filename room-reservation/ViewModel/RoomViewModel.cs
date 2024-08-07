@@ -27,16 +27,15 @@ namespace room_reservation.ViewModel
         public int FloorId { get; set; }
 
         public tblFloors Floor { get; set; }
-        public int FloorNo { get; set; }
 
         [Required(ErrorMessage = "هذا الحقل مطلوب")]
         [DisplayName("نوع الغرفة")]
         public int RoomTypeId { get; set; }
 
-        public tblRoomType RoomType { get; set; }
-        public string RoomTypeName { get; set; }
+        public ICollection<tblFloors> FloorCollection { get; set; }
 
-        public List<SelectListItem> Floors { get; set; }
-        public List<SelectListItem> RoomTypes { get; set; }
+        public ICollection<tblRoomType> RoomTypeCollection { get; set; }
+
+
     }
 }

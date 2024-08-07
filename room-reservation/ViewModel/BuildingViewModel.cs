@@ -6,7 +6,7 @@ namespace room_reservation.ViewModel
 {
     public class BuildingViewModel
     {
-        public int Id { get; set; }
+        //public int Id { get; set; }
         [Required(ErrorMessage = "هذا الحقل مطلوب")]
         [DisplayName("رقم المبنى ")]
         public int BuildingNo { get; set; }
@@ -19,7 +19,7 @@ namespace room_reservation.ViewModel
         [Required(ErrorMessage = "هذا الحقل مطلوب")]
         [DisplayName("كود المبنى")]
         public int Code { get; set; } //Unique
-        public Guid Guid { get; set; } = Guid.NewGuid(); //Unique
+        public Guid Guid { get; set; }  //Unique
 
         //public ICollection<tblPermissions> Permissions { get; set; }
     
