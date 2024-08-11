@@ -73,7 +73,6 @@ namespace room_reservation.Domain
         }
         public int DeleteUser(tblUsers user)
         {
-            // user.Guid=Guid.NewGuid();
 
             user.IsDeleted = false;
             _context.SaveChanges();

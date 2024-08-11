@@ -1,0 +1,40 @@
+﻿@model IEnumerable<room_reservation.ViewModel.RoomViewModel>
+
+@{
+    ViewData["Title"] = "القاعات";
+}
+
+<h1>القاعات</h1>
+
+<p>
+    <a asp-action="AddRoom" class="btn btn-primary">اضافة قاعة</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>رقم القاعة</th>
+            <th>عدد المقاعد</th>
+            <th>حالة القاعة</th>
+            <th>رقم الدور</th>
+            <th>نوع القاعة</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var room in Model)
+        {
+            <tr>
+                <td>@room.RoomNo</td>
+                <td>@room.SeatCapacity</td>
+                <td>@room.IsActive</td>
+                <td>@room.FloorId</td>
+                <td>@room.RoomAR</td>
+                <td>
+                    <a asp-action="Edit" asp-route-guid="@room.Guid">Edit</a> |
+                    <a asp-action="Delete" asp-route-guid="@room.Guid">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

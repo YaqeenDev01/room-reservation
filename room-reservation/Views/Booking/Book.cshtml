@@ -1,15 +1,19 @@
-@model IEnumerable<FloorViewModel>;
-
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model IEnumerable<BookingViewModel>
+@{
+}
 
 @{
 
     
-        ViewData["Title"] = "إدارة الطوابق";
+        ViewData["Title"] = "عرض الحجوازات";
 }
 
 <div class="block mb-4">
     <div class="block-header border-bottom px-4 py-3">
-        <h5 class="m-0">إدارة الطوابق</h5>
+        <h5 class="m-0">إدارة الحجوزات</h5>
         <div class="d-flex gap-2">
             <div class="form-group">
                 <input type="text" class="form-control table__quick_search"
@@ -30,8 +34,10 @@
             <thead>
             <tr>
                 <th>أسم المبنى</th>
-                <th>رقم المبنى</th>
                 <th>رقم الطابق</th>
+                <th>رقم القاعة</th>
+                <th>نوع القاعة</th>
+                <th>الاستيعاب</th>
                 <th class=""></th>
             </tr>
             </thead>
@@ -39,24 +45,32 @@
                 @{
                     foreach (var x in Model)
                     {
-
+                
                         <tr>
                             <td>
                                 @x.BuildingNameAr
-
-                            </td>
-                            <td>
-                                @x.BuildingNo
-
+                
                             </td>
                             <td>
                                 @x.FloorNo
-
+                
                             </td>
                             <td>
-                                <a asp-action="Edit" asp-route-id="@x.Guid" class="btn btn-sm btn-success">Edit</a>
-                                
-                                <a asp-action="Delete" asp-route-id="@x.Guid" class="btn btn-sm btn-danger">Delete</a>
+                                @x.RoomNo
+                
+                            </td>
+                            <td>
+                                @x.RoomAR
+                
+                            </td>
+                            <td>
+                                @x.SeatCapacity
+                
+                            </td>
+                            <td>
+                                <a asp-action="Details" asp-route-id="@x.guid" class="btn btn-sm btn-primary">عرض</a>
+                
+                                <a asp-action="Delete" asp-route-id="@x.guid" class="btn btn-sm btn-danger">حذف</a>
                             </td>
                         </tr>
                     }
