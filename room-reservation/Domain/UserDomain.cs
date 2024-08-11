@@ -1,5 +1,9 @@
-﻿using room_reservation.Models;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using room_reservation.Models;
 using room_reservation.ViewModel;
+using System.Security;
+using System.Security.Cryptography.X509Certificates;
 
 namespace room_reservation.Domain
 {
@@ -21,21 +25,34 @@ namespace room_reservation.Domain
         {
             return _context.tblUsers.ToList();
         }
-        public int InsertUser(UserViewModel user)
+        
+        public async Task<int> AddUser(UserViewModel user)
         {
-            // user.Guid=Guid.NewGuid();
-            tblUsers userInfo = new tblUsers();
-            userInfo.FullNameEN = user.FullNameEN;
-            userInfo.FullNameAR = user.FullNameAR;
-            userInfo.Email = user.Email;
-            userInfo.PhoneNumber = user.PhoneNumber;
-            userInfo.Password = user.Password;
-            userInfo.UserType = user.UserType;
-           
-            _context.tblUsers.Add(userInfo);
-            _context.SaveChanges();
-            return 1;
-             
+            try
+            {
+                var userInfo = new tblUsers
+                {
+                    Email = user.Email,
+                    FullNameEN = user.FullNameEN,
+                    FullNameAR = user.FullNameAR,
+                    Password = user.Password,
+                    PhoneNumber = user.PhoneNumber,
+                    UserType = user.UserType,
+                    IsDeleted = false
+
+
+                };
+
+                _context.Add(userInfo);
+                await _context.SaveChangesAsync();
+                return 1;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+                return 0;
+            }
+
 
         }
         public tblUsers getUserById(int id) {
@@ -58,12 +75,25 @@ namespace room_reservation.Domain
         {
 
             user.IsDeleted = false;
-            _context.tblUsers.Remove(user);
             _context.SaveChanges();
             return 1;
 
 
         }
+
+        public async Task <UserViewModel> GetAccountsForLogin(UserViewModel userInfo)
+        {
+            var user = await _context.tblUsers.FirstOrDefaultAsync(
+                A => A.Email == userInfo.Email && A.Password == userInfo.Password&& A.IsDeleted == false);
+            return new UserViewModel { 
+                UserType = userInfo.UserType,
+                Email = userInfo.Email,
+                FullNameAR = userInfo.FullNameAR,
+                PhoneNumber = userInfo.PhoneNumber,
+                Id = userInfo.Id
+            };
+        }
+
 
     }
 }

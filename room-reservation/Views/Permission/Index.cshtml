@@ -2,7 +2,7 @@
 
 <div class="block mb-4">
     <div class="block-header border-bottom px-4 py-3">
-        <h5 class="m-0">إدارة المستخدمين</h5>
+        <h5 class="m-0">إدارة الصلاحيات</h5>
         <div class="d-flex gap-2">
             <div class="form-group">
                 <input type="text" class="form-control table__quick_search"
@@ -77,8 +77,11 @@
                             </td>
 
                             <td>
-                                <a asp-action="EditPermission" asp-route-id="x.Id" class="btn btn-primary">تعديل</a>
-                                <a asp-action="Delete" asp-route-id="x.Id" class="btn btn-danger">حذف</a>
+                                <a asp-action="EditPermission" asp-route-id="@data.Id" class="btn btn-success">تعديل</a>
+                                <!--<a asp-action="DeletePermission"  asp-route-id="@data.Id" class="btn btn-danger">حذف</a>-->
+                                <a onclick="confirmDelete(@data.Id)" data-id="@data.Id" class="btn btn-danger delete-btn">حذف</a>
+
+                                
                             </td>
                         </tr>
                     }
@@ -88,5 +91,61 @@
         </table>
     </div>
 </div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('.delete-btn').click(function (event) {
+            event.preventDefault(); 
+
+            var id = $(this).data('id'); // Get the ID from the data-id attribute
+
+            Swal.fire({
+                title: 'هل أنت متأكد؟',
+                text: "",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'نعم، احذف!',
+                cancelButtonText: 'إلغاء'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '@Url.Action("DeletePermission")',
+                        type: 'POST',
+                        data: { id: id },
+                        success: function (response) {
+                            if (response.success) {
+                                Swal.fire(
+                                    'نجحت العملية!',
+                                    'حُذِفت الصلاحية.',
+                                    'success'
+                                ).then(() => {
+                                    window.location.reload();
+                                });
+                            } else {
+                                Swal.fire(
+                                    'فشلت العملية!',
+                                    'لم تُحذف الصلاحية.',
+                                    'error'
+                                );
+                            }
+                        },
+                        error: function () {
+                            Swal.fire(
+                                'خطأ!',
+                                'حدث خطأ غير متوقع.',
+                                'error'
+                            );
+                        }
+                    });
+                }
+            });
+        });
+    });
+
+</script>
 
 
