@@ -18,7 +18,7 @@ namespace room_reservation.ViewModel
         [DisplayName("عدد المقاعد")]
         public int SeatCapacity { get; set; }
 
-        [Required(ErrorMessage = "هذا الحقل مطلوب")]
+        //[Required(ErrorMessage = "هذا الحقل مطلوب")]
         [DisplayName("حالة الغرفة")]
         public bool IsActive { get; set; }
 
@@ -31,7 +31,8 @@ namespace room_reservation.ViewModel
         [Required(ErrorMessage = "هذا الحقل مطلوب")]
         [DisplayName("نوع الغرفة")]
         public int RoomTypeId { get; set; }
-
+        public  tblRoomType RoomType;
+        public string RoomAR;
         public ICollection<tblFloors> FloorCollection { get; set; }
 
         public ICollection<tblRoomType> RoomTypeCollection { get; set; }
