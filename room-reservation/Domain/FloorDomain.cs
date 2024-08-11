@@ -15,7 +15,7 @@ namespace room_reservation.Domain
 
         public async Task<IEnumerable<FloorViewModel>> GetAllFloors()
         {
-            return await _context.tblFloors .Where(floor => !floor.IsDeleted) .Include(b => b.Building) 
+            return await _context.tblFloors.Where(floor => !floor.IsDeleted).Include(f => f.Building) 
                 .Select(f => new FloorViewModel
             {
                // Id = f.Id,

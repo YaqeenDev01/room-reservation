@@ -48,7 +48,7 @@ builder.Services.AddScoped<RoomDomain>();
 builder.Services.AddScoped<lecturesDomain>();
 builder.Services.AddScoped<RoomTypeDomain>();
 builder.Services.AddScoped<BookingDomain>();
-
+builder.Services.AddScoped<FloorDomain>();
 
 
 
