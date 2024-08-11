@@ -36,7 +36,16 @@ namespace room_reservation.ViewModel
         public ICollection<tblFloors> FloorCollection { get; set; }
 
         public ICollection<tblRoomType> RoomTypeCollection { get; set; }
-
-
+        
+        
+        //adding building details for the floor index view to show them 
+        
+        public int BuildingNo { get; set; }
+        public string BuildingNameAr { get; set; }
+        public string BuildingNameEn { get; set; }
+        
+        
+  
     }
-}
+    }
+

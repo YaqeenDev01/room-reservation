@@ -1,4 +1,5 @@
 ﻿@model room_reservation.ViewModel.PermissionViewModel
+
 <div class="block mb-4">
     <div class="block-header border-bottom px-4 py-4">
         <h5 class="m-0">إضافة صلاحية</h5>
@@ -6,45 +7,75 @@
     <div class="block-body py-5">
         <div class="row justify-content-center">
             <div class="col-md-8">
-                <form asp-action="AddPermission" method="post">
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <form id="permissionForm" method="post">
                     <div class="row">
-                        <!-- START ITEM -->
                         <div class="col-md-6">
                             <div class="mb-4">
                                 <label asp-for="Email" class="mb-1">البريد الإلكتروني</label>
-                                <input asp-for="Email" type="email" placeholder="name@email.com"
-                                       class="form-control text-start">
+                                <input asp-for="Email" type="email" placeholder="name@email.com" class="form-control text-start">
                                 <span asp-validation-for="Email" class="text-danger"></span>
-
-                                       
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-4">
-                                <label asp-for="RoleId" class="control-label cb-1 form-control'">الصلاحية</label>
+                                <label asp-for="RoleId" class="control-label cb-1">الصلاحية</label>
                                 <select asp-for="RoleId" class="form-control" asp-items="Model.Roles"></select>
                                 <span asp-validation-for="RoleId" class="text-danger"></span>
-
-                            </div>
-                        </div><!-- END ITEM -->
-                        <div class="col-md-6">
-                            <div class="mb-4">
-                                <label asp-for="Email" class="mb-1">المبنى</label>
-                                <select asp-for="BuildingId" class="form-control" asp-items="Model.Buildings"></select>
-                                <span asp-validation-for="Building" class="text-danger"></span>
-
-
                             </div>
                         </div>
-
-
+                        <div class="col-md-6">
+                            <div class="mb-4">
+                                <label asp-for="BuildingId" class="mb-1">المبنى</label>
+                                <select asp-for="BuildingId" class="form-control" asp-items="Model.Buildings"></select>
+                                <span asp-validation-for="BuildingId" class="text-danger"></span>
+                            </div>
+                        </div>
                         <div class="d-flex justify-content-end">
                             <button type="submit" class="btn btn-primary px-5" title="إضافة">إضافة</button>
                         </div>
+                    </div>
                 </form>
 
+                <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
 
+                <script>
+                    $(document).ready(function () {
+                        $('#permissionForm').submit(function (event) {
+                            event.preventDefault(); // Prevent the default form submission
+
+                            $.ajax({
+                                url: '@Url.Action("AddPermission")', // URL to the controller action
+                                type: 'POST',
+                                data: $(this).serialize(), 
+                                success: function (response) {
+                                    if (response.success) {
+                                        Swal.fire({
+                                            title: '!نجحت العملية',
+                                            text: 'أُضِيفَت الصلاحية بنجاح',
+                                            icon: 'success'
+                                        }).then(() => {
+                                            window.location.href = '@Url.Action("Index")'; // Redirect to Index page after success
+                                        });
+                                    } else {
+                                        Swal.fire({
+                                            title: '!فشلت العملية',
+                                            text: 'لم تُضَاف الصلاحية',
+                                            icon: 'error'
+                                        });
+                                    }
+                                },
+                                error: function () {
+                                    Swal.fire({
+                                        title: 'Error!',
+                                        text: 'An unexpected error occurred.',
+                                        icon: 'error'
+                                    });
+                                }
+                            });
+                        });
+                    });
+                </script>
             </div>
         </div>
     </div>
