@@ -28,7 +28,7 @@ namespace room_reservation.Controllers
             _roomTypeDomain = roomTypeDomain;
         }
 
-        [HttpGet]
+
         public async Task<IActionResult> Index()
         {
             
@@ -41,7 +41,7 @@ namespace room_reservation.Controllers
 
             return View();
         }
-        [HttpPost]
+  
         
 
 

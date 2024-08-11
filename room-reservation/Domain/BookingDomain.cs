@@ -6,26 +6,21 @@ namespace room_reservation.Domain {
     public class BookingDomain
     {
         private readonly KFUSpaceContext _context;
-        private readonly BuildingDomain _buildingDomain;
-        private readonly BookingDomain _BookingDomain;
-        private readonly FloorDomain _floorDomain;
-        private readonly RoomDomain _roomDomain;
-        private readonly RoomTypeDomain _roomTypeDomain;
- 
-        public BookingDomain(KFUSpaceContext context, BuildingDomain buildingDomain,BookingDomain BookingDomain,FloorDomain floorDomain, RoomDomain roomDomain, RoomTypeDomain roomTypeDomain)
+      
+        public BookingDomain(KFUSpaceContext context)
         {
             _context = context;
-            _buildingDomain = buildingDomain;
-            _floorDomain = floorDomain;
-            _BookingDomain = BookingDomain;
-            _roomDomain = roomDomain;
-            _roomTypeDomain = roomTypeDomain;
+            // _buildingDomain = buildingDomain;
+            // _floorDomain=floorDomain;
+            // _BookingDomain = BookingDomain;
+            // _roomDomain = roomDomain;
+            // _roomTypeDomain = roomTypeDomain;
 
         }
 
         public async Task<IEnumerable<BookingViewModel>> GetAllBooking()
         {
-            return await _context.tblBookings.Include(r => r.Rooms).ThenInclude(f=>f.Floor).ThenInclude(b=>b.Building).Select(x=> new BookingViewModel
+            return await _context.tblBookings.Select(x=> new BookingViewModel
             {
                 Id = x.Id,
                 BookingDate = x.BookingDate,
@@ -33,10 +28,10 @@ namespace room_reservation.Domain {
                 BookingEnd = x.BookingEnd,
                 guid = x.guid,
                 RoomId = x.RoomId, 
-                RoomNo = x.Rooms.RoomNo,
-                FloorNo = x.Rooms.Floor.FloorNo,
-                BuildingNameAr = x.Rooms.Floor.Building.BuildingNameAr,
-                SeatCapacity=x.Rooms.SeatCapacity,
+                // RoomNo = x.Rooms.RoomNo,
+                // FloorNo = x.Rooms.Floor.FloorNo,
+                // BuildingNameAr = x.Rooms.Floor.Building.BuildingNameAr,
+                // SeatCapacity=x.Rooms.SeatCapacity,
                 
                 
                 //Bookings.BookingStatues = booking.BookingStatues
