@@ -15,7 +15,7 @@ namespace room_reservation.Domain
 
         public async Task<IEnumerable<FloorViewModel>> GetAllFloors()
         {
-            return await _context.tblFloors  .Include(f => f.Building) 
+            return await _context.tblFloors .Where(floor => !floor.IsDeleted) .Include(b => b.Building) 
                 .Select(f => new FloorViewModel
             {
                // Id = f.Id,
@@ -27,6 +27,7 @@ namespace room_reservation.Domain
                 Rooms = f.Rooms,
             }).ToListAsync(); // Select * from tblFloors
         }
+        
         public IEnumerable<tblBuildings>GetAllBuilding()
         {
             return  _context.tblBuildings;
@@ -83,6 +84,34 @@ namespace room_reservation.Domain
                         throw new Exception($"Error retrieving floor: {ex.Message}");
                     }
                 }
+                
+                public FloorViewModel GetFloorByBuildingGuid(Guid id)
+                {
+                    try
+                    {
+                        var floor = _context.tblFloors
+                            .Where(x => x.Building.Guid == id)
+                            .Select(f => new FloorViewModel
+                            {
+                                //Id = f.Id,
+                                FloorNo = f.FloorNo,
+                                Guid = f.Guid,
+                                BuildingId = f.BuildingId,
+                                BuildingNameAr = f.Building.BuildingNameAr,
+                                BuildingNo = f.Building.BuildingNo,
+                                //Rooms = f.Rooms // not used 
+                            })
+                            .FirstOrDefault();
+                       
+                        return floor;
+                    }
+                    catch (Exception ex)
+                    {
+                        // Log the exception or handle it as needed
+                        throw new Exception($"Error retrieving floor: {ex.Message}");
+                    }
+                }
+
 
                 public tblFloors GetFloorById(Guid id)
                 {
@@ -109,16 +138,17 @@ namespace room_reservation.Domain
                         return $"Error: {exception.Message}";
                     }
                 }
-                public string deleteFloor(Guid id)
+                public string DeleteFloor(Guid id)
                 {
 
                     try
                     {
-                        tblFloors floorInfo =  GetFloorById(id);
+                        var floor = _context.tblFloors.Where(f => f.Guid == id).SingleOrDefault();
+                        
                         // is deleted will delete the record in web 
-                        floorInfo.IsDeleted = true;
+                        floor.IsDeleted = true;
                         // remove will delete the record from Db
-                        _context.tblFloors.Remove(floorInfo);
+                       // _context.tblFloors.Remove(floorInfo);
                         _context.SaveChanges();
                         return "1";
 
