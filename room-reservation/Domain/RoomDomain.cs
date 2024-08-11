@@ -67,7 +67,7 @@ namespace room_reservation.Domain
             }
             catch (Exception ex)
             {
-                throw new Exception($"Error retrieving room: {ex.Message}");
+                throw new Exception($"حصل خطأ: {ex.Message}");
             }
         }
 
@@ -99,7 +99,7 @@ namespace room_reservation.Domain
             }
             catch (Exception exception)
             {
-                return $"Error: {exception.Message}";
+                return $"حصل خطأ: {exception.Message}";
             }
         }
 
@@ -123,26 +123,28 @@ namespace room_reservation.Domain
             }
             catch (Exception exception)
             {
-                return $"Error: {exception.Message}";
+                return $"حصل خطأ: {exception.Message}";
             }
         }
 
         public string DeleteRoom(Guid guid)
-        {
-            try
-            {
-                tblRooms roomInfo =  GetRoomById(guid);
-   
+        {       
+               try
+                {
+                    tblRooms roomInfo = GetRoomById(guid);
 
-                roomInfo.IsDeleted = true;
-                _context.tblRooms.Remove(roomInfo);
-                 _context.SaveChanges();
-                return "1";
-            }
-            catch (Exception exception)
-            {
-                return $"Error: {exception.Message}";
-            }
+                    roomInfo.IsDeleted = true;
+
+                    _context.tblRooms.Remove(roomInfo);
+                    _context.SaveChanges();
+                    return "1";
+                
+                }
+                catch (Exception exception)
+                {
+                    return $"حصل خطأ: {exception.Message}";
+                }
+            
         }
     }
 }
