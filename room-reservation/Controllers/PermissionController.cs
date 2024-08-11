@@ -1,8 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using room_reservation.Domain;
 using room_reservation.Models;
 using room_reservation.ViewModel;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace room_reservation.Controllers
 {
@@ -18,15 +22,16 @@ namespace room_reservation.Controllers
             _RoleDomain = roleDomain;
             _BuildingDomain = buildingDomain;
         }
+
         public async Task<IActionResult> Index()
         {
             return View(await _PermissionDomain.getAllPermissions());
         }
-        //Adding a permission
+
         [HttpGet]
         public async Task<IActionResult> AddPermission()
         {
-            var roles = await _RoleDomain.GetAllRoles(); //await is added because a select statement is executed
+            var roles = await _RoleDomain.GetAllRoles();
             var buildings = await _BuildingDomain.GetAllBuilding();
             var permissionViewModel = new PermissionViewModel
             {
@@ -34,68 +39,105 @@ namespace room_reservation.Controllers
                 {
                     Value = x.Id.ToString(),
                     Text = x.RoleName
-
                 }).ToList(),
-
                 Buildings = buildings.Select(x => new SelectListItem
                 {
                     Value = x.Id.ToString(),
-                    Text = x.BuildingNameAr,
-
-                }).ToList()
-
-            };
-
-            // Repopulate dropdowns in case of invalid model state
-            permissionViewModel.Roles = (await _RoleDomain.GetAllRoles())
-                .Select(x => new SelectListItem
-                {
-                    Value = x.Id.ToString(),
-                    Text = x.RoleName
-                }).ToList();
-
-            permissionViewModel.Buildings = (await _BuildingDomain.GetAllBuilding())
-                .Select(x => new SelectListItem
-                {
-                    Value = x.Id.ToString(),
                     Text = x.BuildingNameAr
-                }).ToList();
-
-
-
+                }).ToList()
+            };
 
             return View(permissionViewModel);
         }
+
         [HttpPost]
         public async Task<IActionResult> AddPermission(PermissionViewModel permissionViewModel)
         {
-            if (ModelState.IsValid)
+            try
             {
-                await _PermissionDomain.AddPermission(permissionViewModel); //await is added because an insert statement is executed.
-                return RedirectToAction("Index");
+                if (ModelState.IsValid)
+                {
+                    await _PermissionDomain.AddPermission(permissionViewModel);
+                    return Json(new { success = true, message = "Added successfully" });
+                }
+                else
+                {
+                    return Json(new { success = false, message = "Invalid data" });
+                }
             }
-
-            return View(permissionViewModel);
-
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
         }
 
-        //Updating a permission
+        [HttpPost]
+        public async Task<IActionResult> EditPermission(PermissionViewModel permissionViewModel)
+        {
+            if(ModelState.IsValid)
+    {
+                try
+                {
+                    var result = await _PermissionDomain.UpdatePermission(permissionViewModel);
+                    if (result)
+                    {
+                        return Json(new { success = true, message = "Updated successfully" });
+                    }
+                    else
+                    {
+                        return Json(new { success = false, message = "Update failed" });
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return Json(new { success = false, message = ex.Message });
+                }
+            }
+
+            return Json(new { success = false, message = "Invalid data" });
+        }
 
         [HttpGet]
-        public async Task<IActionResult> EditPermission(Guid guid)
+
+        public async Task<IActionResult> EditPermission(int Id)
         {
-            var permission = _PermissionDomain.GetPermissionByGuid(guid);
-            var roles = _RoleDomain.GetAllRoles();
-            var buildings= _BuildingDomain.GetAllBuilding();
+
+
+            var permission = await _PermissionDomain.GetPermissionById(Id);
+            var roles = await _RoleDomain.GetAllRoles();
+            var buildings = await _BuildingDomain.GetAllBuilding();
 
             var permissionViewModel = new PermissionViewModel
             {
-                
-
+                Id = permission.Id,
+                Email = permission.Email,
+                RoleId = permission.RoleId,
+                BuildingId = permission.BuildingId,
+                Roles = roles.Select(x => new SelectListItem
+                {
+                    Value = x.Id.ToString(),
+                    Text = x.RoleName
+                }).ToList(),
+                Buildings = buildings.Select(x => new SelectListItem
+                {
+                    Value = x.Id.ToString(),
+                    Text = x.BuildingNameAr
+                }).ToList()
             };
 
-            return View();
+            return View(permissionViewModel);
         }
 
+
+        [HttpPost]
+        public async Task<IActionResult> DeletePermission(int id)
+        {
+            await _PermissionDomain.DeletePermission(id);
+            return Json(new { success = true });
+        }
+
+
+
     }
+
 }

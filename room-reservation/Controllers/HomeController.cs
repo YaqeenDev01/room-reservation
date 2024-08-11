@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using room_reservation.Models;
 using System.Diagnostics;
 
@@ -13,6 +14,7 @@ namespace room_reservation.Controllers
             _logger = logger;
         }
 
+        [Authorize(Roles="admin, staff, user")]
         public IActionResult Index()
         {
             return View();
