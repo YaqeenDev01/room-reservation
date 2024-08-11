@@ -14,7 +14,6 @@ namespace room_reservation.Controllers
             _logger = logger;
         }
 
-        [Authorize(Roles="admin, staff, user")]
         public IActionResult Index()
         {
             return View();

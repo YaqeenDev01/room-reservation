@@ -57,6 +57,7 @@ namespace room_reservation.Controllers
         public FloorViewModel getFloorbyGuid(Guid id)
         {
             return _floorDomain.GetFloorByBuildingGuid(id);
+            
         }
    
         
