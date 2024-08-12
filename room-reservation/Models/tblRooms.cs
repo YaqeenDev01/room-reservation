@@ -13,14 +13,14 @@ namespace room_reservation.Models
         public Guid guid { get; set; } 
         public bool IsDeleted { get; set; }
         public tblFloors Floor { get; set; }
-        public int FloorId { get; set; }
+        
 
         public tblRoomType  RoomType { get; set; }
 
-        public int RoomTypeId { get; set; }
-        public ICollection<tblFloors> Floors { get; set; }
+       
+       // public ICollection<tblFloors> Floors { get; set; }
 
-        public ICollection<tblRoomType> RoomTypes { get; set; }
+       // public ICollection<tblRoomType> RoomTypes { get; set; }
     }
 
 }
