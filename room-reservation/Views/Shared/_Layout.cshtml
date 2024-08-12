@@ -1,4 +1,4 @@
-﻿v<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en" dir="rtl" data-theme="light">
 
 <head>
@@ -19,6 +19,8 @@
     <link rel="stylesheet" href="~/Assets/css/bootstrap.rtl.min.css">
     <link rel="stylesheet" href="~/Assets/css/bootstrap-icons.min.css">
     <link rel="stylesheet" href="~/Assets/css/root.css">
+    <!---->
+    
 
     <!--------- CSS Liberaries ---------->
     <!-- Data Table -->
@@ -95,7 +97,7 @@
                             <li> <a href="@Url.Action("Index", "Building")" class="active"><span>المباني</span></a></li>
                             <li> <a href="@Url.Action("Index", "Room")" class="active"><span>القاعات</span></a></li>
                             <li> <a href="@Url.Action("Index", "Lectures")" class="active"><span>المحاضرات</span></a></li>
-
+                            <li> <a href="@Url.Action("Index", "Floor")" class="active"><span>الطوابق</span></a></li>
 
                         </ul>
                     </li>
@@ -208,6 +210,13 @@
 
     <!--------- JS Liberaries ---------->
     <script src="~/Assets/lib/DataTable/js/dataTables.min.js"></script>
+
+
+     <!-- Sweet Alert library -->
+    <script src="~/lib/sweetalert/sweetalert.min.js"></script>
+
+    <!-- Render the Scripts section -->
+    @await RenderSectionAsync("Scripts", required: false)
 
     <!-- customization -->
     <script src="~/Assets/js/app.js"></script>

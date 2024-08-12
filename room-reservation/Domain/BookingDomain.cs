@@ -6,23 +6,35 @@ namespace room_reservation.Domain {
     public class BookingDomain
     {
         private readonly KFUSpaceContext _context;
-
+      
         public BookingDomain(KFUSpaceContext context)
         {
             _context = context;
+            // _buildingDomain = buildingDomain;
+            // _floorDomain=floorDomain;
+            // _BookingDomain = BookingDomain;
+            // _roomDomain = roomDomain;
+            // _roomTypeDomain = roomTypeDomain;
+
         }
 
-        public async Task<IEnumerable<BuildingViewModel>> GetAllBooking()
+        public async Task<IEnumerable<BookingViewModel>> GetAllBooking()
         {
-            return (IEnumerable<BuildingViewModel>)await _context.tblBookings.Select(x => new BookingViewModel
+            return await _context.tblBookings.Select(x=> new BookingViewModel
             {
                 Id = x.Id,
                 BookingDate = x.BookingDate,
                 BookingStart = x.BookingStart,
                 BookingEnd = x.BookingEnd,
                 guid = x.guid,
-
-                //Bookings.BookingStatues = booking.BookingStatues;
+                RoomId = x.RoomId, 
+                // RoomNo = x.Rooms.RoomNo,
+                // FloorNo = x.Rooms.Floor.FloorNo,
+                // BuildingNameAr = x.Rooms.Floor.Building.BuildingNameAr,
+                // SeatCapacity=x.Rooms.SeatCapacity,
+                
+                
+                //Bookings.BookingStatues = booking.BookingStatues
                 //Bookings.RejectReason = booking.RejectReason;
                 //Bookings.Duration = booking.Duration;
                 //Bookings.Email = booking.Email;
@@ -32,7 +44,26 @@ namespace room_reservation.Domain {
 
             }).ToListAsync();
         }
-
+        
+        // public async Task<IEnumerable<LecturesViewModel>> getAlllectures()
+        // {
+        //
+        //     return await _context.tblLectures.Select(x => new LecturesViewModel
+        //     {
+        //         Id = x.Id,
+        //         BuildingNo = x.BuildingNo,
+        //         RoomNo = x.RoomNo,
+        //         LectureDate = x.LectureDate,
+        //         StartLectureTime = x.StartLectureTime,
+        //         EndLectureTime = x.EndLectureTime,
+        //         //LectureDurations = x.LectureDurations,
+        //         Semester = x.Semester
+        //
+        //
+        //     }).ToListAsync();
+        //
+        //
+        // }
         public async Task<IEnumerable<tblBookings>> getAllBooking()
         {
             return await _context.tblBookings.ToListAsync();
@@ -75,7 +106,7 @@ namespace room_reservation.Domain {
         }
 
 
-        public BookingViewModel getBookinggByid(Guid id)
+        public BookingViewModel getBookingByid(Guid id)
         {
             var BookingId = _context.tblBookings.FirstOrDefault(x => x.guid == id);
             BookingViewModel models = new BookingViewModel

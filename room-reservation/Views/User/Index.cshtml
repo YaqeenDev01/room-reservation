@@ -12,17 +12,16 @@
                 <input type="text" class="form-control table__quick_search"
                        placeholder="البحث السريع ...">
             </div>
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                    data-bs-target="#add_section">
+            <a type="button" class="btn btn-primary" href="@Url.Action("AddUser")">
                 إضافة مستخدم
-            </button>
+            </a>
             <!-- Add Section Modal -->  
             <div class="modal fade" id="add_section" tabindex="-1"
                  aria-labelledby="add_sectionLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="add_sectionLabel">إضافة طلب</h5>
+                            <h5 class="modal-title" id="add_sectionLabel">إضافة مستخدم</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                     aria-label="Close"></button>
                         </div>
@@ -54,7 +53,7 @@
         <table class="table table-hover js-dataTable">
             <thead>
                 <tr>
-                    <th>Full Name English</th>
+                    <th>Full Name</th>
                     <th>Email</th>
                     <th>User Type </th>
                     <th class=""></th>
@@ -79,9 +78,8 @@
 
                             </td>
                             <td>
-                                <a asp-action="Edit" asp-route-id="@x.Id">Edit</a>
-                                
-                                <a asp-action="Delete" asp-route-id="@x.Id">Delete</a>
+                                <a asp-action="Edit" asp-route-id="@x.Id" class="btn btn-success">تعديل</a>
+                                <a asp-action="Delete" asp-route-id="@x.Id" class="btn btn-danger">حذف</a>
                             </td>
                         </tr>
                     }

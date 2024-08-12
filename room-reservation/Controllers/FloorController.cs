@@ -97,7 +97,7 @@ namespace room_reservation.Controllers
 
         public IActionResult Delete(Guid id)
         {
-            string check = _FloorDomain.deleteFloor(id);
+            string check = _FloorDomain.DeleteFloor(id);
                 if (check == "1")
                 
                     ViewData["Successful"] = "تم الحذف بنجاح";
@@ -105,7 +105,7 @@ namespace room_reservation.Controllers
                 else
                     ViewData["Failed"] = check;
                 
-                _FloorDomain.deleteFloor(id);
+                _FloorDomain.DeleteFloor(id);
                 return View();
 
 

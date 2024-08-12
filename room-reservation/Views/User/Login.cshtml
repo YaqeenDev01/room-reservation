@@ -1,0 +1,82 @@
+﻿@model room_reservation.ViewModel.UserViewModel
+
+<!DOCTYPE html>
+<html dir="ltr" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>تسجيل الدخول</title>
+   
+    <script src="@Url.Content("~/js/jquery-3.4.1.min.js")"></script>
+    <script src="@Url.Content("~/js/jquery.unobtrusive-ajax.min.js")"></script>
+    <script src="@Url.Content("~/js/jquery.validate.min.js")"></script>
+    <script src="@Url.Content("~/js/jquery.validate.unobtrusive.min.js")"></script>
+    <script src="@Url.Content("~/js/bootstrap.min.js")"></script>
+    <script src="@Url.Content("~/lib/popper/popper.min.js")"></script>
+    <script src="@Url.Content("~/js/datatables.min.js")"></script>
+</head>
+<body class="vertical-layout vertical-menu-modern boxicon-layout no-card-shadow 1-column  navbar-sticky footer-static bg-full-screen-image  blank-page blank-page" data-open="click" data-menu="vertical-menu-modern" data-col="1-column">
+    <!-- BEGIN: Content-->
+    <div class="app-content content">
+        <div class="content-overlay"></div>
+        <div class="content-wrapper">
+            <div class="content-header row">
+            </div>
+            <div class="content-body">
+                <!-- lock screen starts -->
+                <div class="row" style="margin-bottom:200px"></div>
+                <section class="row flexbox-container">
+                    <div class="col-xl-3 col-3 px-0"></div>
+                    <div class="col-xl-6 col-6 px-0">
+                        <div class="card bg-authentication ">
+                            <div class="row m-0">
+                                <div class="col-md-3 col-12 px-0"></div>
+                                <!-- left lock screen section -->
+                                <div class="col-md-12 col-12 px-0">
+                                    <div class="card disable-rounded-right mb-0 p-2">
+                                        <div class="card-header pb-1">
+                                            <div class="card-title">
+                                                <h4 class="text-center mb-2">تسجيل الدخول</h4>
+                                            </div>
+                                        </div>
+                                        <div class="card-content">
+                                            <div class="card-body">
+                                                <p id="Error" class="card-text danger" style="color:red">
+                                                    @ViewData["Login_error"]
+                                                </p>
+                                                <form asp-action="Login">
+                                                    <div class="form-group mb-50">
+                                                        <label class="text-bold-600" for="exampleInputEmail1">البريد الإلكتروني</label>
+                                                        <input type="email" class="form-control" id="exampleInputEmail1" placeholder="example@student.kfu.edu.sa" asp-for="Email">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="text-bold-600" for="exampleInputPassword1">كلمةالمرور</label>
+                                                        <input type="password" class="form-control" id="exampleInputPassword1" asp-for="Password" placeholder="كلمة المرور">
+                                                    </div>
+                                                    <button  type="submit" class="btn btn-primary glow position-relative w-100">تسجيل الدخول<i id="icon-arrow" class="bx bx-right-arrow-alt"></i></button>
+                                                    <div class="text-center mb-1">
+                                                        <a href="Accounts/ForgetPassword" class="card-link">
+                                                            <p>
+                                                                هل نسيت كلمة المرور
+                                                            </p>
+                                                        </a>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                     
+                             
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <!-- lock screen ends -->
+
+            </div>
+        </div>
+    </div>
+</body>
+</html>

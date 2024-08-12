@@ -15,11 +15,11 @@ namespace room_reservation.Controllers
             _BuildingDomain = buildingDomain;
 
         }
-        public async Task< IActionResult> Index( string successful,string Failed)
+        public async Task<IActionResult> Index( /*string successful,string Failed*/)
         {
-            ViewData["successful"] = successful;
-            ViewData["Failed"] = Failed;
-            var buildings = await _BuildingDomain.GetAllBuilding(); 
+            //ViewData["successful"] = successful;
+            //ViewData["Failed"] = Failed;
+            var buildings = await _BuildingDomain.GetAllBuilding();
             return View(buildings);
         }
 
@@ -30,21 +30,24 @@ namespace room_reservation.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Add(BuildingViewModel building)
+        public async Task<IActionResult> AddBuilding(BuildingViewModel building)
         {
-            if (ModelState.IsValid)
+            try
             {
-                int cheek = _BuildingDomain.InsertBuilding(building);
-                if (cheek == 1)
+                if (ModelState.IsValid)
                 {
-                    ViewData["successful"] = "تمت الإضافة بنجاح";
-                    return View(building);
+                    await _BuildingDomain.InsertBuilding(building);
+                    return Json(new { success = true, message = "Added successfully" });
+                }
+                else
+                {
+                    return Json(new { success = false, message = "Invalid data" });
                 }
             }
-            else
-                ViewData["Failed"] = "حدث خطأ أثناء معالجة طلبك، الرجاء المحاولة في وقت لاحق.";
-
-           return View(building);
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
 
         }
 
@@ -57,23 +60,29 @@ namespace room_reservation.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit( BuildingViewModel building)
+        public async Task<IActionResult> Edit(BuildingViewModel building)
         {
-                if (ModelState.IsValid)
+            if (ModelState.IsValid)
+            {
+                try
                 {
-                    int cheek = _BuildingDomain.updatBuilding(building);
-                    if (cheek == 1)
+                    var result = await _BuildingDomain.updatBuilding(building);
+                    if (result)
                     {
-                        ViewData["successful"] = "تم التعديل بنجاح";
-                        return View(building);
+                        return Json(new { success = true, message = "Updated successfully" });
+                    }
+                    else
+                    {
+                        return Json(new { success = false, message = "Update failed" });
                     }
                 }
-                else
+                catch (Exception ex)
                 {
-                    ViewData["Failed"] = "حدث خطأ أثناء معالجة طلبك، الرجاء المحاولة في وقت لاحق.";
+                    return Json(new { success = false, message = ex.Message });
                 }
+            }
 
-            return View(building);
+            return Json(new { success = false, message = "Invalid data" });
         }
 
         public IActionResult Delet(Guid id)
@@ -81,27 +90,28 @@ namespace room_reservation.Controllers
             string successful = "";
             string Failed = "";
 
-            int cheek = _BuildingDomain.DeleteBuilding(id);
+            int cheek =
+            _BuildingDomain.DeleteBuilding(id);
             if (cheek == 1)
                 successful = "تم الحذف بنجاح";
-                       
-            else
-                 Failed = "حدث خطأ أثناء معالجة طلبك، الرجاء المحاولة في وقت لاحق.";
 
-            return RedirectToAction("Index", new { successful = successful , Failed = Failed });
-        }
+            else
+                Failed = "حدث خطأ أثناء معالجة طلبك، الرجاء المحاولة في وقت لاحق.";
+
+            return RedirectToAction("Index", new { successful = successful, Failed = Failed });
+            }
     }
 
-    //public IActionResult Delet(BuildingViewModel building)
-    //{
-    //    if (ModelState.IsValid)
-    //    {
-    //        _BuildingDomain.DeleteBuilding(building);
-    //        return RedirectToAction(nameof(Index));
-    //    }
-    //    return View();
+//public IActionResult Delet(BuildingViewModel building)
+//{
+//    if (ModelState.IsValid)
+//    {
+//        _BuildingDomain.DeleteBuilding(building);
+//        return RedirectToAction(nameof(Index));
+//    }
+//    return View();
 
-    //}
+//}
 
 
 }

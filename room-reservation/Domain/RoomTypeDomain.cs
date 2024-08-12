@@ -19,15 +19,11 @@ namespace room_reservation.Domain
                 .Where(rt => !rt.IsDeleted)
                 .Select(rt => new RoomTypeViewModel
                 {
-                    Guid = rt.guid,
+                    guid = rt.guid,
                     RoomAR = rt.RoomAR,
-                    IsDeleted = rt.IsDeleted
+                    IsDeleted = rt.IsDeleted,
                 })
                 .ToListAsync();
         }
-
-
-
-  
     }
 }

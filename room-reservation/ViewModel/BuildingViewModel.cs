@@ -6,7 +6,7 @@ namespace room_reservation.ViewModel
 {
     public class BuildingViewModel
     {
-        //public int Id { get; set; }
+        public int Id { get; set; }
         [Required(ErrorMessage = "هذا الحقل مطلوب")]
         [DisplayName("رقم المبنى ")]
         public int BuildingNo { get; set; }
