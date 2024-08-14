@@ -2,30 +2,8 @@
 @{
     ViewData["Title"] = "تحديث بيانات طابق";
 }
-<script>
-    @{
-    if (@ViewData["Successful"] != null)
-    {
-    <Text>
-    var result = '@Html.Raw(ViewData["Successful"])';
-    Swal.fire(result, '', 'success')
-        .then(
-            function () {
-                window.location.href = '@Url.Action("Index", "Floor")';
-            }
-        );
-    </Text>
-    }
-    else if (@ViewData["Failed"] != null)
-    {
-    <Text>
-    var result = '@Html.Raw(ViewData["Failed"])';
-    Swal.fire(result, '', 'error');
-    </Text>
-    }
-    }
-</script>
 
+  
 <!-- span is the validation for each input as required-->
 
 
@@ -34,7 +12,7 @@
 </div>
 <div class="row justify-content-center">
     <div class="col-md-8">
-        <form asp-action="Edit">
+        <form asp-action="Edit" id="EditFloor" method="post">
             <input hidden asp-for="Guid"/>
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="row">
@@ -81,3 +59,44 @@
 
     </div>
 </div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+                <script>
+                    $(document).ready(function () {
+                        $('#EditFloor').submit(function (event) {
+                            event.preventDefault(); // Prevent the default form submission
+
+                            $.ajax({
+                                url: '@Url.Action("Edit")', // URL to the controller action
+                                type: 'POST',
+                                data: $(this).serialize(), 
+                                success: function (response) {
+                                    console.log(response)
+                                    if (response.success) {
+                                        Swal.fire({
+                                            title: '!نجحت العملية',
+                                            text: 'عُدِّلَت البيانات بنجاح',
+                                            icon: 'success'
+                                        }).then(() => {
+                                            window.location.href = '@Url.Action("Index")';
+                                        });
+                                    } else {
+                                        Swal.fire({
+                                            title: '!فشلت العملية',
+                                            text: 'لم تُعدَّل المعلومات',
+                                            icon: 'error'
+                                        });
+                                    }
+                                },
+                                error: function () {
+                                    Swal.fire({
+                                        title: 'Error!',
+                                        text: 'An unexpected error occurred.',
+                                        icon: 'error'
+                                    });
+                                }
+                            });
+                        });
+                    });
+                </script>

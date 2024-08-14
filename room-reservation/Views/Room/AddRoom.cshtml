@@ -25,8 +25,13 @@
                 <span asp-validation-for="IsActive" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="BuildingNameAr"  class="control-label"></label>
+                <select asp-for="BuildingNameAr" id="BuildingId" class="form-control" asp-items="@ViewBag.Building" ></select>
+            
+            </div>
+            <div class="form-group">
                 <label asp-for="FloorId" class="control-label">رقم الدور</label>
-                <select asp-for="FloorId" class="form-control" asp-items="@ViewBag.FloorBag"></select>
+                <select asp-for="FloorId" id="FloorId" class="form-control" ></select>
                 <span asp-validation-for="FloorId" class="text-danger"></span>
             </div>
           <div class="form-group">
@@ -41,23 +46,24 @@
     </div>
 </div>
 
-@*  @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-    <script src="~/lib/sweetalert/sweetalert.min.js"></script>
-    <script>
-        document.querySelector("form").addEventListener("submit", function (event) {
-            event.preventDefault();
-            swal({
-                title: "Are you sure?",
-                text: "You are about to add a new room!",
-                icon: "warning",
-                buttons: true,
-                dangerMode: true,
-            }).then((willSubmit) => {
-                if (willSubmit) {
-                    event.target.submit();
-                }
-            });
+<script>
+    $(document).ready(function(){
+        showValue($("#BuildingId").val());
+    });
+
+    $("#BuildingId").on('change', function () {
+        showValue($(this).val());
+    });
+
+    function showValue(val) {
+        $.getJSON('@Url.Action("getFloorbyGuid", "Room")/' + val, function (result) {
+            console.log(result);
+            $("#FloorId").html(""); // makes select null before filling process
+            console.log(result.length);
+            for (let i = 0; i < result.length; i++) {
+                $("#FloorId").append("<option value='" + result[i].guid + "'>" + result[i].floorNo+ "</option>")
+            }
         });
-    </script>
-}  *@
+    }
+
+</script>

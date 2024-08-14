@@ -33,7 +33,7 @@ namespace room_reservation.Domain
             return  _context.tblBuildings;
         }
         
-                public string addFloor(FloorViewModel floor)
+                public async Task<int> addFloor(FloorViewModel floor)
                 {
 
                     try
@@ -46,17 +46,17 @@ namespace room_reservation.Domain
                         //floorInfo.Rooms = floor.Rooms;
                         _context.tblFloors.Add(floorInfo);
                         _context.SaveChanges();
-                        return "1";
+                        return 1;
 
 
                     }
                     catch (Exception exception)
-                    {
-                        return $"Error: {exception.Message}";
+                    {    
+                        Console.WriteLine($"Error: {exception.Message}");
+                        return 0;
                     }
 
-                    {
-                    }
+                    
                 }
                 public FloorViewModel GetFloorByGuid(Guid id)
                 {
@@ -85,12 +85,12 @@ namespace room_reservation.Domain
                     }
                 }
                 
-                public FloorViewModel GetFloorByBuildingGuid(Guid id)
+                public async Task<IList<FloorViewModel>> GetFloorByBuildingGuid(Guid id)
                 {
                     try
                     {
-                        var floor = _context.tblFloors
-                            .Where(x => x.Building.Guid == id)
+                        var floor = await _context.tblFloors
+                            .Where(x => x.Building.Guid == id && x.IsDeleted == false)
                             .Select(f => new FloorViewModel
                             {
                                 //Id = f.Id,
@@ -100,8 +100,7 @@ namespace room_reservation.Domain
                                 BuildingNameAr = f.Building.BuildingNameAr,
                                 BuildingNo = f.Building.BuildingNo,
                                 //Rooms = f.Rooms // not used 
-                            })
-                            .FirstOrDefault();
+                            }).ToListAsync();
                        
                         return floor;
                     }
@@ -119,7 +118,7 @@ namespace room_reservation.Domain
                    return floorId;
                 }
 
-                public string editFloor(FloorViewModel floor)
+                public async Task<int>  editFloor(FloorViewModel floor)
                 {
                     try
                     {
@@ -130,12 +129,13 @@ namespace room_reservation.Domain
 
                         _context.tblFloors.Update(floorInfo);
                         _context.SaveChanges();
-                        return "1";
+                        return 1;
                         
                     }
                     catch (Exception exception)
                     {
-                        return $"Error: {exception.Message}";
+                        Console.WriteLine($"Error: {exception.Message}");
+                        return 0;
                     }
                 }
                 public string DeleteFloor(Guid id)
