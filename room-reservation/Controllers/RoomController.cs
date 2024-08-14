@@ -29,7 +29,7 @@ namespace room_reservation.Controllers
             }
             catch (Exception ex)
             {
-                TempData["ErrorMessage"] = $"Error: {ex.Message}";
+                TempData["ErrorMessage"] = $"حصل خطأ: {ex.Message}";
                 return RedirectToAction("Index");
             }
         }
