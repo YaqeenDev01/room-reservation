@@ -27,7 +27,7 @@ namespace room_reservation.Controllers
        
 
         [HttpGet]
-        public async Task<IActionResult> Create()
+        public async Task<IActionResult> AddFloor()
         {
      
             // Create a SelectList from the buildingsName
@@ -39,7 +39,7 @@ namespace room_reservation.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(FloorViewModel floor)
+        public async Task<IActionResult> AddFloor(FloorViewModel floor)
         {
             // Create a SelectList from the buildingsName
             ViewBag.buildingsName = new SelectList(await _BuildingDomain.GetAllBuilding() ,"Id","BuildingNameAr");
@@ -69,7 +69,7 @@ namespace room_reservation.Controllers
 
         }
         [HttpGet]
-        public async Task<IActionResult> Edit(Guid id)
+        public async Task<IActionResult> EditFloor(Guid id)
         {
             //SelectList from the buildingsName
             ViewBag.buildingsName = new SelectList(await _BuildingDomain.GetAllBuilding() ,"Id","BuildingNameAr");
@@ -79,7 +79,7 @@ namespace room_reservation.Controllers
         }
         
         [HttpPost]
-        public async Task<IActionResult> Edit(FloorViewModel floor)
+        public async Task<IActionResult> EditFloor(FloorViewModel floor)
         {
             //SelectList from the buildingsName
             ViewBag.buildingsName = new SelectList(await _BuildingDomain.GetAllBuilding() ,"Id","BuildingNameAr");

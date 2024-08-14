@@ -6,60 +6,62 @@
   
 <!-- span is the validation for each input as required-->
 
-
+<div class="block mb-4">
 <div class="block-header border-bottom px-4 py-4">
     <h5 class="m-0">تحديث بيانات طابق</h5>
 </div>
-<div class="row justify-content-center">
-    <div class="col-md-8">
-        <form asp-action="Edit" id="EditFloor" method="post">
-            <input hidden asp-for="Guid"/>
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="row">
-                <!--select from drop down list building no-->
+<div class="block-body py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <form asp-action="EditFloor" id="EditFloor" method="post">
+                <input hidden asp-for="Guid"/>
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="row">
+                    <!--select from drop down list building no-->
 
-                <!-- START ITEM -->
-                <div class="col-md-6">
-                    <div class="mb-4">
-                        <label asp-for="BuildingId" class="mb-1"> أسم المبنى</label>
-                        <select asp-for="BuildingId" type="text" class="form-control" asp-items="@ViewBag.buildingsName"> </select>
-                        <span asp-validation-for="BuildingId" class="text-danger"> </span>
+                    <!-- START ITEM -->
+                    <div class="col-md-6">
+                        <div class="mb-4">
+                            <label asp-for="BuildingId" class="mb-1"> أسم المبنى</label>
+                            <select asp-for="BuildingId" type="text" class="form-control" asp-items="@ViewBag.buildingsName"> </select>
+                            <span asp-validation-for="BuildingId" class="text-danger"> </span>
 
-                    </div>
-                </div><!-- END ITEM -->
-                <!-- START ITEM -->
-                <div class="col-md-6">
-                    <div class="mb-4">
-                        <label asp-for="BuildingId" class="mb-1"> رقم المبنى </label>
-                        <select asp-for="BuildingId" type="text" class="form-control" asp-items="@ViewBag.buildingsNo"> </select>
-                        <span asp-validation-for="BuildingId" class="text-danger"> </span>
+                        </div>
+                    </div><!-- END ITEM -->
+                    <!-- START ITEM -->
+                    <div class="col-md-6">
+                        <div class="mb-4">
+                            <label asp-for="BuildingId" class="mb-1"> رقم المبنى </label>
+                            <select asp-for="BuildingId" type="text" class="form-control" asp-items="@ViewBag.buildingsNo"> </select>
+                            <span asp-validation-for="BuildingId" class="text-danger"> </span>
 
-                    </div>
-                </div><!-- END ITEM -->
-
-
-                <!-- START ITEM -->
-                <div class="col-md-6">
-                    <div class="mb-4">
-                        <label asp-for="FloorNo" class="cobtrol-label"></label>
-                        <input asp-for="FloorNo" type="number" class="form-control"/>
-                        <span asp-validation-for="BuildingId" class="text-danger"></span>
-                    </div>
-                </div><!-- ssEND ITEM -->
+                        </div>
+                    </div><!-- END ITEM -->
 
 
+                    <!-- START ITEM -->
+                    <div class="col-md-6">
+                        <div class="mb-4">
+                            <label asp-for="FloorNo" class="cobtrol-label"></label>
+                            <input asp-for="FloorNo" type="number" class="form-control"/>
+                            <span asp-validation-for="BuildingId" class="text-danger"></span>
+                        </div>
+                    </div><!-- ssEND ITEM -->
 
 
-            </div>
-            <div class="d-flex justify-content-end">
-                <button type="submit" class="btn btn-primary px-5" title="save">حفظ</button>
-            </div>
-        </form>
 
 
+                </div>
+                <div class="d-flex justify-content-end">
+                    <button type="submit" class="btn btn-primary px-5" title="save">حفظ</button>
+                </div>
+            </form>
+
+
+        </div>
     </div>
 </div>
-
+</div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
                 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
                 <script>

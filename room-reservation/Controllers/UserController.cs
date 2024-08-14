@@ -59,13 +59,13 @@ namespace room_reservation.Controllers
         
         }
         [HttpGet]
-        public IActionResult Edit(int id)
+        public IActionResult EditUser(int id)
         {
             return View(_UserDomain.getUserById(id));
         }
 
         [HttpPost]
-        public IActionResult Edit(tblUsers user)
+        public IActionResult EditUser(tblUsers user)
         {
             if (ModelState.IsValid)
             {
