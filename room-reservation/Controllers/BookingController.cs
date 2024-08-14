@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using room_reservation.Domain;
 using room_reservation.Models;
 using room_reservation.ViewModel;
@@ -79,6 +80,7 @@ namespace room_reservation.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Add(BookingViewModel booking)
         {
+
             if (ModelState.IsValid)
             {
                 _BookingDomain.AddBooking(booking);
