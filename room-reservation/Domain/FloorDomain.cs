@@ -138,26 +138,15 @@ namespace room_reservation.Domain
                         return 0;
                     }
                 }
-                public string DeleteFloor(Guid id)
+                public async Task DeleteFloor(Guid id)
                 {
-
-                    try
-                    {
                         var floor = _context.tblFloors.Where(f => f.Guid == id).SingleOrDefault();
-                        
                         // is deleted will delete the record in web 
                         floor.IsDeleted = true;
                         // remove will delete the record from Db
                        // _context.tblFloors.Remove(floorInfo);
-                        _context.SaveChanges();
-                        return "1";
-
-
-                    }
-                    catch (Exception exception)
-                    {
-                        return $"Error: {exception.Message}";
-                    }
+                        await _context.SaveChangesAsync();
+                    
 
                    
                 }

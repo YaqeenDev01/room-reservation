@@ -105,21 +105,13 @@ namespace room_reservation.Controllers
             return View(floor);
         }
 
-        public IActionResult Delete(Guid id)
+        public async Task<IActionResult> Delete(Guid id)
         {
-            string check = _FloorDomain.DeleteFloor(id);
-                if (check == "1")
-                
-                    ViewData["Successful"] = "تم الحذف بنجاح";
-                
-                else
-                    ViewData["Failed"] = check;
-                
-                _FloorDomain.DeleteFloor(id);
-                return View();
-
-
+            await _FloorDomain.DeleteFloor(id);
+            return Json(new { success = true });
         }
+        
+        
         //public async Task< IActionResult> Index()
         //{
         //    return View(await _FloorDomain.getAllFloors());
