@@ -11,10 +11,13 @@ namespace room_reservation.Controllers
     public class RoomController : Controller
     {
         private readonly RoomDomain _roomDomain;
-
-        public RoomController(RoomDomain roomDomain)
+        private readonly BuildingDomain _buildingDomain;
+        private readonly FloorDomain _floorDomain;
+        public RoomController(RoomDomain roomDomain,BuildingDomain buildingDomain,FloorDomain floorDomain)
         {
             _roomDomain = roomDomain;
+            _buildingDomain = buildingDomain;
+            _floorDomain = floorDomain;
         }
 
         public async Task<IActionResult> Index()
@@ -32,13 +35,17 @@ namespace room_reservation.Controllers
         }
 
         [HttpGet]
-        public IActionResult AddRoom()
+        public async Task<IActionResult> AddRoom()
         {
-
-            ViewBag.FloorBag = new SelectList(_roomDomain.GetAllFloors(), "Id", "FloorNo");
-            ViewBag.RoomTypeBag = new SelectList(_roomDomain.GetAllRoomTypes(), "Id", "RoomAR");
+            ViewBag.Building = new SelectList(await _buildingDomain.GetAllBuilding(),"Guid","BuildingNameAr");
+            ViewBag.RoomTypeBag = new SelectList( _roomDomain.GetAllRoomTypes(), "Id", "RoomAR");
 
             return View();
+        }
+        public async Task<IList<FloorViewModel>> getFloorbyGuid(Guid id)
+        {
+            return await _floorDomain.GetFloorByBuildingGuid(id);
+            
         }
 
         [HttpPost]

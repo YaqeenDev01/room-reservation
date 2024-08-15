@@ -19,7 +19,7 @@ namespace room_reservation.Domain
 
         public async Task<IEnumerable<RoomViewModel>> GetAllRooms()
         {
-            return await _context.tblRooms.Include(r => r.Floor).Include(r => r.RoomType)
+            return await _context.tblRooms.Include(r => r.Floor).ThenInclude(r=>r.Building).Include(r => r.RoomType)
                 .Where(r => !r.IsDeleted)
                 .Select(r => new RoomViewModel
                 {
@@ -30,6 +30,9 @@ namespace room_reservation.Domain
                     FloorId = r.FloorId,
                     RoomTypeId = r.RoomTypeId,
                     RoomAR = r.RoomType.RoomAR,
+                    BuildingNameAr = r.Floor.Building.BuildingNameAr,
+                    Floor = r.Floor,
+                    
 
                 }).ToListAsync();
         }
