@@ -16,12 +16,10 @@ namespace room_reservation.Domain
         public async Task<IEnumerable<RoomTypeViewModel>> GetAllRoomTypes()
         {
             return await _context.tblRoomType
-                .Where(rt => !rt.IsDeleted)
                 .Select(rt => new RoomTypeViewModel
                 {
-                    guid = rt.guid,
+                    Id = rt.Id,
                     RoomAR = rt.RoomAR,
-                    IsDeleted = rt.IsDeleted,
                 })
                 .ToListAsync();
         }

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using room_reservation.Models;
 using room_reservation.ViewModel;
 using System;
@@ -19,11 +20,14 @@ namespace room_reservation.Domain
 
         public async Task<IEnumerable<RoomViewModel>> GetAllRooms()
         {
-            return await _context.tblRooms.Include(r => r.Floor).ThenInclude(r=>r.Building).Include(r => r.RoomType)
+            return await _context.tblRooms
+                .Include(r => r.Floor)
+                .ThenInclude(r=>r.Building)
+                .Include(r => r.RoomType)
                 .Where(r => !r.IsDeleted)
                 .Select(r => new RoomViewModel
                 {
-                    Guid = r.guid,
+                    Id = r.Id,
                     RoomNo = r.RoomNo,
                     SeatCapacity = r.SeatCapacity,
                     IsActive = r.IsActive,
@@ -42,20 +46,16 @@ namespace room_reservation.Domain
             return  _context.tblFloors;
         }
 
-        public IEnumerable<tblRoomType> GetAllRoomTypes()
-        {
-            return _context.tblRoomType;
-        }
 
-        public RoomViewModel GetRoomByGuid(Guid guid)
+        public RoomViewModel GetRoomByGuid(int Id)
         {
             try
             {
                 var room =  _context.tblRooms
-                    .Where(r => r.guid == guid && !r.IsDeleted)
+                    .Where(r => r.Id == Id && !r.IsDeleted)
                     .Select(r => new RoomViewModel
                     {
-                        Guid = r.guid,
+                        Id = r.Id,
                         RoomNo = r.RoomNo,
                         SeatCapacity = r.SeatCapacity,
                         IsActive = r.IsActive,
@@ -74,80 +74,83 @@ namespace room_reservation.Domain
             }
         }
 
-        public tblRooms GetRoomById(Guid guid)
+        public async Task<RoomViewModel>GetRoomById(int Id)
         {
-            var roomId =  _context.tblRooms.Include(r => r.Floor).Include(r => r.RoomType)
-                .FirstOrDefault(r => r.guid == guid && !r.IsDeleted);
-            return roomId;
-        }
+            return await _context.tblRooms.Where(r => r.Id == Id).Select(
+                r => new RoomViewModel
+                {
+                    Id = r.Id,
+                    RoomNo = r.RoomNo,
+                    SeatCapacity = r.SeatCapacity,
+                    IsActive = r.IsActive,
+                    FloorId = r.FloorId,
+                    RoomTypeId = r.RoomTypeId,
+                    RoomType = r.RoomType
+                }
+                ).FirstOrDefaultAsync();
 
-        public string InsertRoom(RoomViewModel room)
+        }
+        [HttpPost]
+        public async Task<int> InsertRoom(RoomViewModel room)
         {
             try
             {
-                tblRooms roomInfo = new tblRooms();
-                
-                    roomInfo.guid = Guid.NewGuid();
-                    roomInfo.RoomNo = room.RoomNo;
-                    roomInfo.SeatCapacity = room.SeatCapacity;
-                    roomInfo.IsActive = room.IsActive;
-                    roomInfo.FloorId = room.FloorId;
-                    roomInfo.RoomTypeId = room.RoomTypeId;
-                    roomInfo.RoomType = room.RoomType;
-                    
+                var roomInfo = new tblRooms
+                {
 
-                _context.tblRooms.Add(roomInfo);
-                 _context.SaveChanges();
-                return "1";
+                RoomNo = room.RoomNo,
+                SeatCapacity = room.SeatCapacity,
+                IsActive = room.IsActive,
+                FloorId = room.FloorId,
+                RoomTypeId = room.RoomTypeId,
+                RoomType = room.RoomType
+                };  
+
+                _context.Add(roomInfo);
+                 await _context.SaveChangesAsync();
+                return 1;
             }
             catch (Exception exception)
             {
-                return $"حصل خطأ: {exception.Message}";
+                Console.WriteLine($"Error: {exception.Message}");
+                return 0;
             }
         }
 
-        public string EditRoom(RoomViewModel room)
+        public async Task<bool> EditRoom(RoomViewModel roomViewModel)
         {
             try
             {
-                var roomInfo =  GetRoomById(room.Guid);
-     
+                var room = await _context.tblRooms
+                    .FirstOrDefaultAsync(x => x.Id == roomViewModel.Id);
 
-                roomInfo.RoomNo = room.RoomNo;
-                roomInfo.SeatCapacity = room.SeatCapacity;
-                roomInfo.IsActive = room.IsActive;
-                roomInfo.FloorId = room.FloorId;
-                roomInfo.RoomTypeId = room.RoomTypeId;
-                roomInfo.RoomType = room.RoomType;
 
-                _context.tblRooms.Update(roomInfo);
-                 _context.SaveChanges();
-                return "1";
+                room.RoomNo = roomViewModel.RoomNo;
+                room.SeatCapacity = roomViewModel.SeatCapacity;
+                room.IsActive = roomViewModel.IsActive;
+                room.FloorId = roomViewModel.FloorId;
+                room.RoomTypeId = roomViewModel.RoomTypeId;
+                room.RoomType = roomViewModel.RoomType;
+
+                _context.tblRooms.Update(room);
+                await _context.SaveChangesAsync();
+
+                return true;
             }
             catch (Exception exception)
             {
-                return $"حصل خطأ: {exception.Message}";
+                return false;
             }
         }
 
-        public string DeleteRoom(Guid guid)
-        {       
-               try
-                {
-                    tblRooms roomInfo = GetRoomById(guid);
+        public async Task DeleteRoom(int id)
+        {
+            var room = _context.tblRooms.Where(r => r.Id == id).SingleOrDefault();
+            room.IsDeleted = true;
+            await _context.SaveChangesAsync();
 
-                    roomInfo.IsDeleted = true;
-
-                    _context.tblRooms.Remove(roomInfo);
-                    _context.SaveChanges();
-                    return "1";
-                
-                }
-                catch (Exception exception)
-                {
-                    return $"حصل خطأ: {exception.Message}";
-                }
-            
         }
+
     }
 }
+
