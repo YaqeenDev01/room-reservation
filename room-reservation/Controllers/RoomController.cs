@@ -2,9 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using room_reservation.Domain;
 using room_reservation.ViewModel;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
+
 
 namespace room_reservation.Controllers
 {
@@ -26,14 +24,13 @@ namespace room_reservation.Controllers
         {
                 var rooms = await _roomDomain.GetAllRooms();
                 return View(rooms);
-
         }
 
         [HttpGet]
         public async Task<IActionResult> AddRoom()
         {
-            ViewBag.Building = new SelectList(await _buildingDomain.GetAllBuilding(),"Guid","BuildingNameAr");
-            ViewBag.Floor = new SelectList(_roomDomain.GetAllFloors(), "Guid", "FloorNo");
+            ViewBag.Building = new SelectList(await _buildingDomain.GetAllBuilding(), "Guid", "BuildingNameAr");
+            ViewBag.Floor = new SelectList(await _floorDomain.GetAllFloors(), "Guid", "FloorNo");
 
             var roomTypes = await _roomTypeDomain.GetAllRoomTypes();
             var roomViewModel = new RoomViewModel
@@ -44,7 +41,6 @@ namespace room_reservation.Controllers
                     Text = x.RoomAR
                 }).ToList()
             };
-
             return View(roomViewModel);
         }
 
@@ -53,33 +49,31 @@ namespace room_reservation.Controllers
         public async Task<IActionResult> AddRoom(RoomViewModel roomViewModel)
         {
             ViewBag.Building = new SelectList(await _buildingDomain.GetAllBuilding(), "Guid", "BuildingNameAr");
-            ViewBag.Floor = new SelectList(_roomDomain.GetAllFloors(), "Guid", "FloorNo");
+            ViewBag.Floor = new SelectList(await _floorDomain.GetAllFloors(), "Guid", "FloorNo");
 
             try
             {
                 if (ModelState.IsValid)
                 {
                     await _roomDomain.InsertRoom(roomViewModel);
-                    return Json(new { success = true, message = "Added successfully" });
-                }
-                else
-                {
-                    return Json(new { success = false, message = "Invalid data" });
+                    TempData["SuccessMessage"] = "Added successfully";
+                    return RedirectToAction("Index");
                 }
             }
             catch (Exception ex)
             {
-                return Json(new { success = false, message = ex.Message });
+                ModelState.AddModelError("", ex.Message);
             }
+            return View(roomViewModel);
         }
 
         [HttpGet]
         public async Task<IActionResult> EditRoom(int Id)
         {
             ViewBag.Building = new SelectList(await _buildingDomain.GetAllBuilding(), "Guid", "BuildingNameAr");
-            ViewBag.Floor = new SelectList(_roomDomain.GetAllFloors(), "Guid", "FloorNo");
+            ViewBag.Floor = new SelectList(await _floorDomain.GetAllFloors(), "Guid", "FloorNo");
 
-            var rooms = await _roomDomain.GetRoomById(Id);
+            var rooms =  _roomDomain.GetRoomById(Id);
             var roomTypes = await _roomTypeDomain.GetAllRoomTypes();
             var roomViewModel = new RoomViewModel
             {
@@ -98,35 +92,29 @@ namespace room_reservation.Controllers
         public async Task<IActionResult> EditRoom(RoomViewModel roomViewModel)
         {
             ViewBag.Building = new SelectList(await _buildingDomain.GetAllBuilding(), "Guid", "BuildingNameAr");
-            ViewBag.Floor = new SelectList(_roomDomain.GetAllFloors(), "Guid", "FloorNo");
+            ViewBag.Floor = new SelectList(await _floorDomain.GetAllFloors(), "Guid", "FloorNo");
 
-            if (ModelState.IsValid)
+            try
             {
-                try
+                if (ModelState.IsValid)
                 {
-                    var result = await _roomDomain.EditRoom(roomViewModel);
-                    if (result)
-                    {
-                        return Json(new { success = true, message = "Updated successfully" });
-                    }
-                    else
-                    {
-                        return Json(new { success = false, message = "Update failed" });
-                    }
-                }
-                catch (Exception ex)
-                {
-                    return Json(new { success = false, message = ex.Message });
+                    await _roomDomain.EditRoom(roomViewModel);
+                    TempData["SuccessMessage"] = "Added successfully";
+                    return RedirectToAction("Index");
                 }
             }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", ex.Message);
+            }
+            return View(roomViewModel);
 
-            return Json(new { success = false, message = "Invalid data" });
         }
 
         [HttpPost]
-        public async Task<IActionResult> DeleteRoom(int id)
+        public async Task<IActionResult> DeleteRoom(Guid guid)
         {
-            await _roomDomain.DeleteRoom(id);
+            await _roomDomain.DeleteRoom(guid);
             return Json(new { success = true });
         }
 

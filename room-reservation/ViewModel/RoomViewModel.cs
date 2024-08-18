@@ -23,6 +23,7 @@ namespace room_reservation.ViewModel
         public int FloorId { get; set; }
 
         public tblFloors Floor { get; set; }
+        public int FloorNo { get; set; }
 
         [Required(ErrorMessage = "هذا الحقل مطلوب")]
         [DisplayName("نوع الغرفة")]

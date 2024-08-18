@@ -2,10 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using room_reservation.Models;
 using room_reservation.ViewModel;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+
 
 namespace room_reservation.Domain
 {
@@ -22,7 +19,7 @@ namespace room_reservation.Domain
         {
             return await _context.tblRooms
                 .Include(r => r.Floor)
-                .ThenInclude(r=>r.Building)
+                .ThenInclude(r => r.Building)
                 .Include(r => r.RoomType)
                 .Where(r => !r.IsDeleted)
                 .Select(r => new RoomViewModel
@@ -35,8 +32,9 @@ namespace room_reservation.Domain
                     RoomTypeId = r.RoomTypeId,
                     RoomAR = r.RoomType.RoomAR,
                     BuildingNameAr = r.Floor.Building.BuildingNameAr,
+                    FloorNo = r.Floor.FloorNo,
                     Floor = r.Floor,
-                    
+
 
                 }).ToListAsync();
         }
@@ -46,13 +44,12 @@ namespace room_reservation.Domain
             return  _context.tblFloors;
         }
 
-
-        public RoomViewModel GetRoomByGuid(int Id)
+        public RoomViewModel GetRoomByGuid(Guid guid)
         {
             try
             {
                 var room =  _context.tblRooms
-                    .Where(r => r.Id == Id && !r.IsDeleted)
+                    .Where(r => r.guid == guid && !r.IsDeleted)
                     .Select(r => new RoomViewModel
                     {
                         Id = r.Id,
@@ -62,6 +59,8 @@ namespace room_reservation.Domain
                         FloorId = r.FloorId,
                         RoomTypeId = r.RoomTypeId,
                         RoomType = r.RoomType,
+                        FloorNo = r.Floor.FloorNo,
+
 
                     })
                     .FirstOrDefault();
@@ -74,23 +73,14 @@ namespace room_reservation.Domain
             }
         }
 
-        public async Task<RoomViewModel>GetRoomById(int Id)
+        public tblRooms GetRoomById(int Id)
         {
-            return await _context.tblRooms.Where(r => r.Id == Id).Select(
-                r => new RoomViewModel
-                {
-                    Id = r.Id,
-                    RoomNo = r.RoomNo,
-                    SeatCapacity = r.SeatCapacity,
-                    IsActive = r.IsActive,
-                    FloorId = r.FloorId,
-                    RoomTypeId = r.RoomTypeId,
-                    RoomType = r.RoomType
-                }
-                ).FirstOrDefaultAsync();
-
+            var room = _context.tblRooms
+                .Include(b => b.Floor)
+                .FirstOrDefault(x => x.Id == Id);
+            return room;
         }
-        [HttpPost]
+    
         public async Task<int> InsertRoom(RoomViewModel room)
         {
             try
@@ -103,7 +93,6 @@ namespace room_reservation.Domain
                 IsActive = room.IsActive,
                 FloorId = room.FloorId,
                 RoomTypeId = room.RoomTypeId,
-                RoomType = room.RoomType
                 };  
 
                 _context.Add(roomInfo);
@@ -143,9 +132,9 @@ namespace room_reservation.Domain
             }
         }
 
-        public async Task DeleteRoom(int id)
+        public async Task DeleteRoom(Guid guid)
         {
-            var room = _context.tblRooms.Where(r => r.Id == id).SingleOrDefault();
+            var room = _context.tblRooms.Where(r => r.guid == guid).SingleOrDefault();
             room.IsDeleted = true;
             await _context.SaveChangesAsync();
 
