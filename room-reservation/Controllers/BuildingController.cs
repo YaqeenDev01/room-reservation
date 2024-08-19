@@ -24,13 +24,14 @@ namespace room_reservation.Controllers
         }
 
         [HttpGet]
-        public IActionResult Add()
+        public async Task<IActionResult> AddBuilding()
         {
             return View();
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddBuilding(BuildingViewModel building)
+        public async Task <IActionResult> AddBuilding(BuildingViewModel building)
         {
             try
             {
@@ -53,20 +54,20 @@ namespace room_reservation.Controllers
 
 
         [HttpGet]
-        public IActionResult Edit(Guid id)
+        public async Task<IActionResult> EditBuilding(Guid id)
         {
-            return View(_BuildingDomain.getBuildingByid(id));
+            return View(_BuildingDomain.getBuildingByguid(id));
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(BuildingViewModel building)
+        public async Task<IActionResult> EditBuilding(BuildingViewModel building)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    var result = await _BuildingDomain.updatBuilding(building);
+                    var result = await _BuildingDomain.UpdatBuilding(building);
                     if (result)
                     {
                         return Json(new { success = true, message = "Updated successfully" });
@@ -85,21 +86,12 @@ namespace room_reservation.Controllers
             return Json(new { success = false, message = "Invalid data" });
         }
 
-        public IActionResult Delet(Guid id)
+        public async Task<IActionResult> Delet(Guid id)
         {
-            string successful = "";
-            string Failed = "";
-
-            int cheek =
-            _BuildingDomain.DeleteBuilding(id);
-            if (cheek == 1)
-                successful = "تم الحذف بنجاح";
-
-            else
-                Failed = "حدث خطأ أثناء معالجة طلبك، الرجاء المحاولة في وقت لاحق.";
-
-            return RedirectToAction("Index", new { successful = successful, Failed = Failed });
-            }
+               await _BuildingDomain.DeleteBuilding(id);
+               return Json(new { success = true });
+       
+        }
     }
 
 //public IActionResult Delet(BuildingViewModel building)

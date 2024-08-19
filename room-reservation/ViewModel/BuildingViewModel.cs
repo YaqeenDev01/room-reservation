@@ -9,6 +9,8 @@ namespace room_reservation.ViewModel
         public int Id { get; set; }
         [Required(ErrorMessage = "هذا الحقل مطلوب")]
         [DisplayName("رقم المبنى ")]
+        [Range(0, int.MaxValue, ErrorMessage = " هذا الحقل لا يقبل القيم السالبة ")]
+
         public int BuildingNo { get; set; }
         [Required(ErrorMessage = "هذا الحقل مطلوب")]
         [DisplayName("الاسم")]
@@ -18,6 +20,7 @@ namespace room_reservation.ViewModel
         public string BuildingNameEn { get; set; }
         [Required(ErrorMessage = "هذا الحقل مطلوب")]
         [DisplayName("كود المبنى")]
+        [Range(0, int.MaxValue,ErrorMessage =" هذا الحقل لا يقبل القيم السالبة ") ]
         public int Code { get; set; } //Unique
         public Guid Guid { get; set; }  //Unique
 

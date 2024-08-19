@@ -1,0 +1,127 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model room_reservation.ViewModel.BuildingViewModel
+@{
+    ViewData["Title"] = "Edite Building";
+}
+
+<div class="block mb-4">
+    <div class="block-header border-bottom px-4 py-4">
+        <h5 class="m-0"> تعديل المبنى </h5>
+    </div>
+    <div class="block-body py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <form asp-action="EditBuilding"  id="buildingForm" method="post">
+                        <input hidden asp-for="Guid" />
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-4">
+                                <label asp-for="BuildingNameAr" class="mb-1"> اسم المبنى</label>
+                                <input asp-for="BuildingNameAr" class="form-control text-start">
+                                <span asp-validation-for="BuildingNameAr" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-4">
+                                <label asp-for="BuildingNameEn" class="control-label cb-1">BuildingName</label>
+                                <input asp-for="BuildingNameEn" class="form-control"></input>
+                                <span asp-validation-for="BuildingNameEn" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-4">
+                                <label asp-for="BuildingNo" class="mb-1">رقم المبنى</label>
+                                <input asp-for="BuildingNo" class="form-control" asp-items="Model.Buildings"></input>
+                                <span asp-validation-for="BuildingNo" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-4">
+                                <label asp-for="Code" class="control-label cb-1">code</label>
+                                <input asp-for="Code" class="form-control"></input>
+                                <span asp-validation-for="Code" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-end">
+                            <button type="submit" class="btn btn-primary px-5" title="حفظ">حفظ</button>
+                        </div>
+                    </div>
+                </form>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+        <script>
+            $(document).ready(function () {
+                $('#buildingForm').submit(function (event) {
+                    event.preventDefault(); // Prevent the default form submission
+
+                    $.ajax({
+                                url: '@Url.Action("EditBuilding")', // URL to the controller action
+                        type: 'POST',
+                        data: $(this).serialize(),
+                        success: function (response) {
+                            console.log(response)
+                            if (response.success) {
+                                Swal.fire({
+                                    title: '!نجحت العملية',
+                                    text: 'عُدِّلَت البيانات بنجاح',
+                                    icon: 'success'
+                                }).then(() => {
+                                    window.location.href = '@Url.Action("Index")';
+                                });
+                            } else {
+                                Swal.fire({
+                                    title: '!فشلت العملية',
+                                    text: 'لم تُعدَّل المعلومات',
+                                    icon: 'error'
+                                });
+                            }
+                        },
+                        error: function () {
+                            Swal.fire({
+                                title: 'Error!',
+                                text: 'An unexpected error occurred.',
+                                icon: 'error'
+                            });
+                        }
+                    });
+                });
+            });
+        </script>
+    </div>
+</div>
+        @*
+        <h1> تعديل معلومات المبنى </h1>
+        <hr />
+        <div class="row">
+        <div class="col-md-4">
+        <form asp-action="EditBuilding" method="post" id="buildingForm">
+        <input hidden asp-for="Guid" />
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+        <label asp-for="BuildingNameAr" class="control-lable"></label>
+        <input asp-for="BuildingNameAr" class="form-control" />
+        <span asp-validation-for="BuildingNameAr" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+        <label asp-for="BuildingNameEn" class="control-lable"></label>
+        <input asp-for="BuildingNameEn" class="form-control" />
+        <span asp-validation-for="BuildingNameEn" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+        <label asp-for="BuildingNo" class="control-lable"></label>
+        <input asp-for="BuildingNo" class="form-control" />
+        <span asp-validation-for="BuildingNo" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+        <label asp-for="Code" class="control-lable"></label>
+        <input asp-for="Code" class="form-control" />
+        <span asp-validation-for="Code" class="text-danger"></span>
+        </div>
+        <div class="d-flex justify-content-end">
+        <button type="submit" class="btn btn-primary px-5" title="تعديل">تعديل</button>
+        </div>
+        </form> *@
