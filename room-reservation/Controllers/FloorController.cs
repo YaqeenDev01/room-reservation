@@ -39,6 +39,7 @@ namespace room_reservation.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddFloor(FloorViewModel floor)
         {
             // Create a SelectList from the buildingsName
@@ -52,7 +53,6 @@ namespace room_reservation.Controllers
                 {
                     await _FloorDomain.addFloor(floor);
                     return Json(new { success = true, message = "Added successfully" });
-                   
                     
                 }
                 else

@@ -33,7 +33,7 @@ namespace room_reservation.Domain
             return  _context.tblBuildings;
         }
         
-                public async Task<int> addFloor(FloorViewModel floor)
+                public async Task <int> addFloor(FloorViewModel floor)
                 {
 
                     try
@@ -44,8 +44,9 @@ namespace room_reservation.Domain
                         floorInfo.Guid = Guid.NewGuid();
                         floorInfo.BuildingId = floor.BuildingId;
                         //floorInfo.Rooms = floor.Rooms;
+                        floorInfo.IsDeleted = false;
                         _context.tblFloors.Add(floorInfo);
-                        _context.SaveChanges();
+                        await _context.SaveChangesAsync();
                         return 1;
 
 

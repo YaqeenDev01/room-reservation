@@ -39,7 +39,7 @@ ViewData["Title"] = "إضافة طابق";
                     <!-- START ITEM -->
                     <div class="col-md-6">
                         <div class="mb-4">
-                            <label asp-for="FloorNo" class="cobtrol-label"></label>
+                            <label asp-for="FloorNo" class="mb-1"></label>
                             <input asp-for="FloorNo" type="number" class="form-control" />
                             <span asp-validation-for="BuildingId" class="text-danger"></span>
                         </div>
@@ -69,7 +69,7 @@ ViewData["Title"] = "إضافة طابق";
                         $('#CreateFloor').submit(function (event) {
                             event.preventDefault(); // Prevent the default form submission
                             $.ajax({
-                                url: '@Url.Action("Create")', // URL to the controller action
+                                url: '@Url.Action("AddFloor")', // URL to the controller action
                                 type: 'POST',
                                 data: $(this).serialize(),
                                 success: function (response) {

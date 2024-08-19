@@ -37,28 +37,86 @@ namespace room_reservation.Controllers
             // building name , floor no , capacity() 
                 ViewBag.Building = new SelectList(await _buildingDomain.GetAllBuilding(),"Guid","BuildingNameAr");
                 ViewBag.RoomTypes = new SelectList(await _roomTypeDomain.GetAllRoomTypes(), "guid", "RoomAR");
-            
+                ViewBag.Room = await _roomDomain.GetAllRooms();
+                //ViewBag.Rooms = rooms;
+                return View();
 
-            return View();
+           
         }
-  
-        [HttpPost]
-        public async Task<IActionResult> Index(Guid FloorId)
-        {
-            
-            
-            // building name , floor no , capacity() 
-            ViewBag.Building = new SelectList(await _buildingDomain.GetAllBuilding(),"Guid","BuildingNameAr");
-            ViewBag.RoomTypes = new SelectList(await _roomTypeDomain.GetAllRoomTypes(), "guid", "RoomAR");
-            ViewBag.Room = await _roomDomain.GetAllRooms();
-
-            
-            
-            
-
-            return View();
-        }
+        // [HttpPost]
+        // public async Task<IActionResult> Index()
+        // {
+        //     
+        //     
+        //     // building name , floor no , capacity() 
+        //     ViewBag.Building = new SelectList(await _buildingDomain.GetAllBuilding(),"Guid","BuildingNameAr");
+        //     ViewBag.RoomTypes = new SelectList(await _roomTypeDomain.GetAllRoomTypes(), "guid", "RoomAR");
+        //     ViewBag.Room = await _roomDomain.GetAllRooms();
+        //     //ViewBag.Rooms = rooms;
+        //     return View();
+        // }
+        
+        // [HttpPost]
         // public async Task<IActionResult> Index(int? buildingId, int? floorId, int? roomTypeId, int? seatCapacity)
+        // {
+        //     // Populate dropdowns for filtering
+        //     ViewBag.Building = new SelectList(await _buildingDomain.GetAllBuilding(), "Id", "BuildingNameAr");
+        //
+        //     ViewBag.RoomTypes = new SelectList(await _roomTypeDomain.GetAllRoomTypes(), "Id", "RoomAR");
+        //
+        //     var rooms = await _roomDomain.GetAllRooms();
+        //
+        //     // Apply filters based on selected values
+        //     if (buildingId.HasValue)
+        //     {
+        //         rooms = rooms.Where(r => r.BuildingId == buildingId.Value);
+        //     }
+        //
+        //     if (floorId.HasValue)
+        //     {
+        //         rooms = rooms.Where(r => r.FloorId == floorId.Value);
+        //     }
+        //
+        //     if (roomTypeId.HasValue)
+        //     {
+        //         rooms = rooms.Where(r => r.RoomTypeId == roomTypeId.Value);
+        //     }
+        //
+        //     if (seatCapacity.HasValue)
+        //     {
+        //         rooms = rooms.Where(r => r.SeatCapacity >= seatCapacity.Value);
+        //     }
+        //
+        //     // Convert to ViewModel and pass to the view
+        //     var roomViewModels = rooms.Select(r => new RoomViewModel
+        //     {
+        //         Guid = r.Guid,
+        //         RoomNo = r.RoomNo,
+        //         SeatCapacity = r.SeatCapacity,
+        //         FloorId = r.FloorId,
+        //         RoomTypeId = r.RoomTypeId,
+        //         BuildingNameAr = r.BuildingNameAr,
+        //         FloorNo = r.FloorNo,
+        //         RoomAR = r.RoomAR
+        //     }).ToList();
+        //
+        //     ViewBag.Rooms = roomViewModels;
+        //     return View(roomViewModels);
+        // }
+        //
+        // [HttpPost]
+        // public async Task<IActionResult> Index()
+        // {
+        //     
+        //     
+        //     // building name , floor no , capacity() 
+        //     ViewBag.Building = new SelectList(await _buildingDomain.GetAllBuilding(),"Guid","BuildingNameAr");
+        //     ViewBag.RoomTypes = new SelectList(await _roomTypeDomain.GetAllRoomTypes(), "guid", "RoomAR");
+        //     ViewBag.Room = await _roomDomain.GetAllRooms();
+        //     //ViewBag.Rooms = rooms;
+        //     return View();
+        // }
+        // // public async Task<IActionResult> Index(int? buildingId, int? floorId, int? roomTypeId, int? seatCapacity)
         // {
         //     // Call the FilterRooms to get filtered rooms
         //     var rooms = FilterRooms(buildingId, floorId, roomTypeId, seatCapacity);
