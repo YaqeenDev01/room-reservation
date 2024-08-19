@@ -70,7 +70,7 @@
                             event.preventDefault(); // Prevent the default form submission
 
                             $.ajax({
-                                url: '@Url.Action("Edit")', // URL to the controller action
+                                url: '@Url.Action("EditFloor")', // URL to the controller action
                                 type: 'POST',
                                 data: $(this).serialize(), 
                                 success: function (response) {

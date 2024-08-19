@@ -20,7 +20,7 @@
             </button>
             <script>
                 document.getElementById('btnRedirect').onclick = function () {
-                    window.location.href = '@Url.Action("Add", "Book")'; // Replace with your controller action URL
+                    window.location.href = '@Url.Action("Add", "Booking")'; // Replace with your controller action URL
                 };
             </script>
         </div>
@@ -30,11 +30,16 @@
         <table class="table table-hover js-dataTable">
             <thead>
             <tr>
-                <th>أسم المبنى</th>
-                <th>رقم الطابق</th>
+                <th>اسم المبنى</th>
+                <!--  <th>رقم الطابق</th>-->
                 <th>رقم القاعة</th>
-                <th>نوع القاعة</th>
-                <th>الاستيعاب</th>
+                <!--<th>نوع القاعة</th>-->
+                <!--<th>الاستيعاب</th>-->
+                <th>تاريخ الحجز</th>
+                <!-- <th>المدة</th>-->
+                <!--<th>>وقت بدء المحاضرة</th>-->
+                <!--<th>>وقت نهاية المحاضرة</th>-->
+                <th>حالة الحجز</th>
                 <th class=""></th>
             </tr>
             </thead>
@@ -46,23 +51,18 @@
                         <tr>
                             <td>
                                 @x.BuildingNameAr
-                
                             </td>
-                            <td>
-                                @x.FloorNo
-                
-                            </td>
+                      
                             <td>
                                 @x.RoomNo
-                
                             </td>
+                        
                             <td>
-                                @x.RoomAR
-                
+                                @x.BookingDate
                             </td>
+                            
                             <td>
-                                @x.SeatCapacity
-                
+                                @x.BookingStatues
                             </td>
                             <td>
                                 <a asp-action="Details" asp-route-id="@x.guid" class="btn btn-sm btn-primary">عرض</a>

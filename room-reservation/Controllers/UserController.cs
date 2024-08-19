@@ -16,14 +16,16 @@ namespace room_reservation.Controllers
     public class UserController : Controller
     {
         private readonly UserDomain _UserDomain;
-        public UserController(UserDomain UserDomain) {
+        private readonly PermissionDomain _PermissionDomain;
+        public UserController(UserDomain UserDomain, PermissionDomain PermissionDomain) {
             _UserDomain = UserDomain;
+            _PermissionDomain = PermissionDomain;
 
         }
-        public IActionResult Index()
+        public async Task <IActionResult> Index()
         {
-
-            return View(_UserDomain.getAllUsers());
+            var users = await _UserDomain.GetAllUsers();
+            return View(users);
         }
 
 
@@ -96,13 +98,14 @@ namespace room_reservation.Controllers
             {
                 if (User.Identity.IsAuthenticated)
                 {
-                    string userEamil = User.FindFirst(ClaimTypes.Email).Value;
+                    string userName = User.FindFirst(ClaimTypes.Name).Value;
                     return RedirectToAction("Index", "Home");
                 }
                 
             }
-            catch
+            catch (Exception ex)
             {
+                
                 return View();
             }
 
@@ -121,17 +124,27 @@ namespace room_reservation.Controllers
 
                 if ( user == null)
                 {
-                    ViewData["Login_error"] = "البيانات غير موجودة";
+                    ViewData["Login_error"] = "المستخدم غير موجود";
                     return View();
                 }
                 else
                 {
+
+                    string role = "";
+                    PermissionViewModel permission = await _PermissionDomain.GetPermissionByEmail(user.Email);
+                    if (permission == null) {
+                        role = "No Role";
+                    }
+                    else
+                    {
+                        role = permission.RoleName;
+                    }
                     var identity = new ClaimsIdentity(new[]
                     {
-                    new Claim(ClaimTypes.Email, userInfo.Email),
-                    new Claim(ClaimTypes.NameIdentifier, userInfo.Id.ToString()),
-                    new Claim(ClaimTypes.Role, userInfo.UserType),
-                    new Claim(ClaimTypes.GivenName, userInfo.FullNameAR)
+                    new Claim(ClaimTypes.Name , user.FullNameEN),
+                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                    new Claim(ClaimTypes.Role, role),
+                    new Claim(ClaimTypes.GivenName, user.FullNameAR)
 
                 }, CookieAuthenticationDefaults.AuthenticationScheme);
 
@@ -144,7 +157,7 @@ namespace room_reservation.Controllers
                     return RedirectToAction("Index", "Home");
                 }
             }
-            catch
+            catch (Exception ex)
             {
                 ViewData["Login_error"] = "خطأ: اسم المستخدم أو كلمة المرور غير صحيحة";
                 return View();
@@ -156,7 +169,7 @@ namespace room_reservation.Controllers
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return RedirectToAction(nameof(UserController.Login), "Login");
+            return RedirectToAction("Login", "User");
         }
 
 
