@@ -7,7 +7,7 @@
     <div class="block-body py-5">
         <div class="row justify-content-center">
             <div class="col-md-8">
-                <form id="permissionForm" method="post">
+                <form asp-action="AddPermission" id="permissionForm" method="post">
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-4">
@@ -19,14 +19,14 @@
                         <div class="col-md-6">
                             <div class="mb-4">
                                 <label asp-for="RoleId" class="control-label cb-1">الصلاحية</label>
-                                <select asp-for="RoleId" class="form-control" asp-items="Model.Roles"></select>
+                                <select asp-for="RoleId" class="form-control" asp-items="@ViewBag.Roles"></select>
                                 <span asp-validation-for="RoleId" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-4">
                                 <label asp-for="BuildingId" class="mb-1">المبنى</label>
-                                <select asp-for="BuildingId" class="form-control" asp-items="Model.Buildings"></select>
+                                <select asp-for="BuildingId" class="form-control" asp-items="@ViewBag.Building"></select>
                                 <span asp-validation-for="BuildingId" class="text-danger"></span>
                             </div>
                         </div>

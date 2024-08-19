@@ -1,55 +1,102 @@
 ﻿ @model BookingViewModel
+ 
+ @{
+ ViewData["Title"] = "حجز قاعة";
+ }
 
 
-<h1>اضافة حجز</h1>
-<hr />
+ <!-- span is the validation for each input as required-->
 
-<div class="row">
-    <div class="col-md-4">
-        <script>
-            @{
-                if (@ViewData["Successful"] != null)
-                {
-                    <Text>
-                                                                    var result = '@Html.Raw(ViewData["Successful"])';
-                    Swal.fire(result, '', 'success')
-                        .then(
-                            function () {
-                                window.location.href = '@Url.Action("Index", "Booking")';
-                            }
-                        );
-                    </Text>
-                }
-                else if (@ViewData["Falied"] != null)
-                {
-                    <Text>
-                                                                    var result = '@Html.Raw(ViewData["Falied"])';
-                    Swal.fire(result, '', 'error')
-                        .then(
-                            function () {
-                                window.location.href = '@Url.Action("Index", "Booking")';
-                            }
-                        );
-                    </Text>
-                }
-            }
-        </script>
 
-        <form asp-action="Add">
+ <div class="block-header border-bottom px-4 py-4">
+     <h5 class="m-0">حجز قاعة</h5>
+ </div>
+ <div class="row justify-content-center">
+     <div class="col-md-8">
+         <form asp-action="Add" id="BookRoom" method="post">
+             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+             <div class="row">
+                 <!--select from drop down list building no-->
 
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group"></div>
-            <div class="d-flex justify-content-end">
+                 <!-- START ITEM -->
+                 <div class="col-md-6">
+                     <div class="mb-4">
+                         <label asp-for="BuildingNameAr" class="mb-1"> أسم المبنى</label>
+                         <select asp-for="BuildingNameAr" type="text" class="form-control" asp-items="@ViewBag.buildingsName">اختر </select>
+                         <span asp-validation-for="BuildingNameAr" class="text-danger">  </span>
 
-                <button type="submit" class="btn btn-primary" title="Add">حجز</button>
-            </div>
+                     </div>
+                 </div><!-- END ITEM -->
+
+                 <!-- START ITEM -->
+                 <div class="col-md-6">
+                     <div class="mb-4">
+                         <label asp-for="FloorNo" class="cobtrol-label">رقم الطابق</label>
+                         <input asp-for="FloorNo" type="number" class="form-control" />
+                         <span asp-validation-for="FloorNo" class="text-danger"></span>
+                     </div>
+                 </div><!-- END ITEM -->
+                 <!-- START ITEM -->
+                 <div class="col-md-6">
+                     <div class="mb-4">
+                         <label asp-for="FloorNo" class="cobtrol-label"></label>
+                         <input asp-for="FloorNo" type="number" class="form-control" />
+                         <span asp-validation-for="FloorNo" class="text-danger"></span>
+                     </div>
+                 </div><!-- ssEND ITEM -->
 
 
 
-        </form>
+
+             </div>
+             <div class="d-flex justify-content-end">
+                 <button type="submit" class="btn btn-primary px-5" title="save">حفظ</button>
+             </div>
+         </form>
 
 
-    </div>
+     </div>
+ </div>
 
 
-</div>
+
+
+       <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+       <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+
+                <script>
+                    $(document).ready(function () {
+                        $('#BookRoom').submit(function (event) {
+                            event.preventDefault(); // Prevent the default form submission
+                            $.ajax({
+                                url: '@Url.Action("Add")', // URL to the controller action
+                                type: 'POST',
+                                data: $(this).serialize(),
+                                success: function (response) {
+                                    if (response.success) {
+                                        Swal.fire({
+                                            title: '!نجحت العملية',
+                                            text: 'تم الحجز بنجاح',
+                                            icon: 'success'
+                                        }).then(() => {
+                                            window.location.href = '@Url.Action("Index")'; // Redirect to Index page after success
+                                        });
+                                    } else {
+                                        Swal.fire({
+                                            title: '!فشلت العملية',
+                                            text: 'لم يتم الحجز',
+                                            icon: 'error'
+                                        });
+                                    }
+                                },
+                                error: function () {
+                                    Swal.fire({
+                                        title: 'Error!',
+                                        text: 'An unexpected error occurred.',
+                                        icon: 'error'
+                                    });
+                                }
+                            });
+                        });
+                    });
+                </script>

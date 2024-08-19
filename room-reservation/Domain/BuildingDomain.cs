@@ -21,6 +21,7 @@ namespace room_reservation.Domain
                 BuildingNo = x.BuildingNo,
                 Code = x.Code,
                 Guid = x.Guid,
+                Id = x.Id
                 //Floors = x.Floors,
                 //Permissions = x.Permissions,
 

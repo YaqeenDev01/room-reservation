@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using room_reservation.Domain;
@@ -15,6 +16,7 @@ namespace room_reservation.Controllers
         private readonly PermissionDomain _PermissionDomain;
         private readonly RoleDomain _RoleDomain;
         private readonly BuildingDomain _BuildingDomain;
+        private readonly UserDomain _UserDomain;
 
         public PermissionController(PermissionDomain permissionDomain, RoleDomain roleDomain, BuildingDomain buildingDomain)
         {
@@ -31,38 +33,35 @@ namespace room_reservation.Controllers
         [HttpGet]
         public async Task<IActionResult> AddPermission()
         {
-            var roles = await _RoleDomain.GetAllRoles();
-            var buildings = await _BuildingDomain.GetAllBuilding();
-            var permissionViewModel = new PermissionViewModel
-            {
-                Roles = roles.Select(x => new SelectListItem
-                {
-                    Value = x.Id.ToString(),
-                    Text = x.RoleName
-                }).ToList(),
-                Buildings = buildings.Select(x => new SelectListItem
-                {
-                    Value = x.Id.ToString(),
-                    Text = x.BuildingNameAr
-                }).ToList()
-            };
+            ViewBag.Building = new SelectList(await _BuildingDomain.GetAllBuilding(), "Id", "BuildingNameAr");
+            ViewBag.Roles = new SelectList(await _RoleDomain.GetAllRoles(), "Id", "RoleName");
 
-            return View(permissionViewModel);
+            //var userPermission = await _PermissionDomain.GetPermissionByEmail(email);
+
+            return View();
+            
+            
+
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddPermission(PermissionViewModel permissionViewModel)
+        public async Task<IActionResult> AddPermission(PermissionViewModel permissionViewModel, int BuildingId)
         {
+            ViewBag.Building = new SelectList(await _BuildingDomain.GetAllBuilding(), "Id", "BuildingNameAr");
+            ViewBag.Roles = new SelectList(await _RoleDomain.GetAllRoles(), "Id", "RoleName");
+            
             try
             {
+
                 if (ModelState.IsValid)
                 {
-                    await _PermissionDomain.AddPermission(permissionViewModel);
+
+                    int check = await _PermissionDomain.AddPermission(permissionViewModel);
                     return Json(new { success = true, message = "Added successfully" });
                 }
                 else
                 {
-                    return Json(new { success = false, message = "Invalid data" });
+                    return Json(new { success = false, message = "Permission already exist" });
                 }
             }
             catch (Exception ex)
@@ -113,6 +112,7 @@ namespace room_reservation.Controllers
                 Email = permission.Email,
                 RoleId = permission.RoleId,
                 BuildingId = permission.BuildingId,
+
                 Roles = roles.Select(x => new SelectListItem
                 {
                     Value = x.Id.ToString(),

@@ -20,7 +20,7 @@
             </button>
             <script>
                 document.getElementById('btnRedirect').onclick = function () {
-                    window.location.href = '@Url.Action("Create", "Floor")'; // Replace with your controller action URL
+                    window.location.href = '@Url.Action("AddFloor", "Floor")'; // Replace with your controller action URL
                 };
             </script>
         </div>
@@ -54,7 +54,7 @@
 
                             </td>
                             <td>
-                                <a asp-action="Edit" asp-route-id="@x.Guid" class="btn btn-sm btn-success">تعديل</a>
+                                <a asp-action="EditFloor" asp-route-id="@x.Guid" class="btn btn-sm btn-success">تعديل</a>
                                 
                                 <a asp-action="Delete" asp-route-id="@x.Guid" class="btn btn-sm btn-danger">حذف</a>
                             </td>
@@ -66,3 +66,61 @@
         </table>
     </div>
 </div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('.delete-btn').click(function (event) {
+            event.preventDefault(); 
+
+            var id = $(this).data('id'); // Get the ID from the data-id attribute
+
+            Swal.fire({
+                title: 'هل أنت متأكد؟',
+                text: "",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'نعم، احذف!',
+                cancelButtonText: 'إلغاء'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '@Url.Action("Delete")',
+                        type: 'POST',
+                        data: { id: id },
+                        success: function (response) {
+                            if (response.success) {
+                                Swal.fire(
+                                    'نجحت العملية!',
+                                    'حُذِفت الصلاحية.',
+                                    'success'
+                                ).then(() => {
+                                    window.location.reload();
+                                });
+                            } else {
+                                Swal.fire(
+                                    'فشلت العملية!',
+                                    'لم تُحذف الصلاحية.',
+                                    'error'
+                                );
+                            }
+                        },
+                        error: function () {
+                            Swal.fire(
+                                'خطأ!',
+                                'حدث خطأ غير متوقع.',
+                                'error'
+                            );
+                        }
+                    });
+                }
+            });
+        });
+    });
+
+</script>
+
+

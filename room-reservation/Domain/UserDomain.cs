@@ -16,9 +16,9 @@ namespace room_reservation.Domain
             _context = context;
         }
         //return list of data 
-        public IEnumerable<tblUsers> getAllUsers()
+        public async Task <IEnumerable<tblUsers>> GetAllUsers()
         {
-            return _context.tblUsers;
+            return await _context.tblUsers.ToListAsync();
         }
  
         public List<tblUsers> getUsers()
@@ -81,19 +81,22 @@ namespace room_reservation.Domain
 
         }
 
-        public async Task <UserViewModel> GetAccountsForLogin(UserViewModel userInfo)
+       
+        public async Task<UserViewModel> GetAccountsForLogin(UserViewModel userInfo)
         {
-            var user = await _context.tblUsers.FirstOrDefaultAsync(
-                A => A.Email == userInfo.Email && A.Password == userInfo.Password&& A.IsDeleted == false);
-            return new UserViewModel { 
-                UserType = userInfo.UserType,
-                Email = userInfo.Email,
-                FullNameAR = userInfo.FullNameAR,
-                PhoneNumber = userInfo.PhoneNumber,
-                Id = userInfo.Id
+            var userData = await _context.tblUsers.FirstOrDefaultAsync(
+                u => u.Email == userInfo.Email && u.Password == userInfo.Password);
+
+            return new UserViewModel
+            {
+                UserType = userData.UserType,
+                Email = userData.Email,
+                FullNameAR = userData.FullNameAR,
+                PhoneNumber = userData.PhoneNumber,
+                Id = userData.Id,
+                FullNameEN = userData.FullNameEN
             };
         }
-
 
     }
 }
