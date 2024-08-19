@@ -32,9 +32,9 @@ namespace room_reservation.ViewModel
         [DisplayName("تاريخ المحاضرة")]
         public DateTime LectureDate { get; set; }
 
-        //[Required(ErrorMessage = "هذا الحقل مطلوب")]
-        //[DisplayName("مدة المحاضرة")]
-        //public decimal LectureDurations { get; set; }
+        [Required(ErrorMessage = "هذا الحقل مطلوب")]
+        [DisplayName("مدة المحاضرة")]
+        public decimal LectureDurations { get; set; }
     }
 }
 
