@@ -2,111 +2,120 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using room_reservation.Domain;
 using room_reservation.ViewModel;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
+
 
 namespace room_reservation.Controllers
 {
     public class RoomController : Controller
     {
         private readonly RoomDomain _roomDomain;
-
-        public RoomController(RoomDomain roomDomain)
+        private readonly BuildingDomain _buildingDomain;
+        private readonly FloorDomain _floorDomain;
+        private readonly RoomTypeDomain _roomTypeDomain;
+        public RoomController(RoomDomain roomDomain,BuildingDomain buildingDomain,FloorDomain floorDomain, RoomTypeDomain roomTypeDomain)
         {
             _roomDomain = roomDomain;
+            _buildingDomain = buildingDomain;
+            _floorDomain = floorDomain;
+            _roomTypeDomain = roomTypeDomain;
         }
 
         public async Task<IActionResult> Index()
         {
-            try
-            {
                 var rooms = await _roomDomain.GetAllRooms();
                 return View(rooms);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> AddRoom()
+        {
+            ViewBag.Building = new SelectList(await _buildingDomain.GetAllBuilding(), "Guid", "BuildingNameAr");
+            ViewBag.Floor = new SelectList(await _floorDomain.GetAllFloors(), "Guid", "FloorNo");
+
+            var roomTypes = await _roomTypeDomain.GetAllRoomTypes();
+            var roomViewModel = new RoomViewModel
+            {
+                RoomTypes = roomTypes.Select( x => new SelectListItem
+                {
+                    Value = x.Id.ToString(),
+                    Text = x.RoomAR
+                }).ToList()
+            };
+            return View(roomViewModel);
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> AddRoom(RoomViewModel roomViewModel)
+        {
+            ViewBag.Building = new SelectList(await _buildingDomain.GetAllBuilding(), "Guid", "BuildingNameAr");
+            ViewBag.Floor = new SelectList(await _floorDomain.GetAllFloors(), "Guid", "FloorNo");
+
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    await _roomDomain.InsertRoom(roomViewModel);
+                    TempData["SuccessMessage"] = "Added successfully";
+                    return RedirectToAction("Index");
+                }
             }
             catch (Exception ex)
             {
-                TempData["ErrorMessage"] = $"Error: {ex.Message}";
-                return RedirectToAction("Index");
+                ModelState.AddModelError("", ex.Message);
             }
+            return View(roomViewModel);
         }
 
         [HttpGet]
-        public IActionResult AddRoom()
+        public async Task<IActionResult> EditRoom(int Id)
         {
+            ViewBag.Building = new SelectList(await _buildingDomain.GetAllBuilding(), "Guid", "BuildingNameAr");
+            ViewBag.Floor = new SelectList(await _floorDomain.GetAllFloors(), "Guid", "FloorNo");
 
-            ViewBag.FloorBag = new SelectList(_roomDomain.GetAllFloors(), "Id", "FloorNo");
-            ViewBag.RoomTypeBag = new SelectList(_roomDomain.GetAllRoomTypes(), "Id", "RoomAR");
+            var rooms =  _roomDomain.GetRoomById(Id);
+            var roomTypes = await _roomTypeDomain.GetAllRoomTypes();
+            var roomViewModel = new RoomViewModel
+            {
+                Id = rooms.Id,
+                RoomTypes = roomTypes.Select(x => new SelectListItem
+                {
+                    Value = x.Id.ToString(),
+                    Text = x.RoomAR
+                }).ToList()
+            };
 
-            return View();
+            return View(roomViewModel);
         }
 
         [HttpPost]
-        public IActionResult AddRoom(RoomViewModel room)
+        public async Task<IActionResult> EditRoom(RoomViewModel roomViewModel)
         {
-            ViewBag.FloorBag = new SelectList(_roomDomain.GetAllFloors(), "Id", "FloorNo");
-            ViewBag.RoomTypeBag = new SelectList(_roomDomain.GetAllRoomTypes(), "Id", "RoomAR");
+            ViewBag.Building = new SelectList(await _buildingDomain.GetAllBuilding(), "Guid", "BuildingNameAr");
+            ViewBag.Floor = new SelectList(await _floorDomain.GetAllFloors(), "Guid", "FloorNo");
 
-            if (ModelState.IsValid)
+            try
             {
-                string result =  _roomDomain.InsertRoom(room);
-                if (result == "1")
+                if (ModelState.IsValid)
                 {
-                    ViewData["Successful"] = "تمت العملية بنجاح";
-                }
-                else
-                {
-                    ViewData["Failed"] = result;
+                    await _roomDomain.EditRoom(roomViewModel);
+                    TempData["SuccessMessage"] = "Added successfully";
+                    return RedirectToAction("Index");
                 }
             }
-            return View(room);
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", ex.Message);
+            }
+            return View(roomViewModel);
 
-        }
-
-        [HttpGet]
-        public IActionResult EditRoom(Guid guid)
-        {
-            ViewBag.FloorBag = new SelectList(_roomDomain.GetAllFloors(), "Id", "FloorNo");
-            ViewBag.RoomTypeBag = new SelectList(_roomDomain.GetAllRoomTypes(), "Id", "RoomAR");
-
-            return View(_roomDomain.GetRoomByGuid(guid));
         }
 
         [HttpPost]
-        public IActionResult EditRoom(RoomViewModel room)
+        public async Task<IActionResult> DeleteRoom(Guid guid)
         {
-            ViewBag.FloorBag = new SelectList(_roomDomain.GetAllFloors(), "Id", "FloorNo");
-            ViewBag.RoomTypeBag = new SelectList(_roomDomain.GetAllRoomTypes(), "Id", "RoomAR");
-
-            if (ModelState.IsValid)
-            {
-                string result = _roomDomain.EditRoom(room);
-                if (result == "1")
-                {
-                    ViewData["Successful"] = "تمت العملية بنجاح";
-                }
-                else
-                {
-                    ViewData["Failed"] = result;
-                }
-                _roomDomain.EditRoom(room);
-            }
-            return View(room);
-
-        }
-
-        public IActionResult DeleteRoom(Guid guid)
-        {
-            string check = _roomDomain.DeleteRoom(guid);
-            if (check == "1")
-
-                ViewData["Successful"] = "تم الحذف بنجاح";
-
-            else
-                ViewData["Failed"] = check;
-
-            _roomDomain.DeleteRoom(guid);
-            return View();
+            await _roomDomain.DeleteRoom(guid);
+            return Json(new { success = true });
         }
 
 

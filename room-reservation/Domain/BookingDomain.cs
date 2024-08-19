@@ -10,17 +10,12 @@ namespace room_reservation.Domain {
         public BookingDomain(KFUSpaceContext context)
         {
             _context = context;
-            // _buildingDomain = buildingDomain;
-            // _floorDomain=floorDomain;
-            // _BookingDomain = BookingDomain;
-            // _roomDomain = roomDomain;
-            // _roomTypeDomain = roomTypeDomain;
-
+   
         }
 
         public async Task<IEnumerable<BookingViewModel>> GetAllBooking()
         {
-            return await _context.tblBookings.Select(x=> new BookingViewModel
+            return await _context.tblBookings.Where(booking => !booking.IsDeleted).Select(x=> new BookingViewModel
             {
                 Id = x.Id,
                 BookingDate = x.BookingDate,
@@ -223,7 +218,7 @@ namespace room_reservation.Domain {
             }
         }
 
-
+ 
     }
 }
 

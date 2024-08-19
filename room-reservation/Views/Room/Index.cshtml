@@ -1,40 +1,60 @@
 ﻿@model IEnumerable<room_reservation.ViewModel.RoomViewModel>
 
-@{
-    ViewData["Title"] = "القاعات";
-}
+<div class="block mb-4">
+    <div class="block-header border-bottom px-4 py-3">
+        <h5 class="m-0">إدارة القاعات</h5>
+        <div class="d-flex gap-2">
+            <div class="form-group">
+                <input type="text" class="form-control table__quick_search"
+                       placeholder="البحث السريع ...">
+            </div>
 
-<h1>القاعات</h1>
 
-<p>
-    <a asp-action="AddRoom" class="btn btn-primary">اضافة قاعة</a>
-</p>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>رقم القاعة</th>
-            <th>عدد المقاعد</th>
-            <th>حالة القاعة</th>
-            <th>رقم الدور</th>
-            <th>نوع القاعة</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var room in Model)
-        {
-            <tr>
-                <td>@room.RoomNo</td>
-                <td>@room.SeatCapacity</td>
-                <td>@room.IsActive</td>
-                <td>@room.FloorId</td>
-                <td>@room.RoomAR</td>
-                <td>
-                    <a asp-action="Edit" asp-route-guid="@room.Guid">Edit</a> |
-                    <a asp-action="Delete" asp-route-guid="@room.Guid">Delete</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+            <a class="btn btn-primary" href="@Url.Action("AddRoom","Room")">اضافة قاعة</a>
+            <div class="modal fade" id="add_section" tabindex="-1"
+                 aria-labelledby="add_sectionLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                    <div class="modal-content">
+                        
+       
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="block-body">
+
+        <table class="table table-hover js-dataTable">
+            <thead>
+                <tr>
+                    <th>رقم القاعة</th>
+                    <th>عدد المقاعد</th>
+                    <th>حالة القاعة</th>
+                    <th>رقم الدور</th>
+                    <th>نوع القاعة</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    foreach (var room in Model)
+                    {
+                        <tr>
+                            <td>@room.RoomNo</td>
+                            <td>@room.SeatCapacity</td>
+                            <td>@room.IsActive</td>
+                            <td>@room.Floor.FloorNo</td>
+                            <td>@room.RoomAR</td>
+                            <td>
+                                <a asp-action="EditRoom" asp-route-id="@room.Id" class="btn btn-success">تعديل</a>
+                                <a asp-action="DeleteRoom" asp-route-id="@room.Id" class="btn btn-danger delete-btn">حذف</a>
+                            </td>
+                        </tr>
+                    }
+                }
+
+            </tbody>
+        </table>
+    </div>
+</div>

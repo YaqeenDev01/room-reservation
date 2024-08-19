@@ -28,7 +28,7 @@ namespace room_reservation.Domain
             }).ToListAsync();
         }
 
-        public int InsertBuilding(BuildingViewModel buildings)
+        public async Task <int> InsertBuilding(BuildingViewModel buildings)
         {
             try
             {
@@ -48,7 +48,7 @@ namespace room_reservation.Domain
                 return 0;
             }
         }
-        public BuildingViewModel getBuildingByid(Guid id)
+        public  BuildingViewModel getBuildingByid(Guid id)
         {
             var buildingId = _context.tblBuildings.FirstOrDefault(x => x.Guid == id && x.IsDeleted == false);
             BuildingViewModel models = new BuildingViewModel
@@ -67,7 +67,7 @@ namespace room_reservation.Domain
             return _context.tblBuildings.FirstOrDefault(x => x.Guid == id);
         }
 
-        public int updatBuilding(BuildingViewModel buildings)
+        public  async Task<bool> updatBuilding(BuildingViewModel buildings)
         {
             try
             {
@@ -80,11 +80,11 @@ namespace room_reservation.Domain
 
                 _context.Update(buildingsinfo );
                 _context.SaveChanges();
-                return 1;
+                return true;
             }
             catch (Exception ex)
             {
-                return 0;
+                return false;
             }
         }
 

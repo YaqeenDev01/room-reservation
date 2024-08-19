@@ -1,105 +1,96 @@
-﻿@model IEnumerable<BookingViewModel>
+﻿@model IEnumerable<RoomViewModel>
 
 @{
 ViewData["Title"] = "الصفحة الرئيسية";
 }
+<div class="block mb-4">
 <div class="block-header border-bottom px-4 py-4">
     <h5 class="m-0">أبحث عن قاعة</h5>
 </div>
 
 <div class="row justify-content-center">
-<div class="col-md-8">
-    <form asp-action="Index" method="post">
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <div class="row">
-            <div class="col-md-6">
-                <div class="mb-4">
-                    <label  class="control-label">أسم المبنى</label>
-                    <select name="BuildingId" id="BuildingId" class="form-control" asp-items="@ViewBag.Building">
-                        <option value="">أختر أسم المبنى</option>
-                    </select>
+    <div class="col-md-8">
+        <form id="filterForm">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-4">
+                        <label class="control-label">أسم المبنى</label>
+                        <select id="BuildingId" class="form-control" asp-items="@ViewBag.Building">
+                            <option value="">اختر المبنى</option>
+
+                        </select>
+                    </div>
                 </div>
+                <div class="col-md-6">
+                    <div class="mb-4">
+                        <label class="control-label">رقم الطابق</label>
+                        <select id="FloorId" class="form-control">
+                            <option value="">اختر الطابق</option>
+                          
+                        </select>
+                    </div>
                 </div>
-            <div class="col-md-6">
-                <div class="mb-4">
-                    <label class="control-label">رقم الطابق</label>
-                    <select name="FloorId" id="FloorId" class="form-control" asp-items="@ViewBag.Floors" ></select>
+                <div class="col-md-6">
+                    <div class="mb-4">
+                        <label class="control-label">الاستيعاب</label>
+                        <input id="SeatCapacity" class="form-control" type="number" placeholder="الحد الأدنى للاستيعاب"/>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-4">
+                        <label class="control-label">نوع القاعة</label>
+                        <select id="RoomTypeId" class="form-control" asp-items="@ViewBag.RoomTypes">
+                            <option value="">اختر نوع القاعة</option>
+
+                        </select>
+                    </div>
                 </div>
             </div>
-
-            <div class="col-md-6">
-                <div class="mb-4">
-                    <label  class="control-label">الاستيعاب</label>
-                    <input  class="form-control" type="number"/>
-                    <span   class="text-danger"></span>
-                </div>
-                </div>
-            <div class="col-md-6">
-                <div class="mb-4">
-                    <label class="control-label" >نوع القاعة</label>
-                    <select name="RoomTypeId" id="RoomTypeId" class="form-control" asp-items="@ViewBag.RoomTypes">
-                        <option value="">اختر نوع القاعة</option>
-                    </select>
-                </div>
-                </div>
-        </div>
-
-        <div class="d-flex justify-content-end">
-            <button type="submit" class="btn btn-primary px-3" title="Filter" >تطبيق الفلتر</button>
-        </div>
-    </form>
+        </form>
+    </div>
 </div>
+
+@if (ViewBag.Room != null)
+{
+    <div class="block-body">
+        <table id="datatable" class="table table-hover js-dataTable">
+            <thead>
+            <tr>
+                <th>أسم المبنى</th>
+                <th>رقم الطابق</th>
+                <th>رقم القاعة</th>
+                <th>نوع القاعة</th>
+                <th>الاستيعاب</th>
+                <th>حجز</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (RoomViewModel item in ViewBag.Room)
+            {
+                <tr>
+                    <td>@item.BuildingNameAr</td>
+                    <td>@item.Floor.FloorNo</td>
+                    <td>@item.RoomNo</td>
+                    <td>@item.RoomAR</td>
+                    <td>@item.SeatCapacity</td>
+                    <td>
+                        <a asp-action="Add" asp-route-id="@item.Guid" class="btn btn-sm btn-primary">حجز</a>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+    
+}
 </div>
-<div class="block-body">
-<table class="table table-hover js-dataTable">
 
-    <thead>
-    <tr>
-        <th>أسم المبنى</th>
-        <th>رقم الطابق</th>
-        <th>رقم القاعة</th>
-        <th>نوع القاعة</th>
-        <th>الاستيعاب</th>
-    </tr>
-    </thead>
-    <tbody>
-    @{
-    foreach (var x in Model)
-    {
-    
-    <tr>
-        <td>
-            @x.BuildingNameAr
-    
-        </td>
-        <td>
-            @x.FloorNo
-    
-        </td>
-        <td>
-            @x.RoomNo
-        </td>
-        <td>
-            @x.RoomAR
-    
-        </td>
-        <td>
-            @x.SeatCapacity
-        </td>
-    </tr>
-    }
-    }
-
-
-    </tbody>
-</table>
-</div>
 <script>
-
-
+    $(document).ready(function(){
+        showValue($("#BuildingId").val());
+    });
 
     $("#BuildingId").on('change', function () {
-        alert("error");
         showValue($(this).val());
     });
 
@@ -107,13 +98,59 @@ ViewData["Title"] = "الصفحة الرئيسية";
         $.getJSON('@Url.Action("getFloorbyGuid", "Booking")/' + val, function (result) {
             console.log(result);
             $("#FloorId").html(""); // makes select null before filling process
+            console.log(result.length);
             for (let i = 0; i < result.length; i++) {
-                $("#FloorId").append("<option value='" + result[i].Guid + "'>" + result[i].FloorNo+ "</option>")
+                $("#FloorId").append("<option value='" + result[i].guid + "'>" + result[i].floorNo+ "</option>")
+            }
+        });
+    }
+
+</script>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Attach event listeners to filter inputs
+        document.querySelector('#BuildingId').addEventListener('change', filterTable);
+        document.querySelector('#FloorId').addEventListener('change', filterTable);
+        document.querySelector('#SeatCapacity').addEventListener('input', filterTable);
+        document.querySelector('#RoomTypeId').addEventListener('change', filterTable);
+    });
+
+    function filterTable() {
+        const buildingValue = document.querySelector('#BuildingId').value;
+        const floorValue = document.querySelector('#FloorId').value;
+        const seatCapacityValue = document.querySelector('#SeatCapacity').value;
+        const roomTypeValue = document.querySelector('#RoomTypeId').value;
+
+        const rows = document.querySelectorAll('#datatable tbody tr');
+
+        rows.forEach(row => {
+            const buildingCell = row.querySelector('td:nth-child(1)').textContent;
+            const floorCell = row.querySelector('td:nth-child(2)').textContent;
+            const seatCapacityCell = row.querySelector('td:nth-child(5)').textContent;
+            const roomTypeCell = row.querySelector('td:nth-child(4)').textContent;
+
+            let showRow = true;
+
+            if (buildingValue && buildingCell !== buildingValue) {
+                showRow = false;
+            }
+            if (floorValue && floorCell !== floorValue) {
+                showRow = false;
+            }
+            if (seatCapacityValue && parseInt(seatCapacityCell) < parseInt(seatCapacityValue)) {
+                showRow = false;
+            }
+            if (roomTypeValue && roomTypeCell !== roomTypeValue) {
+                showRow = false;
+            }
+
+            if (showRow) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
             }
         });
     }
 </script>
-
-
-
-

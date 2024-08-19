@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using room_reservation.Domain;
 using room_reservation.Models;
 using room_reservation.ViewModel;
@@ -28,22 +29,121 @@ namespace room_reservation.Controllers
             _roomTypeDomain = roomTypeDomain;
         }
 
-
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
             
             
             // building name , floor no , capacity() 
                 ViewBag.Building = new SelectList(await _buildingDomain.GetAllBuilding(),"Guid","BuildingNameAr");
-                ViewBag.Floors = new SelectList(await _floorDomain.GetAllFloors(),"Guid","FloorNo");
                 ViewBag.RoomTypes = new SelectList(await _roomTypeDomain.GetAllRoomTypes(), "guid", "RoomAR");
-            
+                ViewBag.Room = await _roomDomain.GetAllRooms();
+                //ViewBag.Rooms = rooms;
+                return View();
 
-            return View();
+           
         }
-  
+        // [HttpPost]
+        // public async Task<IActionResult> Index()
+        // {
+        //     
+        //     
+        //     // building name , floor no , capacity() 
+        //     ViewBag.Building = new SelectList(await _buildingDomain.GetAllBuilding(),"Guid","BuildingNameAr");
+        //     ViewBag.RoomTypes = new SelectList(await _roomTypeDomain.GetAllRoomTypes(), "guid", "RoomAR");
+        //     ViewBag.Room = await _roomDomain.GetAllRooms();
+        //     //ViewBag.Rooms = rooms;
+        //     return View();
+        // }
         
+        // [HttpPost]
+        // public async Task<IActionResult> Index(int? buildingId, int? floorId, int? roomTypeId, int? seatCapacity)
+        // {
+        //     // Populate dropdowns for filtering
+        //     ViewBag.Building = new SelectList(await _buildingDomain.GetAllBuilding(), "Id", "BuildingNameAr");
+        //
+        //     ViewBag.RoomTypes = new SelectList(await _roomTypeDomain.GetAllRoomTypes(), "Id", "RoomAR");
+        //
+        //     var rooms = await _roomDomain.GetAllRooms();
+        //
+        //     // Apply filters based on selected values
+        //     if (buildingId.HasValue)
+        //     {
+        //         rooms = rooms.Where(r => r.BuildingId == buildingId.Value);
+        //     }
+        //
+        //     if (floorId.HasValue)
+        //     {
+        //         rooms = rooms.Where(r => r.FloorId == floorId.Value);
+        //     }
+        //
+        //     if (roomTypeId.HasValue)
+        //     {
+        //         rooms = rooms.Where(r => r.RoomTypeId == roomTypeId.Value);
+        //     }
+        //
+        //     if (seatCapacity.HasValue)
+        //     {
+        //         rooms = rooms.Where(r => r.SeatCapacity >= seatCapacity.Value);
+        //     }
+        //
+        //     // Convert to ViewModel and pass to the view
+        //     var roomViewModels = rooms.Select(r => new RoomViewModel
+        //     {
+        //         Guid = r.Guid,
+        //         RoomNo = r.RoomNo,
+        //         SeatCapacity = r.SeatCapacity,
+        //         FloorId = r.FloorId,
+        //         RoomTypeId = r.RoomTypeId,
+        //         BuildingNameAr = r.BuildingNameAr,
+        //         FloorNo = r.FloorNo,
+        //         RoomAR = r.RoomAR
+        //     }).ToList();
+        //
+        //     ViewBag.Rooms = roomViewModels;
+        //     return View(roomViewModels);
+        // }
+        //
+        // [HttpPost]
+        // public async Task<IActionResult> Index()
+        // {
+        //     
+        //     
+        //     // building name , floor no , capacity() 
+        //     ViewBag.Building = new SelectList(await _buildingDomain.GetAllBuilding(),"Guid","BuildingNameAr");
+        //     ViewBag.RoomTypes = new SelectList(await _roomTypeDomain.GetAllRoomTypes(), "guid", "RoomAR");
+        //     ViewBag.Room = await _roomDomain.GetAllRooms();
+        //     //ViewBag.Rooms = rooms;
+        //     return View();
+        // }
+        // // public async Task<IActionResult> Index(int? buildingId, int? floorId, int? roomTypeId, int? seatCapacity)
+        // {
+        //     // Call the FilterRooms to get filtered rooms
+        //     var rooms = FilterRooms(buildingId, floorId, roomTypeId, seatCapacity);
+        //
+        //     
+        //     ViewBag.Building = new SelectList(await _buildingDomain.GetAllBuilding(),"Guid","BuildingNameAr");
+        //     ViewBag.RoomTypes = new SelectList(await _roomTypeDomain.GetAllRoomTypes(), "guid", "RoomAR");
+        //     return View(rooms);
+        // }
 
+        // public IEnumerable<RoomViewModel>  FilterRooms(int? buildingId, int? floorId, int? roomTypeId, int? seatCapacity)
+        // {
+        //     var rooms = _roomDomain.GetAllRooms(); // Get all rooms initially
+        //
+        //     if (floorId.HasValue)
+        //         rooms = rooms.Where(r => r.FloorId == floorId.Value);
+        //
+        //     if (roomTypeId.HasValue)
+        //         rooms = rooms.Where(r => r.RoomTypeId == roomTypeId.Value);
+        //
+        //     if (seatCapacity.HasValue)
+        //         rooms = rooms.Where(r => r.SeatCapacity >= seatCapacity.Value);
+        //
+        //     var roomList = rooms.ToList();
+        //
+        //     return roomList; // Returns partial view with filtered rooms
+        // }
 
         public async Task<IActionResult> Book()
         {
@@ -54,9 +154,9 @@ namespace room_reservation.Controllers
         }
         
         
-        public FloorViewModel getFloorbyGuid(Guid id)
+        public async Task<IList<FloorViewModel>> getFloorbyGuid(Guid id)
         {
-            return _floorDomain.GetFloorByBuildingGuid(id);
+            return await _floorDomain.GetFloorByBuildingGuid(id);
             
         }
    
@@ -79,6 +179,7 @@ namespace room_reservation.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Add(BookingViewModel booking)
         {
+
             if (ModelState.IsValid)
             {
                 _BookingDomain.AddBooking(booking);
