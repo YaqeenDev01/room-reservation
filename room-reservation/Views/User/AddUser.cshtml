@@ -73,6 +73,8 @@
                         <button type="submit" class="btn btn-primary px-5" title="add">إضافة</button>
                     </div>
                 </form>
+                <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
 
                 <script>
                     $(document).ready(function () {
@@ -80,7 +82,7 @@
                             event.preventDefault(); // Prevent the default form submission
 
                             $.ajax({
-                                url: '@Url.Action("AddUser")', // URL to the controller action
+                                url: '@Url.Action("AddUser", "User")', // URL to the controller action
                                 type: 'POST',
                                 data: $(this).serialize(),
                                 success: function (response) {

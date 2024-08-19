@@ -52,9 +52,26 @@ namespace room_reservation.Domain
                 ).FirstOrDefaultAsync();
 
         }
+
+        public async Task<PermissionViewModel> GetPermissionByEmail(string email)
+        {
+            
+            return await _context.tblPermissions.Where(x => x.Email == email ).Include(r => r.Role).Select(
+                permission => new PermissionViewModel
+                {
+                    guid = permission.guid,
+                    Email = permission.Email,
+                    RoleName = permission.Role.RoleNameEN
+                   
+                    
+
+                }).FirstOrDefaultAsync();
+           
+
+        }
         [HttpPost]
         public async Task<int> AddPermission(PermissionViewModel permission)
-        {
+        { 
 
             try
             {
@@ -65,7 +82,6 @@ namespace room_reservation.Domain
                     BuildingId = permission.BuildingId,
                     IsDeleted = false
 
-
                 };
 
                 _context.Add(permissionInfo);
@@ -74,7 +90,6 @@ namespace room_reservation.Domain
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error: {ex.Message}");
                 return 0;
             }
 
