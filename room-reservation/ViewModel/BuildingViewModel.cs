@@ -6,7 +6,7 @@ namespace room_reservation.ViewModel
 {
     public class BuildingViewModel
     {
-        public int Id { get; set; }
+        public int BuildingId { get; set; }
         [Required(ErrorMessage = "هذا الحقل مطلوب")]
         [DisplayName("رقم المبنى ")]
         [Range(0, int.MaxValue, ErrorMessage = " هذا الحقل لا يقبل القيم السالبة ")]

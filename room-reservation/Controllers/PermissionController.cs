@@ -120,7 +120,7 @@ namespace room_reservation.Controllers
                 }).ToList(),
                 Buildings = buildings.Select(x => new SelectListItem
                 {
-                    Value = x.Id.ToString(),
+                    Value = x.BuildingId.ToString(),
                     Text = x.BuildingNameAr
                 }).ToList()
             };
