@@ -21,6 +21,7 @@ namespace room_reservation.Domain
                 BuildingNo = x.BuildingNo,
                 Code = x.Code,
                 Guid = x.Guid,
+                BuildingId = x.Id
   
             }).ToListAsync();
         }
