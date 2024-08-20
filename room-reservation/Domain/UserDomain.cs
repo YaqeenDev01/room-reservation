@@ -85,7 +85,7 @@ namespace room_reservation.Domain
         public async Task<UserViewModel> GetAccountsForLogin(UserViewModel userInfo)
         {
             var userData = await _context.tblUsers.FirstOrDefaultAsync(
-                u => u.Email == userInfo.Email && u.Password == userInfo.Password);
+                u => u.Email == userInfo.Email && u.Password == userInfo.Password && u.IsDeleted == false);
 
             return new UserViewModel
             {
@@ -96,6 +96,11 @@ namespace room_reservation.Domain
                 Id = userData.Id,
                 FullNameEN = userData.FullNameEN
             };
+        }
+
+        public async Task<tblUsers> GetUserByEmail(string email)
+        {
+            return await _context.tblUsers.FirstOrDefaultAsync(u => u.Email == email);
         }
 
     }

@@ -12,8 +12,8 @@ using room_reservation.Models;
 namespace room_reservation.Migrations
 {
     [DbContext(typeof(KFUSpaceContext))]
-    [Migration("20240806115826_addDb")]
-    partial class addDb
+    [Migration("20240820081955_KFUSapce")]
+    partial class KFUSapce
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -184,23 +184,38 @@ namespace room_reservation.Migrations
                     b.Property<DateTime>("BookingDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<TimeSpan>("BookingEnd")
+                        .HasColumnType("time");
+
+                    b.Property<TimeSpan>("BookingStart")
+                        .HasColumnType("time");
+
                     b.Property<int>("BookingStatuesId")
                         .HasColumnType("int");
 
+                    b.Property<int>("Duration")
+                        .HasColumnType("int");
+
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FullName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
                     b.Property<string>("PhoneNumber")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("RejectReason")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("RoomId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("RoomsId")
+                        .HasColumnType("int");
 
                     b.Property<Guid>("guid")
                         .HasColumnType("uniqueidentifier");
@@ -208,6 +223,8 @@ namespace room_reservation.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("BookingStatuesId");
+
+                    b.HasIndex("RoomsId");
 
                     b.ToTable("tblBookings");
                 });
@@ -485,7 +502,13 @@ namespace room_reservation.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("room_reservation.Models.tblRooms", "Rooms")
+                        .WithMany()
+                        .HasForeignKey("RoomsId");
+
                     b.Navigation("BookingStatues");
+
+                    b.Navigation("Rooms");
                 });
 
             modelBuilder.Entity("room_reservation.Models.tblFloors", b =>
@@ -525,7 +548,7 @@ namespace room_reservation.Migrations
                         .IsRequired();
 
                     b.HasOne("room_reservation.Models.tblRoomType", "RoomType")
-                        .WithMany()
+                        .WithMany("RoomsCollection")
                         .HasForeignKey("RoomTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -555,6 +578,11 @@ namespace room_reservation.Migrations
             modelBuilder.Entity("room_reservation.Models.tblRoles", b =>
                 {
                     b.Navigation("Permissions");
+                });
+
+            modelBuilder.Entity("room_reservation.Models.tblRoomType", b =>
+                {
+                    b.Navigation("RoomsCollection");
                 });
 #pragma warning restore 612, 618
         }
