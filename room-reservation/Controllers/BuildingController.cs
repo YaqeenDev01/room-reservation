@@ -94,16 +94,7 @@ namespace room_reservation.Controllers
         }
     }
 
-//public IActionResult Delet(BuildingViewModel building)
-//{
-//    if (ModelState.IsValid)
-//    {
-//        _BuildingDomain.DeleteBuilding(building);
-//        return RedirectToAction(nameof(Index));
-//    }
-//    return View();
 
-//}
 
 
 }
