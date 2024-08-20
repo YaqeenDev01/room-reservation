@@ -59,18 +59,7 @@ namespace room_reservation.Domain
             return models;
         }
 
-        //public  async Task <BuildingViewModel > getBuildingByguid(Guid Guid)
-        //{
-        //    return await _context.tblBuildings.Where(x => x.Guid == Guid).Select (x => new BuildingViewModel
-        //    {
-        //        Guid = x.Guid,
-        //        BuildingNameAr = x.BuildingNameAr,
-        //        BuildingNo = x.BuildingNo,
-        //        BuildingNameEn = x.BuildingNameEn,
-        //        Code = x.Code,
-        //    }).FirstOrDefaultAsync();
-
-        //}
+      
         public tblBuildings getBuildingByGuid(Guid id)
 
         {
@@ -100,20 +89,13 @@ namespace room_reservation.Domain
 
         public async Task DeleteBuilding(Guid id)
         {
-            //try
-            //{
+           
                 tblBuildings buildinginfo = getBuildingByGuid(id);
 
                 buildinginfo.IsDeleted = true;
                 //_context.tblBuildings.Update(buildinginfo);
                await _context.SaveChangesAsync();
 
-            //    return 1;
-            //}
-            //catch (Exception ex)
-            //{
-            //    return 0;
-            //}
         }
     }
 }
