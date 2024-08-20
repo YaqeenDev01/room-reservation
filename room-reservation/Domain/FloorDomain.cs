@@ -53,7 +53,7 @@ namespace room_reservation.Domain
                     }
                     catch (Exception exception)
                     {    
-                        Console.WriteLine($"Error: {exception.Message}");
+                       /// Console.WriteLine($"Error: {exception.Message}");
                         return 0;
                     }
 
@@ -118,6 +118,7 @@ namespace room_reservation.Domain
                     var floorId = _context.tblFloors.Include(b => b.Building).FirstOrDefault(x => x.Guid == id);
                    return floorId;
                 }
+              
 
                 public async Task<int>  editFloor(FloorViewModel floor)
                 {
@@ -141,7 +142,7 @@ namespace room_reservation.Domain
                 }
                 public async Task DeleteFloor(Guid id)
                 {
-                        var floor = _context.tblFloors.Where(f => f.Guid == id).SingleOrDefault();
+                    tblFloors floor = GetFloorById(id);
                         // is deleted will delete the record in web 
                         floor.IsDeleted = true;
                         // remove will delete the record from Db

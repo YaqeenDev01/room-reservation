@@ -36,7 +36,6 @@ namespace room_reservation.Controllers
             ViewBag.Building = new SelectList(await _BuildingDomain.GetAllBuilding(), "Id", "BuildingNameAr");
             ViewBag.Roles = new SelectList(await _RoleDomain.GetAllRoles(), "Id", "RoleName");
 
-            //var userPermission = await _PermissionDomain.GetPermissionByEmail(email);
 
             return View();
             
@@ -47,21 +46,32 @@ namespace room_reservation.Controllers
         [HttpPost]
         public async Task<IActionResult> AddPermission(PermissionViewModel permissionViewModel, int BuildingId)
         {
-            ViewBag.Building = new SelectList(await _BuildingDomain.GetAllBuilding(), "Id", "BuildingNameAr");
-            ViewBag.Roles = new SelectList(await _RoleDomain.GetAllRoles(), "Id", "RoleName");
-            
             try
             {
+                ViewBag.Building = new SelectList(await _BuildingDomain.GetAllBuilding(), "Id", "BuildingNameAr");
+                ViewBag.Roles = new SelectList(await _RoleDomain.GetAllRoles(), "Id", "RoleName"); 
 
                 if (ModelState.IsValid)
                 {
+                    var user = await _UserDomain.GetUserByEmail(permissionViewModel.Email);
+                    if (user == null)
+                    {
+                        return Json(new { success = false, message = "User not found" });
+                    }
 
                     int check = await _PermissionDomain.AddPermission(permissionViewModel);
-                    return Json(new { success = true, message = "Added successfully" });
+                    if (check == 1)
+                    {
+                        return Json(new { success = true, message = "Added successfully" });
+                    }
+                    else
+                    {
+                        return Json(new { success = false, message = "Adding permission failed" });
+                    }
                 }
                 else
                 {
-                    return Json(new { success = false, message = "Permission already exist" });
+                    return Json(new { success = false, message = "Model state is invalid" });
                 }
             }
             catch (Exception ex)
@@ -77,6 +87,8 @@ namespace room_reservation.Controllers
     {
                 try
                 {
+                    
+
                     var result = await _PermissionDomain.UpdatePermission(permissionViewModel);
                     if (result)
                     {

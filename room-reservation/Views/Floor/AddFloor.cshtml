@@ -20,7 +20,7 @@ ViewData["Title"] = "إضافة طابق";
                     <div class="col-md-6">
                         <div class="mb-4">
                             <label asp-for="BuildingId" class="mb-1"> أسم المبنى</label>
-                            <select asp-for="BuildingId" type="text" class="form-control" asp-items="@ViewBag.buildingsName">اختر </select>
+                            <select asp-for="BuildingId" type="text" class="form-control" asp-items="@ViewBag.buildingsName"></select>
                             <span asp-validation-for="BuildingId" class="text-danger">  </span>
 
                         </div>

@@ -19,6 +19,7 @@ namespace room_reservation.Controllers
 
 
         }
+        //return all floors in the view
         public async Task<IActionResult> Index()
         {
             var floors = await _FloorDomain.GetAllFloors(); 
@@ -31,50 +32,54 @@ namespace room_reservation.Controllers
         {
      
             // Create a SelectList from the buildingsName
-            ViewBag.buildingsName = new SelectList( await _BuildingDomain.GetAllBuilding() ,"Id","BuildingNameAr");
+            ViewBag.buildingsName = new SelectList( await _BuildingDomain.GetAllBuilding() ,"BuildingId","BuildingNameAr");
 
             // Create a SelectList from the buildingsName
-            ViewBag.buildingsNo = new SelectList(await _BuildingDomain.GetAllBuilding() ,"Id","BuildingNo");
+            ViewBag.buildingsNo = new SelectList(await _BuildingDomain.GetAllBuilding() ,"BuildingId","BuildingNo");
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddFloor(FloorViewModel floor)
+        public async Task<IActionResult> AddFloor(FloorViewModel floor, int BuildingId)
         {
-            // Create a SelectList from the buildingsName
-            ViewBag.buildingsName = new SelectList(await _BuildingDomain.GetAllBuilding() ,"Id","BuildingNameAr");
-
-            // Create a SelectList from the buildingsName
-            ViewBag.buildingsNo = new SelectList(await _BuildingDomain.GetAllBuilding() ,"Id","BuildingNo");
+    
+            ViewBag.buildingsName = new SelectList(await _BuildingDomain.GetAllBuilding(), "BuildingId", "BuildingNameAr");
+            ViewBag.buildingsNo = new SelectList(await _BuildingDomain.GetAllBuilding(), "BuildingId", "BuildingNo");
             try
             {
                 if (ModelState.IsValid)
                 {
-                    await _FloorDomain.addFloor(floor);
-                    return Json(new { success = true, message = "Added successfully" });
-                    
+                    int check = await _FloorDomain.addFloor(floor);
+                    if (check == 1)
+                    {
+                        return Json(new { success = true, message = "Added successfully" });
+
+                    }
+                    else
+                    {
+                        return Json(new { success = false, message = "Invalid data" });
+                    }
                 }
                 else
                 {
-                    return Json(new { success = false, message = "Invalid data" });
+                    return Json(new { success = false, message = "Model state is invalid" });
                 }
             }
             catch (Exception ex)
             {
                 return Json(new { success = false, message = ex.Message });
             }
-          
-           // return View(floor);
 
         }
+
         [HttpGet]
         public async Task<IActionResult> EditFloor(Guid id)
         {
             //SelectList from the buildingsName
-            ViewBag.buildingsName = new SelectList(await _BuildingDomain.GetAllBuilding() ,"Id","BuildingNameAr");
+            ViewBag.buildingsName = new SelectList(await _BuildingDomain.GetAllBuilding() ,"BuildingId","BuildingNameAr");
             //  SelectList from the buildingsName
-            ViewBag.buildingsNo = new SelectList(await _BuildingDomain.GetAllBuilding() ,"Id","BuildingNo");
+            ViewBag.buildingsNo = new SelectList(await _BuildingDomain.GetAllBuilding() ,"BuildingId","BuildingNo");
             return View(_FloorDomain.GetFloorByGuid(id));
         }
         
@@ -82,27 +87,36 @@ namespace room_reservation.Controllers
         public async Task<IActionResult> EditFloor(FloorViewModel floor)
         {
             //SelectList from the buildingsName
-            ViewBag.buildingsName = new SelectList(await _BuildingDomain.GetAllBuilding() ,"Id","BuildingNameAr");
+            ViewBag.buildingsName = new SelectList(await _BuildingDomain.GetAllBuilding() ,"BuildingId","BuildingNameAr");
             
             //  SelectList from the buildingsName
-            ViewBag.buildingsNo = new SelectList(await _BuildingDomain.GetAllBuilding() ,"Id","BuildingNo");
+            ViewBag.buildingsNo = new SelectList(await _BuildingDomain.GetAllBuilding() ,"BuildingId","BuildingNo");
             try
             {
                 if (ModelState.IsValid)
                 {
-                    await _FloorDomain.editFloor(floor);
-                    return Json(new { success = true, message = "Added successfully" });
+                    int check = await _FloorDomain.editFloor(floor);
+                    if (check == 1)
+                    {
+                        return Json(new { success = true, message = "Added successfully" });
+
+                    }
+                    else
+                    {
+                        return Json(new { success = false, message = "Invalid data" });
+                    }
                 }
                 else
                 {
-                    return Json(new { success = false, message = "Invalid data" });
+                    return Json(new { success = false, message = "Model state is invalid" });
                 }
             }
             catch (Exception ex)
             {
                 return Json(new { success = false, message = ex.Message });
             }
-            return View(floor);
+
+          //  return View(floor);
         }
 
         public async Task<IActionResult> Delete(Guid id)
