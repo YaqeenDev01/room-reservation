@@ -118,7 +118,6 @@ namespace room_reservation.Domain
                     var floorId = _context.tblFloors.Include(b => b.Building).FirstOrDefault(x => x.Guid == id);
                    return floorId;
                 }
-              
 
                 public async Task<int>  editFloor(FloorViewModel floor)
                 {
@@ -142,7 +141,7 @@ namespace room_reservation.Domain
                 }
                 public async Task DeleteFloor(Guid id)
                 {
-                    tblFloors floor = GetFloorById(id);
+                        var floor = _context.tblFloors.Where(f => f.Guid == id).SingleOrDefault();
                         // is deleted will delete the record in web 
                         floor.IsDeleted = true;
                         // remove will delete the record from Db
