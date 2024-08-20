@@ -11,6 +11,7 @@ namespace room_reservation.ViewModel
 
         [Required(ErrorMessage = " هذا الحقل مطلوب")]
         [DisplayName("رقم الطابق")]
+        [Range(1,9999,ErrorMessage = "رقم الطابق لابد ان يكون مابين ١ و ٩٩٩٩")]
         public int FloorNo { get; set; }
         public Guid Guid { get; set; } = Guid.NewGuid();
         
