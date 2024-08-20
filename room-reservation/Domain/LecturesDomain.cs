@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using room_reservation.Models;
 using room_reservation.ViewModel;
 
@@ -24,7 +25,7 @@ namespace room_reservation.Domain
                 LectureDate = x.LectureDate,
                 StartLectureTime = x.StartLectureTime,
                 EndLectureTime = x.EndLectureTime,
-                //LectureDurations = x.LectureDurations,
+                LectureDurations = x.LectureDurations,
                 Semester = x.Semester
 
 
@@ -52,12 +53,12 @@ namespace room_reservation.Domain
                 StartLectureTime = lecture.StartLectureTime,
                 EndLectureTime = lecture.EndLectureTime,
                 LectureDate = lecture.LectureDate,
-                //LectureDurations = lecture.LectureDurations,
+                LectureDurations = lecture.LectureDurations,
                 Semester = lecture.Semester
             };
             return lecturesViewModel;
         }
-        public int Addlectures(LecturesViewModel lectures)
+        public async Task<int> Addlecture(LecturesViewModel lectures)
         {
             try
             {
@@ -68,20 +69,21 @@ namespace room_reservation.Domain
                 lectureinfo.StartLectureTime = lectures.StartLectureTime;
                 lectureinfo.EndLectureTime = lectures.EndLectureTime;
                 lectureinfo.LectureDate = lectures.LectureDate;
-                //lectureinfo.LectureDurations = lectures.LectureDurations;
+                lectureinfo.LectureDurations = lectures.LectureDurations;
                 lectureinfo.Semester = lectures.Semester;
 
                 _context.tblLectures.Add(lectureinfo);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
                 return 1; //successfully added
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                return 0; //failed added
+                Console.WriteLine($"Error: {ex.Message}");
+                return 0;
             }
         }
 
-        public int EditLectures(LecturesViewModel lectures)
+        public async Task<int> EditLecture(LecturesViewModel lectures)
         {
             try
             {
@@ -93,12 +95,13 @@ namespace room_reservation.Domain
                 lectureinfo.StartLectureTime = lectures.StartLectureTime;
                 lectureinfo.EndLectureTime = lectures.EndLectureTime;
                 lectureinfo.LectureDate = lectures.LectureDate;
-                //lectureinfo.LectureDurations = lectures.LectureDurations;
+                lectureinfo.LectureDurations = lectures.LectureDurations;
                 lectureinfo.Semester = lectures.Semester;
 
 
                 _context.tblLectures.Update(lectureinfo);
-                _context.SaveChanges();
+
+                await _context.SaveChangesAsync();
                 return 1; //successfully added
             }
             catch (Exception e)
@@ -106,32 +109,65 @@ namespace room_reservation.Domain
                 return 0; //updated failed
             }
         }
-        public int DeleteLectures(LecturesViewModel lectures)
+        //public async Task DeleteLecture(int id)
+        //{
+        //    var Lectures = _context.tblLectures.Where(x => x.Id == id).SingleOrDefault();
+        //    _context.tblLectures.Remove(Lectures);
+
+        //    await _context.SaveChangesAsync();
+
+        //}
+        //public async Task DeleteLecture(int id)
+        //{
+        //    var lectures = _context.tblLectures.Where(x => x.Id == id).SingleOrDefault();
+        //    _context.tblLectures.Remove(lectures);
+        //    await _context.SaveChangesAsync();
+
+        //}
+        //public async Task<LecturesViewModel> GetLectureById(int Id)
+        //{
+        //    return await _context.tblLectures.Where(x => x.Id == Id).Select(
+        //        x => new LecturesViewModel
+        //        {
+        //            Id = x.Id,
+        //            BuildingNo = x.BuildingNo,
+        //            RoomNo = x.RoomNo,
+        //            LectureDate = x.LectureDate,
+        //            StartLectureTime = x.StartLectureTime,
+        //            EndLectureTime = x.EndLectureTime,
+                   
+        //            Semester = x.Semester
+
+        //        }
+        //        ).FirstOrDefaultAsync();
+
+        //}
+        public async Task DeleteLecture(int id)
         {
-            try
-            {
+            var lecture = _context.tblLectures.Where(x => x.Id == id).SingleOrDefault();
+            _context.tblLectures.Update(lecture);
+            await _context.SaveChangesAsync();
 
-                tblLectures lectureinfo = new tblLectures();
-                lectureinfo.Id = lectures.Id;
-                lectureinfo.BuildingNo = lectures.BuildingNo;
-                lectureinfo.RoomNo = lectures.RoomNo;
-                lectureinfo.StartLectureTime = lectures.StartLectureTime;
-                lectureinfo.EndLectureTime = lectures.EndLectureTime;
-                lectureinfo.LectureDate = lectures.LectureDate;
-                //lectureinfo.LectureDurations = lectures.LectureDurations;
-                lectureinfo.Semester = lectures.Semester;
-
-
-                _context.tblLectures.Remove(lectureinfo);
-                _context.SaveChanges();
-                return 1;
-            }
-            catch (Exception e)
-            {
-                return 0;
-
-            }
         }
+
     }
+    //public int DeleteLecture(int Id)
+    //{
+    //    try
+    //    {
+    //        tblLectures Lectureinfo = GetLectureById(Id);
+
+
+    //        _context.tblLectures.Update(Lectureinfo);
+    //        _context.SaveChanges();
+
+    //        return 1;
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        return 0;
+    //    }
+    //}
+
 }
 

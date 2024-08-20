@@ -113,7 +113,7 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
-                        url: '@Url.Action("DeletePermission")',
+                        url: '@Url.Action("Delet")',
                         type: 'POST',
                         data: { id: id },
                         success: function (response) {

@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using room_reservation.Models;
-using room_reservation.ViewModel;
+ using room_reservation.ViewModel;
 
 namespace room_reservation.Domain
 {
@@ -21,10 +21,7 @@ namespace room_reservation.Domain
                 BuildingNo = x.BuildingNo,
                 Code = x.Code,
                 Guid = x.Guid,
-                Id = x.Id
-                //Floors = x.Floors,
-                //Permissions = x.Permissions,
-
+  
             }).ToListAsync();
         }
 
@@ -40,7 +37,7 @@ namespace room_reservation.Domain
                 buildings1.Guid = Guid.NewGuid();
 
                 _context.tblBuildings.Add(buildings1);
-                _context.SaveChanges();
+                 await _context.SaveChangesAsync();
                 return 1;
             }
             catch (Exception ex)
@@ -48,9 +45,9 @@ namespace room_reservation.Domain
                 return 0;
             }
         }
-        public  BuildingViewModel getBuildingByid(Guid id)
+        public  BuildingViewModel getBuildingByguid(Guid Guid)
         {
-            var buildingId = _context.tblBuildings.FirstOrDefault(x => x.Guid == id && x.IsDeleted == false);
+            var buildingId = _context.tblBuildings.FirstOrDefault(x => x.Guid == Guid && x.IsDeleted == false);
             BuildingViewModel models = new BuildingViewModel
             {
                 Guid = buildingId.Guid,
@@ -61,16 +58,29 @@ namespace room_reservation.Domain
             };
             return models;
         }
+
+        //public  async Task <BuildingViewModel > getBuildingByguid(Guid Guid)
+        //{
+        //    return await _context.tblBuildings.Where(x => x.Guid == Guid).Select (x => new BuildingViewModel
+        //    {
+        //        Guid = x.Guid,
+        //        BuildingNameAr = x.BuildingNameAr,
+        //        BuildingNo = x.BuildingNo,
+        //        BuildingNameEn = x.BuildingNameEn,
+        //        Code = x.Code,
+        //    }).FirstOrDefaultAsync();
+
+        //}
         public tblBuildings getBuildingByGuid(Guid id)
 
         {
-            return _context.tblBuildings.FirstOrDefault(x => x.Guid == id);
+            return  _context.tblBuildings.FirstOrDefault(x => x.Guid == id);
         }
 
-        public  async Task<bool> updatBuilding(BuildingViewModel buildings)
+        public async Task<bool> UpdatBuilding(BuildingViewModel buildings)
         {
             try
-            {
+            { 
                 tblBuildings buildingsinfo = getBuildingByGuid(buildings.Guid);
 
                 buildingsinfo.BuildingNameEn = buildings.BuildingNameEn;
@@ -79,7 +89,7 @@ namespace room_reservation.Domain
                 buildings.BuildingNo = buildings.BuildingNo;
 
                 _context.Update(buildingsinfo );
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
                 return true;
             }
             catch (Exception ex)
@@ -88,22 +98,22 @@ namespace room_reservation.Domain
             }
         }
 
-        public int DeleteBuilding(Guid id)
+        public async Task DeleteBuilding(Guid id)
         {
-            try
-            {
+            //try
+            //{
                 tblBuildings buildinginfo = getBuildingByGuid(id);
 
                 buildinginfo.IsDeleted = true;
-                _context.tblBuildings.Update(buildinginfo);
-                _context.SaveChanges();
+                //_context.tblBuildings.Update(buildinginfo);
+               await _context.SaveChangesAsync();
 
-                return 1;
-            }
-            catch (Exception ex)
-            {
-                return 0;
-            }
+            //    return 1;
+            //}
+            //catch (Exception ex)
+            //{
+            //    return 0;
+            //}
         }
     }
 }

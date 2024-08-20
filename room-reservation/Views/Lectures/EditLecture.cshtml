@@ -1,0 +1,120 @@
+﻿@model room_reservation.ViewModel.LecturesViewModel
+
+<div class="block mb-4">
+    <div class="block-header border-bottom px-4 py-4">
+        <h5 class="m-0">تعديل محاضرة</h5>
+    </div>
+<div class="block-body py-5">
+    </div>
+    <div class="block-body py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+               <form id="LectureForm" method="post">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-4">
+                                <label asp-for="BuildingNo" class="mb-1">رقم المبنى</label>
+                                <input asp-for="BuildingNo" class="form-control text-start">
+                                <span asp-validation-for="BuildingNo" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-4">
+                                <label asp-for="Semester" class="control-label cb-1">الفصل الدراسي</label>
+                                <input asp-for="Semester" class="form-control text-start">
+                                <span asp-validation-for="Semester" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-4">
+                                <label asp-for="LectureDate" class="mb-1">تاريخ المحاضرة</label>
+                                <input asp-for="LectureDate" class="form-control" type="datetime-local">
+                                <span asp-validation-for="LectureDate" class="text-danger"></span>
+
+
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-4">
+                                    <label asp-for="StartLectureTime" class="mb-1">وقت بدء المحاضرة</label>
+                                    <input asp-for="StartLectureTime" class="form-control" type="time">
+                                    <span asp-validation-for="StartLectureTime" class="text-danger"></span>
+
+
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-4">
+                                        <label asp-for="EndLectureTime" class="mb-1">وقت انتهاء المحاضرة</label>
+                                        <input asp-for="EndLectureTime" class="form-control" type="time">
+                                        <span asp-validation-for="EndLectureTime" class="text-danger"></span>
+
+
+                                    </div>
+                                    @*  <div class="col-md-6">
+                                    <div class="mb-4">
+                                    <label asp-for="LectureDurations" class="mb-1">مدة المحاضرة</label>
+                                    <input asp-for="LectureDurations" class="form-control" type="number">
+                                    <span asp-validation-for="LectureDurations" class="text-danger"></span>
+
+
+                                    </div> *@
+                                    <div class="col-md-6">
+                                        <div class="mb-4">
+                                            <label asp-for="RoomNo" class="mb-1">رقم القاعة</label>
+                                            <input asp-for="RoomNo" class="form-control text-start">
+                                            <span asp-validation-for="RoomNo" class="text-danger"></span>
+
+
+                 
+
+                                    </div>
+                                    <div class="d-flex justify-content-end">
+                                        <button type="submit" class="btn btn-primary px-5" title="تعديل">حفظ</button>
+
+                                    </div>
+                                </div>
+
+        </form>
+                <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+                <script>
+                    $(document).ready(function () {
+                        $('#LectureForm').submit(function (event) {
+                            event.preventDefault(); // Prevent the default form submission
+
+                            $.ajax({
+                                url: '@Url.Action("EditLecture")', // URL to the controller action
+                                type: 'POST',
+                                data: $(this).serialize(),
+                                success: function (response) {
+                                    console.log(response)
+                                    if (response.success) {
+                                        Swal.fire({
+                                            title: '!نجحت العملية',
+                                            text: 'عُدِّلَت البيانات بنجاح',
+                                            icon: 'success'
+                                        }).then(() => {
+                                            window.location.href = '@Url.Action("Index")';
+                                        });
+                                    } else {
+                                        Swal.fire({
+                                            title: '!فشلت العملية',
+                                            text: 'لم تُعدَّل المعلومات',
+                                            icon: 'error'
+                                        });
+                                    }
+                                },
+                                error: function () {
+                                    Swal.fire({
+                                        title: 'Error!',
+                                        text: 'An unexpected error occurred.',
+                                        icon: 'error'
+                                    });
+                                }
+                            });
+                        });
+                    });
+                </script>
+            </div>
+        </div>
+    </div>
+</div>
