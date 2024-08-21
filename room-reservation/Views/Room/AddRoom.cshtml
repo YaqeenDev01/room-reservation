@@ -39,7 +39,7 @@
                         <div class="col-md-6">
                             <div class="mb-4">
                                 <label asp-for="FloorId" class="control-label">رقم الدور</label>
-                                <select asp-for="FloorId" id="FloorId" class="form-control">@ViewBag.Floor</select>
+                                <select asp-for="FloorId" id="FloorId" class="form-control"></select>
                                 <span asp-validation-for="FloorId" class="text-danger"></span>
                             </div>
                         </div>
@@ -57,6 +57,24 @@
                 </form>
 
                 <script>
+                    $(document).ready(function () {
+                        showValue($("#BuildingId").val());
+                    });
+
+                    $("#BuildingId").on('change', function () {
+                        showValue($(this).val());
+                    });
+
+                    function showValue(val) {
+                        $.getJSON('@Url.Action("getFloorbyGuid", "Booking")/' + val, function (result) {
+                            console.log(result);
+                            $("#FloorId").html(""); // makes select null before filling process
+                            console.log(result.length);
+                            for (let i = 0; i < result.length; i++) {
+                                $("#FloorId").append("<option value='" + result[i].guid + "'>" + result[i].floorNo + "</option>")
+                            }
+                        });
+                    }
 
                 </script>
             </div>
