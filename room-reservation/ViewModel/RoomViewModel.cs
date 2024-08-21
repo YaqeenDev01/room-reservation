@@ -38,8 +38,8 @@ namespace room_reservation.ViewModel
         public string BuildingNameAr { get; set; }
         
         public string BuildingNameEn { get; set; }
-        
-        
+        public int BuildingId { get; set; }
+
   
     }
     }

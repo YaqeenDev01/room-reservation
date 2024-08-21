@@ -5,66 +5,86 @@ ViewData["Title"] = "إضافة طابق";
 
 <!-- span is the validation for each input as required-->
 <div class="block mb-4">
-<div class="block-header border-bottom px-4 py-4">
-    <h5 class="m-0">إضافة طابق</h5>
-</div>
-<div class="block-body py-5">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <form asp-action="AddFloor" id="CreateFloor" method="post">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <div class="row">
-                    <!--select from drop down list building no-->
+    <div class="block-header border-bottom px-4 py-4">
+        <h5 class="m-0">إضافة طابق</h5>
+    </div>
+    <div class="block-body py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <form asp-action="AddFloor" id="CreateFloor" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="row">
+                        <!--select from drop down list building no-->
 
-                    <!-- START ITEM -->
-                    <div class="col-md-6">
-                        <div class="mb-4">
-                            <label asp-for="BuildingId" class="mb-1"> أسم المبنى</label>
-                            <select asp-for="BuildingId" type="text" class="form-control" asp-items="@ViewBag.buildingsName"></select>
-                            <span asp-validation-for="BuildingId" class="text-danger">  </span>
+                        <!-- START ITEM -->
+                        <div class="col-md-6">
+                            <div class="mb-4">
+                                <label asp-for="BuildingId" class="mb-1"> أسم المبنى</label>
+                                <select  id="BuildingName" name="buildingGuid" type="text" class="form-control" asp-items="@ViewBag.buildingsName"></select>
+                                <option value="">غير محدد</option>
+                            </div>
+                        </div><!-- END ITEM -->
+                        <!-- START ITEM -->
+                        <div class="col-md-6">
+                            <div class="mb-4">
+                                <label asp-for="BuildingId" class="mb-1"> رقم المبنى </label>
+                                <select id="BuildingNo" name="buildingNoGuid" type="text" class="form-control" asp-items="@ViewBag.buildingsNo "> </select>
+                                <option value="">غير محدد</option>
 
-                        </div>
-                    </div><!-- END ITEM -->
-                    <!-- START ITEM -->
-                    <div class="col-md-6">
-                        <div class="mb-4">
-                            <label asp-for="BuildingId" class="mb-1"> رقم المبنى </label>
-                            <select asp-for="BuildingId" type="text" class="form-control" asp-items="@ViewBag.buildingsNo"> </select>
-                            <span asp-validation-for="BuildingId" class="text-danger">  </span>
-
-                        </div>
-                    </div><!-- END ITEM -->
+                            </div>
+                        </div><!-- END ITEM -->
                
          
-                    <!-- START ITEM -->
-                    <div class="col-md-6">
-                        <div class="mb-4">
-                            <label asp-for="FloorNo" class="mb-1"></label>
-                            <input asp-for="FloorNo" type="number" class="form-control" />
-                            <span asp-validation-for="BuildingId" class="text-danger"></span>
-                        </div>
-                    </div><!-- ssEND ITEM -->
+                        <!-- START ITEM -->
+                        <div class="col-md-6">
+                            <div class="mb-4">
+                                <label asp-for="FloorNo" class="mb-1"></label>
+                                <input asp-for="FloorNo" type="number" class="form-control" />
+                                <span asp-validation-for="BuildingId" class="text-danger"></span>
+                            </div>
+                        </div><!-- ssEND ITEM -->
 
                 
                         
 
-                </div>
-                <div class="d-flex justify-content-end">
-                    <button type="submit" class="btn btn-primary px-5" title="save">حفظ</button>
-                </div>
-            </form>
+                    </div>
+                    <div class="d-flex justify-content-start">
+                        <button type="submit" class="btn btn-primary px-5" title="save">حفظ</button>
+                    </div>
+                </form>
 
 
+            </div>
         </div>
     </div>
 </div>
-</div>
+@*<script>
+    $(document).ready(function(){
+        showValue($("#BuildingName").val());
+    });
+
+    $("#BuildingName").on('change', function () {
+        showValue($(this).val());
+    });
+
+    function showValue(val) {
+        $.getJSON('@Url.Action("getFloorbyGuid", "Floor")/' + val, function (result) {
+            console.log(result);
+            $("#BuildingNo").html(""); // makes select null before filling process
+            console.log(result.length);
+            for (let i = 0; i < result.length; i++) {
+                $("#BuildingNo").append("<option value='" + result[i].guid + "'>" + result[i].buildingNo+ "</option>")
+            }
+        });
+    }
+
+</script>*@
 
 
        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
 
-                <script>
+<script>
                     $(document).ready(function () {
                         $('#CreateFloor').submit(function (event) {
                             event.preventDefault(); // Prevent the default form submission
