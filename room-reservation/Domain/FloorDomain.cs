@@ -27,6 +27,7 @@ namespace room_reservation.Domain
                 Rooms = f.Rooms,
             }).ToListAsync(); // Select * from tblFloors
         }
+ 
         
         public IEnumerable<tblBuildings>GetAllBuilding()
         {
@@ -38,6 +39,15 @@ namespace room_reservation.Domain
 
                     try
                     {
+                        // Check if FloorNo and building ID exists or not in db 
+                        var floorExists = _context.tblFloors
+                            .Any(fn => fn.FloorNo == floor.FloorNo && fn.BuildingId == floor.BuildingId);
+                        
+                        if (floorExists)
+                        {
+                            //if it doesnt exist
+                            return 0;
+                        }
                         tblFloors floorInfo = new tblFloors();
                        // floorInfo.Id = floor.Id;
                         floorInfo.FloorNo = floor.FloorNo;
@@ -53,7 +63,7 @@ namespace room_reservation.Domain
                     }
                     catch (Exception exception)
                     {    
-                       /// Console.WriteLine($"Error: {exception.Message}");
+                       // Console.WriteLine($"Error: {exception.Message}");
                         return 0;
                     }
 
@@ -107,10 +117,11 @@ namespace room_reservation.Domain
                     }
                     catch (Exception ex)
                     {
-                        // Log the exception or handle it as needed
                         throw new Exception($"Error retrieving floor: {ex.Message}");
                     }
                 }
+                
+           
 
 
                 public tblFloors GetFloorById(Guid id)
@@ -123,6 +134,15 @@ namespace room_reservation.Domain
                 {
                     try
                     {
+                        // Check if FloorNo and building ID exists or not in db 
+                        var floorExists = _context.tblFloors
+                            .Any(fn => fn.FloorNo == floor.FloorNo && fn.BuildingId == floor.BuildingId);
+                        
+                        if (floorExists)
+                        {
+                            //if it doesnt exist
+                            return 0;
+                        }
                         var floorInfo = GetFloorById(floor.Guid);
                         //floorInfo.Id = floor.Id;
                         floorInfo.FloorNo = floor.FloorNo;
