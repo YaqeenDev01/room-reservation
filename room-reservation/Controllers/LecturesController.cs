@@ -47,7 +47,7 @@ namespace room_reservation.Controllers
                 }
                 else
                 {
-                    return Json(new { success = false, message = "Invalid Data" });
+                    return Json(new { success = true, message = "Invalid Data" });
                 }
             }
             catch (Exception ex)
@@ -96,3 +96,4 @@ namespace room_reservation.Controllers
         }
     }
 }
+        
