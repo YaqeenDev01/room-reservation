@@ -22,7 +22,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
             .AddCookie(options =>
             {
                 options.AccessDeniedPath = "/Home/Error";
-                options.LoginPath = "/account/login";
+                options.LoginPath = "/User/Login";
                 options.ExpireTimeSpan = TimeSpan.FromDays(1);
                 //options.LoginPath = "/accounts/ErrorNotLoggedIn";
                 //options.LogoutPath = "account/logout";
@@ -74,7 +74,7 @@ app.UseSession();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=User}/{action=Login}/{id?}");
 //app.UseEndpoints(endpoints =>
 //{
 //    endpoints.MapControllerRoute(

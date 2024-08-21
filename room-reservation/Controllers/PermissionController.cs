@@ -18,11 +18,12 @@ namespace room_reservation.Controllers
         private readonly BuildingDomain _BuildingDomain;
         private readonly UserDomain _UserDomain;
 
-        public PermissionController(PermissionDomain permissionDomain, RoleDomain roleDomain, BuildingDomain buildingDomain)
+        public PermissionController(PermissionDomain permissionDomain, RoleDomain roleDomain, BuildingDomain buildingDomain, UserDomain userDomain)
         {
             _PermissionDomain = permissionDomain;
             _RoleDomain = roleDomain;
             _BuildingDomain = buildingDomain;
+            _UserDomain = userDomain;
         }
 
         public async Task<IActionResult> Index()
@@ -33,30 +34,30 @@ namespace room_reservation.Controllers
         [HttpGet]
         public async Task<IActionResult> AddPermission()
         {
-            ViewBag.Building = new SelectList(await _BuildingDomain.GetAllBuilding(), "Id", "BuildingNameAr");
+            ViewBag.Building = new SelectList(await _BuildingDomain.GetAllBuilding(), "BuildingId", "BuildingNameAr");
             ViewBag.Roles = new SelectList(await _RoleDomain.GetAllRoles(), "Id", "RoleName");
-
-
-            return View();
-            
-            
+            return View();    
 
         }
 
         [HttpPost]
         public async Task<IActionResult> AddPermission(PermissionViewModel permissionViewModel, int BuildingId)
         {
+            ViewBag.Building = new SelectList(await _BuildingDomain.GetAllBuilding(), "BuildingId", "BuildingNameAr");
+            ViewBag.Roles = new SelectList(await _RoleDomain.GetAllRoles(), "Id", "RoleName");
             try
-            {
-                ViewBag.Building = new SelectList(await _BuildingDomain.GetAllBuilding(), "Id", "BuildingNameAr");
-                ViewBag.Roles = new SelectList(await _RoleDomain.GetAllRoles(), "Id", "RoleName"); 
+            { 
 
                 if (ModelState.IsValid)
                 {
-                    var user = await _UserDomain.GetUserByEmail(permissionViewModel.Email);
-                    if (user == null)
+                    
+                    if (await _UserDomain.GetUserByEmail(permissionViewModel.Email) == null)
                     {
                         return Json(new { success = false, message = "User not found" });
+                    }
+                    if (permissionViewModel.BuildingId == 0)
+                    {
+                        permissionViewModel.BuildingId = null;
                     }
 
                     int check = await _PermissionDomain.AddPermission(permissionViewModel);
@@ -79,7 +80,19 @@ namespace room_reservation.Controllers
                 return Json(new { success = false, message = ex.Message });
             }
         }
-
+        [HttpPost]
+        public async Task<IActionResult> DisaplyUserName(string email)
+        {
+            var user = await _UserDomain.GetUserByEmail(email);
+            if (user != null)
+            {
+                return Json(new { success = true, userName = user.FullNameAR });
+            }
+            else
+            {
+                return Json(new { success = false, message = "User not found" });
+            }
+        }
         [HttpPost]
         public async Task<IActionResult> EditPermission(PermissionViewModel permissionViewModel)
         {

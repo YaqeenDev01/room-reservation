@@ -28,9 +28,8 @@ namespace room_reservation.Domain
                 Email = z.Email,
                 RoleId = z.RoleId,
                 RoleName = z.Role.RoleNameAR,
-                BuildingNum = z.Building.BuildingNo,
-                BuildingName = z.Building.BuildingNameAr,
-        
+                BuildingName = z.Building.BuildingNameAr == null ? "غير محدد": z.Building.BuildingNameAr,
+                BuildingNum = z.Building.BuildingNo == null ? 0 : z.Building.BuildingNo,
             }).ToListAsync();
 
 
@@ -104,7 +103,7 @@ namespace room_reservation.Domain
               
                 permission.Email = permissionViewModel.Email;
                 permission.RoleId = permissionViewModel.RoleId;
-                permission.BuildingId = permissionViewModel.BuildingId;
+                permission.BuildingId = permissionViewModel.BuildingId == 0 ? (int?)null : permissionViewModel.BuildingId;
 
                 _context.tblPermissions.Update(permission);
                 await _context.SaveChangesAsync();

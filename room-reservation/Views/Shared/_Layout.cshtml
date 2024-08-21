@@ -101,7 +101,7 @@
                                 <span>إدارة</span>
                             </a>
                             <ul>
-                                @if (User.FindFirst(ClaimTypes.Role).Value == "admin")
+                                @if (User.FindFirst(ClaimTypes.Role).Value == "Admin")
                                 {
                                     <li> <a href="@Url.Action("Index", "User")" class="active"><span>المستخدمين</span></a></li>
                                     <li> <a href="@Url.Action("Index", "Permission")" class="active"><span>الصلاحيات</span></a></li>
