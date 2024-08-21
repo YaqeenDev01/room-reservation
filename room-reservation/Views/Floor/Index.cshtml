@@ -20,7 +20,7 @@
             </button>
             <script>
                 document.getElementById('btnRedirect').onclick = function () {
-                    window.location.href = '@Url.Action("AddFloor", "Floor")'; // Replace with your controller action URL
+                    window.location.href = '@Url.Action("AddFloor", "Floor")'; 
                 };
             </script>
         </div>
@@ -56,7 +56,7 @@
                             <td>
                                 <a asp-action="EditFloor" asp-route-id="@x.Guid" class="btn btn-sm btn-success">تعديل</a>
                           <!--<a asp-action="Delete" asp-route-id="@x.Guid" class="btn btn-sm btn-danger">حذف</a>-->
-                                <a  onclick="confirmDelete(@x.Guid)" data-disabled="@x.Guid" class="btn btn-sm btn-danger">حذف</a>
+                                <a  onclick="confirmDelete(@x.Guid)" data-id="@x.Guid" class="btn btn-sm btn-danger delete-btn">حذف</a>
                             </td>
                         </tr>
                     }
