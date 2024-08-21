@@ -101,6 +101,7 @@ namespace room_reservation.Domain
         public async Task<tblUsers> GetUserByEmail(string email)
         {
             return await _context.tblUsers.FirstOrDefaultAsync(u => u.Email == email);
+
         }
 
     }

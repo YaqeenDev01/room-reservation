@@ -145,7 +145,7 @@ namespace room_reservation.Domain
         public async Task DeleteLecture(int id)
         {
             var lecture = _context.tblLectures.Where(x => x.Id == id).SingleOrDefault();
-            _context.tblLectures.Update(lecture);
+            _context.tblLectures.Remove(lecture);
             await _context.SaveChangesAsync();
 
         }

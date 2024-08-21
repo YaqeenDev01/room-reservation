@@ -1,77 +1,67 @@
 ﻿@model room_reservation.ViewModel.LecturesViewModel
 
 <div class="block mb-4">
-<div class="block-header border-bottom px-4 py-4">
-    <h5 class="m-0">إضافة محاضرة</h5>
-</div>
-<div class="block-body py-5">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <form id="LectureForm" method="post">
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="mb-4">
-                            <label asp-for="BuildingNo" class="mb-1">رقم المبنى</label>
-                            <input asp-for="BuildingNo"  class="form-control text-start">
+    <div class="block-header border-bottom px-4 py-4">
+        <h5 class="m-0">إضافة محاضرة</h5>
+    </div>
+    <div class="block-body py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <form id="LectureForm" method="post">
+                    <div class="row">
+                        <!-- Building Number -->
+                        <div class="col-md-6 mb-4">
+                            <label asp-for="BuildingNo" class="control-label">رقم المبنى</label>
+                            <input asp-for="Semester" class="form-control" />
                             <span asp-validation-for="BuildingNo" class="text-danger"></span>
                         </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="mb-4">
-                            <label asp-for="Semester" class="control-label cb-1">الفصل الدراسي</label>
-                            <input asp-for="Semester" class="form-control text-start">
+
+                        <!-- Lecture Date -->
+                        <div class="col-md-6 mb-4">
+                            <label asp-for="LectureDate" class="control-label">تاريخ المحاضرة</label>
+                            <input asp-for="LectureDate" class="form-control" />
+                            <span asp-validation-for="LectureDate" class="text-danger"></span>
+                        </div>
+
+                        <!-- Semester -->
+                        <div class="col-md-6 mb-4">
+                            <label asp-for="Semester" class="control-label">الفصل الدراسي</label>
+                            <input asp-for="Semester" class="form-control" />
                             <span asp-validation-for="Semester" class="text-danger"></span>
                         </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="mb-4">
-                            <label asp-for="LectureDate" class="mb-1">تاريخ المحاضرة</label>
-                            <input asp-for="LectureDate" class="form-control" type="datetime-local">
-                            <span asp-validation-for="LectureDate" class="text-danger"></span>
 
-
+                        <!-- Start Lecture Time -->
+                        <div class="col-md-6 mb-4">
+                            <label asp-for="StartLectureTime" class="control-label">وقت بدء المحاضرة</label>
+                            <input asp-for="StartLectureTime" class="form-control" type="time">
+                            <span asp-validation-for="StartLectureTime" class="text-danger"></span>
                         </div>
-                        <div class="col-md-6">
-                            <div class="mb-4">
-                                <label asp-for="StartLectureTime" class="mb-1">وقت بدء المحاضرة</label>
-                                <input asp-for="StartLectureTime" class="form-control" type="time">
-                                <span asp-validation-for="StartLectureTime" class="text-danger"></span>
 
+                        <!-- End Lecture Time -->
+                        <div class="col-md-6 mb-4">
+                            <label asp-for="EndLectureTime" class="control-label">وقت انتهاء المحاضرة</label>
+                            <input asp-for="EndLectureTime" class="form-control" type="time">
+                            <span asp-validation-for="EndLectureTime" class="text-danger"></span>
+                        </div>
 
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-4">
-                                    <label asp-for="EndLectureTime" class="mb-1">وقت انتهاء المحاضرة</label>
-                                    <input asp-for="EndLectureTime" class="form-control" type="time">
-                                    <span asp-validation-for="EndLectureTime" class="text-danger"></span>
+                        <!-- Room Number -->
+                        <div class="col-md-6 mb-4">
+                            <label asp-for="RoomNo" class="control-label">رقم القاعة</label>
+                            <input asp-for="RoomNo" class="form-control" />
+                            <span asp-validation-for="RoomNo" class="text-danger"></span>
+                        </div>
 
-
-                                </div>
-                               @*  <div class="col-md-6">
-                                    <div class="mb-4">
-                                        <label asp-for="LectureDurations" class="mb-1">مدة المحاضرة</label>
-                                        <input asp-for="LectureDurations" class="form-control" type="number">
-                                        <span asp-validation-for="LectureDurations" class="text-danger"></span>
-
-
-                                    </div> *@
-                                    <div class="col-md-6">
-                                        <div class="mb-4">
-                                            <label asp-for="RoomNo" class="mb-1">رقم القاعة</label>
-                                            <input asp-for="RoomNo" class="form-control text-start">
-                                            <span asp-validation-for="RoomNo" class="text-danger"></span>
-
-
-                                        </div>
-
-
+                        <!-- Submit Button -->
+                        <div class="col-md-12 d-flex justify-content-end">
+                            <button type="submit" class="btn btn-primary px-5" title="إضافة">إضافة</button>
+                        </div>
                     </div>
-                    <div class="d-flex justify-content-end">
-                        <button type="submit" class="btn btn-primary px-5" title="إضافة">إضافة</button>
-                   
-                </div>
-                </div>
-            </form>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
 
