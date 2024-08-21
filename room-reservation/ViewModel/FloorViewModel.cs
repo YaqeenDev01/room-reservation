@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
+using Microsoft.EntityFrameworkCore;
 using room_reservation.Models;
 
 namespace room_reservation.ViewModel
@@ -19,7 +20,10 @@ namespace room_reservation.ViewModel
         
         
         //adding building details for the floor index view to show them 
+
         public string BuildingNameAr { get; set; }
+        
+      
         public int BuildingNo { get; set; }
     
 
