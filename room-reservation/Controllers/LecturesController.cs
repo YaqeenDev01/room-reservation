@@ -47,7 +47,7 @@ namespace room_reservation.Controllers
                 }
                 else
                 {
-                    return Json(new { success = true, message = "Invalid Data" });
+                    return Json(new { success = false, message = "Invalid Data" });
                 }
             }
             catch (Exception ex)
@@ -90,79 +90,9 @@ namespace room_reservation.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteLecture(int id)
         {
-            
+
             await _lecturesDomain.DeleteLecture(id);
             return Json(new { success = true });
         }
-        //public IActionResult DeleteLecture(LecturesViewModel lectureinfo)
-        //{
-        //    string successful = "";
-        //    string Failed = "";
-
-        //    int cheek =
-        //    _lecturesDomain.DeleteLecture(Id);
-        //    if (cheek == 1)
-        //        successful = "تم الحذف بنجاح";
-
-        //    else
-        //        Failed = "حدث خطأ أثناء معالجة طلبك، الرجاء المحاولة في وقت لاحق.";
-
-        //    return RedirectToAction("Index", new { successful = successful, Failed = Failed });
     }
-
-
-
-        //[HttpPost]
-        //public IActionResult DeleteLecture(int id)
-        //{
-        //    _lecturesDomain.DeleteLecture(id);
-        //    return Json(new { success = true });
-        //}
-
-        //}
-
-
-        //[HttpGet]
-        //     public async Task<IActionResult> DeleteLecture(int id)
-        //{
-        //    await _lecturesDomain.DeleteLecture(id);
-        //    return Json(new { success = true });
-        //}
-        //{
-        //    return View(_lecturesDomain.getlecturesById(id));
-
-        //}
-
-        //[HttpPost]
-        //public async Task<IActionResult> DeleteLecture(LecturesViewModel lectures)
-        //{
-        //    try
-        //    {
-        //        if (ModelState.IsValid)
-        //        {
-        //            int check = _lecturesDomain.DeleteLecture(lectures);
-        //            if (check == 1)
-
-        //                ViewData["Successful"] = "تم الحذف بنجاح";
-
-
-
-
-        //            else
-
-        //                ViewData["Falied"] = check;
-
-
-
-        //        }
-
-
-
-        //        return View(lectures);
-        //    }
-        //    catch { 
-
-
-        //    }} }
-    }
-
+}
