@@ -72,17 +72,17 @@ namespace room_reservation.Domain
         }
 
       
-        public tblBuildings getBuildingByGuid(Guid id)
+        public async Task <tblBuildings> getBuildingByGuid(Guid id)
 
         {
-            return   _context.tblBuildings.FirstOrDefault(x => x.Guid == id);
+            return await  _context.tblBuildings.FirstOrDefaultAsync(x => x.Guid == id);
         }
 
         public async Task<int> UpdatBuilding(BuildingViewModel buildings)
         {
             try
             {
-                tblBuildings buildingsinfo = getBuildingByGuid(buildings.Guid);
+                tblBuildings buildingsinfo = await getBuildingByGuid(buildings.Guid);
 
                 tblBuildings buildingCode = _context.tblBuildings.AsNoTracking().SingleOrDefault(A => A.Code == buildings.Code);
                 if (buildingCode != null && buildingCode.Guid != buildings.Guid )
@@ -111,7 +111,7 @@ namespace room_reservation.Domain
         public async Task DeleteBuilding(Guid id)
         {
            
-                tblBuildings buildinginfo = getBuildingByGuid(id);
+                tblBuildings buildinginfo = await getBuildingByGuid(id);
 
                 buildinginfo.IsDeleted = true;
                 //_context.tblBuildings.Update(buildinginfo);
