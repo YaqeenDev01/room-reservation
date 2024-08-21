@@ -39,7 +39,7 @@
                         </div>
                         <div class="col-md-6">
                             <div class="mb-4">
-                                <label asp-for="Code" class="control-label cb-1">الكود</label>
+                                <label asp-for="Code" class="control-label cb-1">رمز المبنى</label>
                                 <input asp-for="Code" class="form-control"></input>
                                 <span asp-validation-for="Code" class="text-danger"></span>
                             </div>
@@ -51,44 +51,53 @@
                 </form>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+                <script>
+                    $(document).ready(function () {
+                        $('#buildingForm').submit(function (event) {
+                            event.preventDefault(); // منع الإرسال الافتراضي للنموذج
 
-        <script>
-            $(document).ready(function () {
-                $('#buildingForm').submit(function (event) {
-                    event.preventDefault(); // Prevent the default form submission
-
-                    $.ajax({
-                        url: '@Url.Action("AddBuilding")', // URL to the controller action
-                        type: 'POST',
-                        data: $(this).serialize(),
-                        success: function (response) {
-                            if (response.success) {
-                                Swal.fire({
-                                    title: '!نجحت العملية',
-                                    text: 'أُضِيفَ المبنى بنجاح',
-                                    icon: 'success'
-                                }).then(() => {
-                                    window.location.href = '@Url.Action("Index")'; // Redirect to Index page after success
-                                });
-                            } else {
-                                Swal.fire({
-                                    title: '!فشلت العملية',
-                                    text: 'لم يضَاف المبنى ',
-                                    icon: 'error'
-                                });
-                            }
-                        },
-                        error: function () {
-                            Swal.fire({
-                                title: 'Error!',
-                                text: 'An unexpected error occurred.',
-                                icon: 'error'
+                            $.ajax({
+                                url: '@Url.Action("AddBuilding")', // URL للإجراء في الـController
+                                type: 'POST',
+                                data: $(this).serialize(),
+                                success: function (response) {
+                                    if (response.success) {
+                                        Swal.fire({
+                                            title: 'نجحت العملية!',
+                                            text: 'أُضِيفَ المبنى بنجاح',
+                                            icon: 'success'
+                                        }).then(() => {
+                                            window.location.href = '@Url.Action("Index")'; // إعادة التوجيه إلى صفحة Index بعد النجاح
+                                        });
+                                    } else if (response.message === "The code is exit ") {
+                                        Swal.fire({
+                                            title: 'فشلت العملية!',
+                                            text: 'رمز المبنى محجوز لمبنى آخر',
+                                            icon: 'warning'
+                                        });
+                                    } else if (response.message === "The building number is exit ") {
+                                        Swal.fire({
+                                            title: 'فشلت العملية!',
+                                            text: 'رقم المبنى محجوز لمبنى آخر',
+                                            icon: 'warning'
+                                        });
+                                    } else {
+                                        Swal.fire({
+                                            title: 'فشلت العملية!',
+                                            text: response.message || 'لم يضَاف المبنى',
+                                            icon: 'error'
+                                        });
+                                    }
+                                },
+                                error: function () {
+                                    Swal.fire({
+                                        title: 'خطأ!',
+                                        text: 'حدث خطأ غير متوقع.',
+                                        icon: 'error'
+                                    });
+                                }
                             });
-                        }
+                        });
                     });
-                });
-            });
-        </script>
+                </script>
 
-    </div>
-</div>

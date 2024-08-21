@@ -37,13 +37,27 @@ namespace room_reservation.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    await _BuildingDomain.InsertBuilding(building);
-                    return Json(new { success = true, message = "Added successfully" });
+                    int check = await _BuildingDomain.InsertBuilding(building);
+
+                    if (check == 1)
+                    {
+                        return Json(new { success = true, message = "Added successfully" });
+                    }
+                    else if (check == 3)
+                    {
+                        return Json(new { success = false, message = "The code is exit " });
+                    }
+                    else if (check == 4)
+                    {
+                        return Json(new { success = false, message = "The building number is exit " });
+                    }
                 }
                 else
                 {
                     return Json(new { success = false, message = "Invalid data" });
                 }
+                return View();
+
             }
             catch (Exception ex)
             {
@@ -63,29 +77,38 @@ namespace room_reservation.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditBuilding(BuildingViewModel building)
         {
-            if (ModelState.IsValid)
+            try
             {
-                try
+                if (ModelState.IsValid)
                 {
-                    var result = await _BuildingDomain.UpdatBuilding(building);
-                    if (result)
+                    int check= await _BuildingDomain.UpdatBuilding(building);
+
+                    if (check == 1)
                     {
-                        return Json(new { success = true, message = "Updated successfully" });
+                        return Json(new { success = true, message = "Added successfully" });
                     }
-                    else
-                    {
-                        return Json(new { success = false, message = "Update failed" });
-                    }
+                    else if (check == 3)
+                     {
+                        return Json(new { success = false, message = "The code is exit " });
+                      }
+                    else if (check == 4)
+                    { 
+                        return Json(new { success = false, message = "The building number is exit " });
+                     }
+
                 }
-                catch (Exception ex)
+                else
                 {
-                    return Json(new { success = false, message = ex.Message });
+                    return Json(new { success = false, message = "Invalid data" });
                 }
+                return View();
             }
-
-            return Json(new { success = false, message = "Invalid data" });
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
         }
-
+        
         public async Task<IActionResult> Delet(Guid id)
         {
                await _BuildingDomain.DeleteBuilding(id);
@@ -93,8 +116,5 @@ namespace room_reservation.Controllers
        
         }
     }
-
-
-
 
 }
