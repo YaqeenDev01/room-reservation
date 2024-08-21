@@ -33,6 +33,15 @@ namespace room_reservation.Domain
 
 
         }
+        public bool IsLectureExists(string buildingNo, string roomNo, DateTime lectureDate, TimeSpan startLectureTime, TimeSpan endLectureTime)
+        {
+            return _context.tblLectures.Any(l => l.BuildingNo == buildingNo
+                                                && l.RoomNo == roomNo
+                                                && l.LectureDate == lectureDate
+                                                && l.StartLectureTime == startLectureTime
+                                                && l.EndLectureTime == endLectureTime);
+        }
+
 
         public List<tblLectures> getlectures()
         {
@@ -82,6 +91,7 @@ namespace room_reservation.Domain
                 return 0;
             }
         }
+
 
         public async Task<int> EditLecture(LecturesViewModel lectures)
         {

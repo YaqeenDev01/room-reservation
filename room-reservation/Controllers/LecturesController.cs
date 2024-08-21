@@ -32,29 +32,54 @@ namespace room_reservation.Controllers
             return View();
         }
 
-        // POST: /Lecture/Add
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddLecture(LecturesViewModel lectures)
         {
-            try
+            if (ModelState.IsValid)
             {
+                bool exists = _lecturesDomain.IsLectureExists(lectures.BuildingNo, lectures.RoomNo, lectures.LectureDate, lectures.StartLectureTime, lectures.EndLectureTime);
 
-                if (ModelState.IsValid)
+                if (exists)
+                {
+                    return Json(new { success = false, message = "The lecture time slot is already booked." });
+                }
+
+                try
                 {
                     await _lecturesDomain.Addlecture(lectures);
-                    return Json(new { success = true, message = "Added successfully" });
+                    return Json(new { success = true, message = "Lecture added successfully." });
                 }
-                else
+                catch (Exception ex)
                 {
-                    return Json(new { success = true, message = "Invalid Data" });
+                    return Json(new { success = false, message = ex.Message });
                 }
             }
-            catch (Exception ex)
-            {
-                return Json(new { success = false, message = ex.Message });
-            }
+            return Json(new { success = false, message = "Invalid data." });
         }
+        // POST: /Lecture/Add
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> AddLecture(LecturesViewModel lectures)
+        //{
+        //    try
+        //    {
+
+        //        if (ModelState.IsValid)
+        //        {
+        //            await _lecturesDomain.Addlecture(lectures);
+        //            return Json(new { success = true, message = "Added successfully" });
+        //        }
+        //        else
+        //        {
+        //            return Json(new { success = true, message = "Invalid Data" });
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return Json(new { success = false, message = ex.Message });
+        //    }
+        //}
 
         [HttpGet]
 
@@ -64,27 +89,36 @@ namespace room_reservation.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditLecture(LecturesViewModel lectures)
         {
             if (ModelState.IsValid)
+            {
+                bool exists = _lecturesDomain.IsLectureExists(lectures.BuildingNo, lectures.RoomNo, lectures.LectureDate, lectures.StartLectureTime, lectures.EndLectureTime);
+
+                if (exists)
+                {
+                    return Json(new { success = false, message = "The lecture time slot is already booked." });
+                }
+
                 try
                 {
                     var result = await _lecturesDomain.EditLecture(lectures);
                     if (result == 1)
                     {
-
-                        return Json(new { success = true, message = "Updated successfully" });
+                        return Json(new { success = true, message = "Lecture updated successfully." });
                     }
                     else
                     {
-                        return Json(new { success = false, message = "Update Failed" });
+                        return Json(new { success = false, message = "Update failed." });
                     }
                 }
                 catch (Exception ex)
                 {
                     return Json(new { success = false, message = ex.Message });
                 }
-            return Json(new { success = false, message = "Invalid Data" });
+            }
+            return Json(new { success = false, message = "Invalid data." });
         }
 
         [HttpPost]

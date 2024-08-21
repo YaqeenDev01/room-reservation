@@ -44,8 +44,44 @@
 
                 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
                 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
-
                 <script>
+                    $(document).ready(function () {
+                        $('#LectureForm').submit(function (event) {
+                            event.preventDefault(); // Prevent the default form submission
+
+                            $.ajax({
+                                url: '@Url.Action("AddLecture")', // URL to the controller action
+                                type: 'POST',
+                                data: $(this).serialize(),
+                                success: function (response) {
+                                    if (response.success) {
+                                        Swal.fire({
+                                            title: 'Success!',
+                                            text: response.message,
+                                            icon: 'success'
+                                        }).then(() => {
+                                            window.location.href = '@Url.Action("Index")'; // Redirect to Index page after success
+                                        });
+                                    } else {
+                                        Swal.fire({
+                                            title: 'Error!',
+                                            text: response.message,
+                                            icon: 'error'
+                                        });
+                                    }
+                                },
+                                error: function () {
+                                    Swal.fire({
+                                        title: 'Error!',
+                                        text: 'An unexpected error occurred.',
+                                        icon: 'error'
+                                    });
+                                }
+                            });
+                        });
+                    });
+                </script>
+             @*    <script>
                     $(document).ready(function () {
                         $('#emailInput').on('blur', function () {
                             var email = $(this).val();
@@ -110,7 +146,7 @@
                         });
                     });
                     
-                </script>
+                </script> *@
             </div>
         </div>
     </div>
