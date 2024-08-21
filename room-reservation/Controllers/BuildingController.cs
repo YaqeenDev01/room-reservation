@@ -15,10 +15,8 @@ namespace room_reservation.Controllers
             _BuildingDomain = buildingDomain;
 
         }
-        public async Task<IActionResult> Index( /*string successful,string Failed*/)
+        public async Task<IActionResult> Index()
         {
-            //ViewData["successful"] = successful;
-            //ViewData["Failed"] = Failed;
             var buildings = await _BuildingDomain.GetAllBuilding();
             return View(buildings);
         }
@@ -70,7 +68,7 @@ namespace room_reservation.Controllers
         [HttpGet]
         public async Task<IActionResult> EditBuilding(Guid id)
         {
-            return View(_BuildingDomain.getBuildingByguid(id));
+            return View(  await _BuildingDomain.getBuildingByguid(id));
         }
 
         [HttpPost]

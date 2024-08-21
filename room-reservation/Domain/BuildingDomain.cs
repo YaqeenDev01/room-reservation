@@ -57,9 +57,9 @@ namespace room_reservation.Domain
                 return 0;
             }
         }
-        public  BuildingViewModel getBuildingByguid(Guid Guid)
+        public async Task <BuildingViewModel> getBuildingByguid(Guid Guid)
         {
-            var buildingId = _context.tblBuildings.FirstOrDefault(x => x.Guid == Guid && x.IsDeleted == false);
+            var buildingId =  await _context.tblBuildings.FirstOrDefaultAsync(x => x.Guid == Guid && x.IsDeleted == false);
             BuildingViewModel models = new BuildingViewModel
             {
                 Guid = buildingId.Guid,
@@ -75,7 +75,7 @@ namespace room_reservation.Domain
         public tblBuildings getBuildingByGuid(Guid id)
 
         {
-            return  _context.tblBuildings.FirstOrDefault(x => x.Guid == id);
+            return   _context.tblBuildings.FirstOrDefault(x => x.Guid == id);
         }
 
         public async Task<int> UpdatBuilding(BuildingViewModel buildings)
