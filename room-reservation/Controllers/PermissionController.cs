@@ -40,6 +40,7 @@ namespace room_reservation.Controllers
 
         }
 
+
         [HttpPost]
         public async Task<IActionResult> AddPermission(PermissionViewModel permissionViewModel, int BuildingId)
         {

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using room_reservation.Models;
  using room_reservation.ViewModel;
 
@@ -25,11 +26,21 @@ namespace room_reservation.Domain
   
             }).ToListAsync();
         }
-
+       
         public async Task <int> InsertBuilding(BuildingViewModel buildings)
         {
             try
             {
+
+                tblBuildings buildingCode= _context.tblBuildings.AsNoTracking().SingleOrDefault(A => A.Code == buildings.Code);
+                if (buildingCode != null)
+                    return 3; // This code is already there
+
+                tblBuildings buildingnum = _context.tblBuildings.AsNoTracking().SingleOrDefault(A => A.BuildingNo == buildings.BuildingNo);
+                if (buildingnum != null)
+                    return 4;
+
+
                 tblBuildings buildings1 = new tblBuildings();
                 buildings1.BuildingNameEn = buildings.BuildingNameEn;
                 buildings1.BuildingNameAr = buildings.BuildingNameAr;
@@ -46,9 +57,9 @@ namespace room_reservation.Domain
                 return 0;
             }
         }
-        public  BuildingViewModel getBuildingByguid(Guid Guid)
+        public async Task <BuildingViewModel> getBuildingByguid(Guid Guid)
         {
-            var buildingId = _context.tblBuildings.FirstOrDefault(x => x.Guid == Guid && x.IsDeleted == false);
+            var buildingId =  await _context.tblBuildings.FirstOrDefaultAsync(x => x.Guid == Guid && x.IsDeleted == false);
             BuildingViewModel models = new BuildingViewModel
             {
                 Guid = buildingId.Guid,
@@ -60,61 +71,52 @@ namespace room_reservation.Domain
             return models;
         }
 
-        //public  async Task <BuildingViewModel > getBuildingByguid(Guid Guid)
-        //{
-        //    return await _context.tblBuildings.Where(x => x.Guid == Guid).Select (x => new BuildingViewModel
-        //    {
-        //        Guid = x.Guid,
-        //        BuildingNameAr = x.BuildingNameAr,
-        //        BuildingNo = x.BuildingNo,
-        //        BuildingNameEn = x.BuildingNameEn,
-        //        Code = x.Code,
-        //    }).FirstOrDefaultAsync();
-
-        //}
+      
         public tblBuildings getBuildingByGuid(Guid id)
 
         {
-            return  _context.tblBuildings.FirstOrDefault(x => x.Guid == id);
+            return   _context.tblBuildings.FirstOrDefault(x => x.Guid == id);
         }
 
-        public async Task<bool> UpdatBuilding(BuildingViewModel buildings)
+        public async Task<int> UpdatBuilding(BuildingViewModel buildings)
         {
             try
-            { 
+            {
                 tblBuildings buildingsinfo = getBuildingByGuid(buildings.Guid);
+
+                tblBuildings buildingCode = _context.tblBuildings.AsNoTracking().SingleOrDefault(A => A.Code == buildings.Code);
+                if (buildingCode != null && buildingCode.Guid != buildings.Guid )
+                    return 3;
+                tblBuildings buildingnum = _context.tblBuildings.AsNoTracking().SingleOrDefault(A => A.BuildingNo == buildings.BuildingNo);
+                if (buildingnum != null && buildingnum.Guid != buildings.Guid)
+                    return 4;
+
 
                 buildingsinfo.BuildingNameEn = buildings.BuildingNameEn;
                 buildingsinfo.BuildingNameAr = buildings.BuildingNameAr;
                 buildingsinfo.Code = buildings.Code;
-                buildings.BuildingNo = buildings.BuildingNo;
+                buildingsinfo.BuildingNo = buildings.BuildingNo;
+
 
                 _context.Update(buildingsinfo );
                 await _context.SaveChangesAsync();
-                return true;
+                return 1;
             }
             catch (Exception ex)
             {
-                return false;
+                return 0;
             }
         }
 
         public async Task DeleteBuilding(Guid id)
         {
-            //try
-            //{
+           
                 tblBuildings buildinginfo = getBuildingByGuid(id);
 
                 buildinginfo.IsDeleted = true;
                 //_context.tblBuildings.Update(buildinginfo);
                await _context.SaveChangesAsync();
 
-            //    return 1;
-            //}
-            //catch (Exception ex)
-            //{
-            //    return 0;
-            //}
         }
     }
 }

@@ -2,36 +2,13 @@
 @{
 
 }
-@* <script>
-    @{
-        if (@ViewData["Successful"] != null)
-        {
-            <Text>
-                                            var result = '@Html.Raw(ViewData["Successful"])';
-            Swal.fire(result, '', 'success')
-                .then(
-                    function () {
-                        window.location.href = '@Url.Action("Index", "Building")';
-                    }
-                );
-            </Text>
-        }
-        else if (@ViewData["Failed"] != null)
-        {
-            <Text>
-                                            var result = '@Html.Raw(ViewData["Failed"])';
-            Swal.fire(result, '', 'error');
-            </Text>
-        }
-    }
-</script>
- *@
+
 <div class="block mb-4">
     <div class="block-header border-bottom px-4 py-3">
         <h5 class="m-0"> ادارة المباني  </h5>
         <div class="d-flex gap-2">
             <div class="form-group">
-                <input type="text" class="form-control table__quick_search"
+                <input type="text" class="form-control table__quick_search" id="quickSearch"
                        placeholder="البحث السريع ...">
             </div>
            
@@ -70,21 +47,7 @@
             </div>
         </div>
     </div>
-    @* <div class="block-body">
-        <table class="table table-hover js-dataTable">
-            <thead>
-                <tr>
-                    <th>@Html.DisplayNameFor(m => m.BuildingNameAr)</th>
-                    <th>@Html.DisplayNameFor(m => m.BuildingNameEn)</th>
-                    <th>@Html.DisplayNameFor(m => m.BuildingNo)</th>
-                    <th>@Html.DisplayNameFor(m => m.Code)</th>
-                    
-                    <th class=""></th>
-
-                </tr>
-            </thead> 
-            <tbody> *@
-
+   
     <div class="block-body">
         <table class="table table-hover js-dataTable">
             <thead>
@@ -92,7 +55,7 @@
                     <th>اسم المبنى  </th>
                     <th>اسم المبنى باللغة الانجليزية </th>
                     <th>رقم المبنى</th>
-                    <th>الكود</th>
+                    <th>رمز المبنى </th>
                     <th class=""></th>
                 </tr>
             </thead>
@@ -174,4 +137,13 @@
     });
 
 </script>
-
+<script>
+    $(document).ready(function () {
+        $("#quickSearch").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("table tbody tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+    });
+</script>

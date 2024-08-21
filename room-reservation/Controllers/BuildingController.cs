@@ -15,10 +15,8 @@ namespace room_reservation.Controllers
             _BuildingDomain = buildingDomain;
 
         }
-        public async Task<IActionResult> Index( /*string successful,string Failed*/)
+        public async Task<IActionResult> Index()
         {
-            //ViewData["successful"] = successful;
-            //ViewData["Failed"] = Failed;
             var buildings = await _BuildingDomain.GetAllBuilding();
             return View(buildings);
         }
@@ -37,13 +35,27 @@ namespace room_reservation.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    await _BuildingDomain.InsertBuilding(building);
-                    return Json(new { success = true, message = "Added successfully" });
+                    int check = await _BuildingDomain.InsertBuilding(building);
+
+                    if (check == 1)
+                    {
+                        return Json(new { success = true, message = "Added successfully" });
+                    }
+                    else if (check == 3)
+                    {
+                        return Json(new { success = false, message = "The code is exit " });
+                    }
+                    else if (check == 4)
+                    {
+                        return Json(new { success = false, message = "The building number is exit " });
+                    }
                 }
                 else
                 {
                     return Json(new { success = false, message = "Invalid data" });
                 }
+                return View();
+
             }
             catch (Exception ex)
             {
@@ -56,36 +68,45 @@ namespace room_reservation.Controllers
         [HttpGet]
         public async Task<IActionResult> EditBuilding(Guid id)
         {
-            return View(_BuildingDomain.getBuildingByguid(id));
+            return View(  await _BuildingDomain.getBuildingByguid(id));
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditBuilding(BuildingViewModel building)
         {
-            if (ModelState.IsValid)
+            try
             {
-                try
+                if (ModelState.IsValid)
                 {
-                    var result = await _BuildingDomain.UpdatBuilding(building);
-                    if (result)
+                    int check= await _BuildingDomain.UpdatBuilding(building);
+
+                    if (check == 1)
                     {
-                        return Json(new { success = true, message = "Updated successfully" });
+                        return Json(new { success = true, message = "Added successfully" });
                     }
-                    else
-                    {
-                        return Json(new { success = false, message = "Update failed" });
-                    }
+                    else if (check == 3)
+                     {
+                        return Json(new { success = false, message = "The code is exit " });
+                      }
+                    else if (check == 4)
+                    { 
+                        return Json(new { success = false, message = "The building number is exit " });
+                     }
+
                 }
-                catch (Exception ex)
+                else
                 {
-                    return Json(new { success = false, message = ex.Message });
+                    return Json(new { success = false, message = "Invalid data" });
                 }
+                return View();
             }
-
-            return Json(new { success = false, message = "Invalid data" });
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
         }
-
+        
         public async Task<IActionResult> Delet(Guid id)
         {
                await _BuildingDomain.DeleteBuilding(id);
@@ -93,17 +114,5 @@ namespace room_reservation.Controllers
        
         }
     }
-
-//public IActionResult Delet(BuildingViewModel building)
-//{
-//    if (ModelState.IsValid)
-//    {
-//        _BuildingDomain.DeleteBuilding(building);
-//        return RedirectToAction(nameof(Index));
-//    }
-//    return View();
-
-//}
-
 
 }
