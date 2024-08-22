@@ -51,9 +51,59 @@
                         </div>
                     </div>
                 </form>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+
+                <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
                 <script>
+                    $(document).ready(function () {
+                        $('#buildingForm').submit(function (event) {
+                            event.preventDefault(); // منع الإرسال الافتراضي للنموذج
+
+                            $.ajax({
+                                url: '@Url.Action("EditBuilding")', // URL للإجراء في الـController
+                                type: 'POST',
+                                data: $(this).serialize(),
+                                success: function (response) {
+                                    if (response.success) {
+                                        Swal.fire({
+                                            title: 'نجحت العملية!',
+                                            text: 'تمت إضافة المبنى بنجاح.',
+                                            icon: 'success'
+                                        }).then(() => {
+                                            window.location.href = '@Url.Action("Index")'; // إعادة التوجيه إلى صفحة Index بعد النجاح
+                                        });
+                                    } else if (response.message === "The code already exists") {
+                                        Swal.fire({
+                                            title: 'فشلت العملية!',
+                                            text: 'رمز المبنى محجوز لمبنى آخر.',
+                                            icon: 'warning'
+                                        });
+                                    } else if (response.message === "The building number already exists") {
+                                        Swal.fire({
+                                            title: 'فشلت العملية!',
+                                            text: 'رقم المبنى محجوز لمبنى آخر.',
+                                            icon: 'warning'
+                                        });
+                                    } else {
+                                        Swal.fire({
+                                            title: 'فشلت العملية!',
+                                            text: response.message || 'لم يتم إضافة المبنى.',
+                                            icon: 'error'
+                                        });
+                                    }
+                                },
+                                error: function () {
+                                    Swal.fire({
+                                        title: 'خطأ!',
+                                        text: 'حدث خطأ غير متوقع.',
+                                        icon: 'error'
+                                    });
+                                }
+                            });
+                        });
+                    });
+                </script>
+               @*  <script>
                     $(document).ready(function () {
                         $('#buildingForm').submit(function (event) {
                             event.preventDefault(); // منع الإرسال الافتراضي للنموذج
@@ -83,12 +133,6 @@
                                             text: 'رقم المبنى محجوز لمبنى آخر',
                                             icon: 'warning'
                                         });
-                                    } else {
-                                        Swal.fire({
-                                            title: 'فشلت العملية!',
-                                            text: response.message || 'لم تُعدَّل المعلومات',
-                                            icon: 'error'
-                                        });
                                     }
                                 },
                                 error: function () {
@@ -102,3 +146,4 @@
                         });
                     });
                 </script>
+ *@
