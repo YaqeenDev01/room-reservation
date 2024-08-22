@@ -37,24 +37,37 @@ namespace room_reservation.Controllers
             // building name , floor no , capacity() 
                 ViewBag.Building = new SelectList(await _buildingDomain.GetAllBuilding(),"Guid","BuildingNameAr");
                 ViewBag.RoomTypes = new SelectList(await _roomTypeDomain.GetAllRoomTypes(), "guid", "RoomAR");
-                ViewBag.Room = await _roomDomain.GetAllRooms();
-                //ViewBag.Rooms = rooms;
+           
                 return View();
 
            
         }
-        // [HttpPost]
-        // public async Task<IActionResult> Index()
-        // {
-        //     
-        //     
-        //     // building name , floor no , capacity() 
-        //     ViewBag.Building = new SelectList(await _buildingDomain.GetAllBuilding(),"Guid","BuildingNameAr");
-        //     ViewBag.RoomTypes = new SelectList(await _roomTypeDomain.GetAllRoomTypes(), "guid", "RoomAR");
-        //     ViewBag.Room = await _roomDomain.GetAllRooms();
-        //     //ViewBag.Rooms = rooms;
-        //     return View();
-        // }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Index(Guid? buildingGuid, Guid? floorGuid,Guid? roomTypeGuid,int? seatCapacity)
+        {
+           // var rooms = await _roomDomain.GetAllRooms();
+            // building name , floor no , capacity() 
+            ViewBag.Building = new SelectList(await _buildingDomain.GetAllBuilding(),"Guid","BuildingNameAr",buildingGuid);
+            ViewBag.RoomTypes = new SelectList(await _roomTypeDomain.GetAllRoomTypes(), "guid", "RoomAR",roomTypeGuid);
+       
+       
+            var rooms = await _roomDomain.GetRoomByFilter(buildingGuid, floorGuid, roomTypeGuid, seatCapacity);
+    
+            var bookings = rooms.Select(room => new BookingViewModel
+            {
+                BuildingNameAr = room.Floor.Building.BuildingNameAr,
+                FloorNo = room.Floor.FloorNo,
+                RoomNo = room.RoomNo,
+                RoomAR = room.RoomAR,
+                SeatCapacity = room.SeatCapacity,
+                guid = room.Guid
+                
+            }).ToList();
+    
+            return View(bookings); 
+
+        }
         
         // [HttpPost]
         // public async Task<IActionResult> Index(int? buildingId, int? floorId, int? roomTypeId, int? seatCapacity)
@@ -127,9 +140,9 @@ namespace room_reservation.Controllers
         //     return View(rooms);
         // }
 
-        // public IEnumerable<RoomViewModel>  FilterRooms(int? buildingId, int? floorId, int? roomTypeId, int? seatCapacity)
+        // public IEnumerable<BookingViewModel>  FilterRooms(Guid? buildingId, Guid? floorId, Guid? roomTypeId, int? seatCapacity)
         // {
-        //     var rooms = _roomDomain.GetAllRooms(); // Get all rooms initially
+        //     var rooms = _BookingDomain.getAllBooking(); // Get all rooms initially
         //
         //     if (floorId.HasValue)
         //         rooms = rooms.Where(r => r.FloorId == floorId.Value);
@@ -145,13 +158,6 @@ namespace room_reservation.Controllers
         //     return roomList; // Returns partial view with filtered rooms
         // }
 
-        public async Task<IActionResult> Book()
-        {
-            var booking = await _BookingDomain.GetAllBooking(); 
-            return View(booking);
-            
-            
-        }
         
         
         public async Task<IList<FloorViewModel>> getFloorbyGuid(Guid id)
@@ -163,7 +169,7 @@ namespace room_reservation.Controllers
         
 
         // view the bookings page 
-        public async Task<IActionResult> Details()
+        public async Task<IActionResult> Book()
         {
             var booking = await _BookingDomain.GetAllBooking();
             return View(booking);

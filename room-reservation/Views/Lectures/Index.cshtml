@@ -8,7 +8,7 @@
         <h5 class="m-0">إدارة المحاضرات</h5>
         <div class="d-flex gap-2">
             <div class="form-group">
-                <input type="text" class="form-control table__quick_search" placeholder="البحث السريع ...">
+                <input type="text" class="form-control table__quick_search" placeholder="البحث السريع ..." id="quickSearch">
             </div>
             <a type="button" class="btn btn-primary" href="@Url.Action("AddLecture","Lectures")">
                 إضافة محاضرة
@@ -150,8 +150,20 @@
                         }
                     });
                 }
+
             });
         });
     });
 
+</script>
+
+<script>
+    $(document).ready(function () {
+        $("#quickSearch").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("table tbody tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+    });
 </script>
