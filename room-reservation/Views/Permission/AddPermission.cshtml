@@ -16,7 +16,7 @@
                                 <span asp-validation-for="Email" class="text-danger"></span>
                             </div>
                             <div class="mb-4">
-                                <label>اسم المستخدم</label>
+                                <label>معلومات المستخدم</label>
                                 <input readonly id="userNameInput" type="text" class="form-control" placeholder="اسم المستخدم" />
                             </div>
                         </div>
@@ -32,11 +32,10 @@
                                     <option value="0">غير محدد</option>
                                 </select>
                                
-                                <span asp-validation-for="BuildingId" class="text-danger"></span>
                             </div>
                         </div>
                       
-                        <div class="d-flex justify-content-end">
+                        <div class="d-flex justify-content-start">
                             <button type="submit" class="btn btn-primary px-5" title="إضافة">إضافة</button>
                         </div>
                     </div>
@@ -52,14 +51,14 @@
 
                             if (email) {
                                 $.ajax({
-                                    url: '@Url.Action("DisaplyUserName")',
+                                    url: '@Url.Action("DisplayUserName")',
                                     type: 'POST',
                                     data: { email: email },
                                     success: function (response) {
                                         if (response.success) {
-                                            $('#userNameInput').val(response.userName);
+                                            $('#userNameInput').val(response.userName).css('color', 'black');
                                         } else {
-                                            $('#userNameInput').val('المستخدم غير موجود');
+                                            $('#userNameInput').val('المستخدم غير موجود').css('color', 'red');
                                         }
                                     },
                                     error: function () {
@@ -71,32 +70,46 @@
                                     }
                                 });
                             } else {
-                                $('#userNameInput').val(''); 
+                                $('#userNameInput').val('');
                             }
                         });
 
                         $('#permissionForm').submit(function (event) {
-                            event.preventDefault(); 
+                            event.preventDefault();
 
                             $.ajax({
-                                url: '@Url.Action("AddPermission")', 
+                                url: '@Url.Action("AddPermission")',
                                 type: 'POST',
                                 data: $(this).serialize(),
                                 success: function (response) {
                                     if (response.success) {
                                         Swal.fire({
                                             title: 'نجحت العملية!',
-                                            text: 'أُضِيفَت الصلاحية بنجاح',
+                                            text: response.message,
                                             icon: 'success'
                                         }).then(() => {
-                                            window.location.href = '@Url.Action("Index")'; 
+                                            window.location.href = '@Url.Action("Index")';
                                         });
                                     } else {
-                                        Swal.fire({
-                                            title: 'فشلت العملية!',
-                                            text: 'لم تُضَاف الصلاحية',
-                                            icon: 'error'
-                                        });
+                                        if (response.errors) {
+                                            
+                                            $('.text-danger').text('');
+
+                                            $.each(response.errors, function (key, errorMessages) {
+                                                var field = $('[name="' + key + '"]');
+                                                var errorContainer = field.siblings('.text-danger');
+
+                                                if (errorContainer.length) {
+                                                    errorContainer.text(errorMessages.join(', '));
+                                                }
+                                            });
+                                        } else {
+                                            Swal.fire({
+                                                title: 'فشلت العملية!',
+                                                text: response.message,
+                                                icon: 'error'
+                                            });
+                                        }
                                     }
                                 },
                                 error: function () {
@@ -109,8 +122,8 @@
                             });
                         });
                     });
-                    
                 </script>
+
             </div>
         </div>
     </div>

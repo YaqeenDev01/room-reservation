@@ -1,6 +1,6 @@
 ﻿@using System.Security.Claims;
 <!DOCTYPE html>
-<html lang="en" dir="rtl" data-theme="light">
+<html lang="ar" dir="rtl" data-theme="light">
 
 <head>
     <meta charset="UTF-8">
@@ -114,11 +114,10 @@
                             </ul>
                         </li>
                     </ul>
-
                 </div>
             }
             <div class="btm_link">
-                <button class="btn" asp-controller="User" asp-action="Logout">
+                <a class="btn" asp-controller="User" asp-action="Logout">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <rect opacity="0.3" width="12" height="2" rx="1" transform="matrix(-1 0 0 1 15.5 11)"
                                 fill="currentColor"></rect>
@@ -130,7 +129,7 @@
                                 fill="currentColor"></path>
                             </svg>
                            <span>تسجيل الخروج</span>
-                        </button>
+                        </a>
                     </div>
                     </nav> 
                 
@@ -229,7 +228,8 @@
 
     <!--------- JS Liberaries ---------->
     <script src="~/Assets/lib/DataTable/js/dataTables.min.js"></script>
-
+    <script src="~/Assets//lib/DataTable/js/dataTables.select.min.js"></script>
+    
 
      <!-- Sweet Alert library -->
     <script src="~/lib/sweetalert/sweetalert.min.js"></script>

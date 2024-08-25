@@ -46,16 +46,20 @@ namespace room_reservation.Controllers
         {
             ViewBag.Building = new SelectList(await _BuildingDomain.GetAllBuilding(), "BuildingId", "BuildingNameAr");
             ViewBag.Roles = new SelectList(await _RoleDomain.GetAllRoles(), "Id", "RoleName");
-            try
-            { 
 
+            try
+            {
                 if (ModelState.IsValid)
                 {
-                    
                     if (await _UserDomain.GetUserByEmail(permissionViewModel.Email) == null)
                     {
-                        return Json(new { success = false, message = "User not found" });
+                        return Json(new { success = false, message = "المستخدم غير موجود" });
                     }
+                    if (await _PermissionDomain.permissionExists(permissionViewModel.Email))
+                    {
+                        return Json(new { success = false, message = "المستخدم يملك صلاحية" });
+                    }
+
                     if (permissionViewModel.BuildingId == 0)
                     {
                         permissionViewModel.BuildingId = null;
@@ -64,16 +68,21 @@ namespace room_reservation.Controllers
                     int check = await _PermissionDomain.AddPermission(permissionViewModel);
                     if (check == 1)
                     {
-                        return Json(new { success = true, message = "Added successfully" });
+                        return Json(new { success = true, message = "أُضِيفت الصلاحية بنجاح" });
                     }
                     else
                     {
-                        return Json(new { success = false, message = "Adding permission failed" });
+                        return Json(new { success = false, message = "لم تُضَاف الصلاحية" });
                     }
                 }
                 else
                 {
-                    return Json(new { success = false, message = "Model state is invalid" });
+                    var errors = ModelState.ToDictionary(
+                        kvp => kvp.Key,
+                        kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).ToArray()
+                    );
+
+                    return Json(new { success = false, errors });
                 }
             }
             catch (Exception ex)
@@ -81,8 +90,9 @@ namespace room_reservation.Controllers
                 return Json(new { success = false, message = ex.Message });
             }
         }
+
         [HttpPost]
-        public async Task<IActionResult> DisaplyUserName(string email)
+        public async Task<IActionResult> DisplayUserName(string email)
         {
             var user = await _UserDomain.GetUserByEmail(email);
             if (user != null)
