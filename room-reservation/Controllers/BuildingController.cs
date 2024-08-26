@@ -99,40 +99,6 @@ namespace room_reservation.Controllers
             }
         }
 
-
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> EditBuilding(BuildingViewModel building)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        // إذا كان هناك أخطاء في النموذج، إرجاع الأخطاء
-        //        return Json(new { success = false, message = "Invalid data" });
-        //    }
-        //    try
-        //    {
-        //        int check = await _BuildingDomain.UpdatBuilding(building);
-
-        //        if (check == 1)
-        //        {
-        //            return Json(new { success = true, message = " successfully" });
-        //        }
-        //        else if (check == 3)
-        //        {
-        //            return Json(new { success = false, message = "The code is exit " });
-        //        }
-        //        else if (check == 4)
-        //        {
-        //            return Json(new { success = false, message = "The building number is exit " });
-        //        }
-        //        return View();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return Json(new { success = false, message = ex.Message });
-        //    }
-        //}
-
         public async Task<IActionResult> Delet(Guid id)
         {
                await _BuildingDomain.DeleteBuilding(id);

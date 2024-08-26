@@ -127,34 +127,7 @@ namespace room_reservation.Domain
             }
         }
 
-        //public async Task<int> UpdatBuilding(BuildingViewModel buildings)
-        //{
-        //    try
-        //    {
-        //        tblBuildings buildingsinfo = await getBuildingByGuid(buildings.Guid);
-
-        //        tblBuildings buildingCode = _context.tblBuildings.AsNoTracking().SingleOrDefault(A => A.Code == buildings.Code);
-        //        if (buildingCode != null && buildingCode.Guid != buildings.Guid)
-        //            return 3;
-        //        tblBuildings buildingnum = _context.tblBuildings.AsNoTracking().SingleOrDefault(A => A.BuildingNo == buildings.BuildingNo && A.IsDeleted == false);
-        //        if (buildingnum != null && buildingnum.Guid != buildings.Guid)
-        //            return 4;
-
-        //        buildingsinfo.BuildingNameEn = buildings.BuildingNameEn;
-        //        buildingsinfo.BuildingNameAr = buildings.BuildingNameAr;
-        //        buildingsinfo.Code = buildings.Code;
-        //        buildingsinfo.BuildingNo = buildings.BuildingNo;
-
-
-        //        _context.Update(buildingsinfo);
-        //        await _context.SaveChangesAsync();
-        //        return 1;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return 0;
-        //    }
-        //}
+   
         public async Task DeleteBuilding(Guid id)
         {
            
