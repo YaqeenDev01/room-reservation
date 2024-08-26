@@ -50,11 +50,134 @@
                             <button type="submit" class="btn btn-primary px-5" title="حفظ">حفظ</button>
                         </div>
                     </div>
-                </form>
+                </form> 
 
                 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
                 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+                
+                <script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.19.1/jquery.validate.min.js" ></script>
+                <script src="https://ajax.aspnetcdn.com/ajax/mvc/5.2.3/jquery.validate.unobtrusive.min.js"></script>
                 <script>
+                    $(document).ready(function () {
+                        $('#buildingForm').submit(function (event) {
+                            event.preventDefault(); // منع الإرسال الافتراضي للنموذج
+
+                            // مسح الأخطاء السابقة
+                            $('.text-danger').text('');
+
+                            // تحقق من الحقول الفارغة
+                            let formIsValid = true;
+
+                            if (!$('input[name="BuildingNameAr"]').val()) {
+                                $('span[asp-validation-for="BuildingNameAr"]').text('هذا الحقل مطلوب.');
+                                formIsValid = false;
+                            }
+
+                            if (!$('input[name="BuildingNameEn"]').val()) {
+                                $('span[asp-validation-for="BuildingNameEn"]').text('هذا الحقل مطلوب.');
+                                formIsValid = false;
+                            }
+
+                            if (!$('input[name="BuildingNo"]').val()) {
+                                $('span[asp-validation-for="BuildingNo"]').text('هذا الحقل مطلوب.');
+                                formIsValid = false;
+                            }
+
+                            if (!$('input[name="Code"]').val()) {
+                                $('span[asp-validation-for="Code"]').text('هذا الحقل مطلوب.');
+                                formIsValid = false;
+                            }
+
+                            if (!formIsValid) {
+                                return; // إيقاف تقديم النموذج إذا كان هناك حقل فارغ
+                            }
+
+                            // إذا كان النموذج صحيحًا، قدمه باستخدام AJAX
+                            $.ajax({
+                                url: '@Url.Action("EditBuilding")', // URL للإجراء في الـController
+                                type: 'POST',
+                                data: $(this).serialize(),
+                                success: function (response) {
+                                    if (response.success) {
+                                        Swal.fire({
+                                            title: 'نجحت العملية!',
+                                            text: 'تمت إضافة المبنى بنجاح.',
+                                            icon: 'success'
+                                        }).then(() => {
+                                            window.location.href = '@Url.Action("Index")'; // إعادة التوجيه إلى صفحة Index بعد النجاح
+                                        });
+                                    } else if (response.message === "The code already exists") {
+                                        Swal.fire({
+                                            title: 'فشلت العملية!',
+                                            text: 'رمز المبنى محجوز لمبنى آخر.',
+                                            icon: 'warning'
+                                        });
+                                    } else if (response.message === "The building number already exists") {
+                                        Swal.fire({
+                                            title: 'فشلت العملية!',
+                                            text: 'رقم المبنى محجوز لمبنى آخر.',
+                                            icon: 'warning'
+                                        });
+                                    } else {
+                                        Swal.fire({
+                                            title: 'فشلت العملية!',
+                                            text: response.message || 'لم يتم إضافة المبنى.',
+                                            icon: 'error'
+                                        });
+                                    }
+                                },
+                                error: function () {
+                                    Swal.fire({
+                                        title: 'خطأ!',
+                                        text: 'حدث خطأ غير متوقع.',
+                                        icon: 'error'
+                                    });
+                                }
+                            });
+                        });
+                    });
+                </script>
+            </div>
+        </div>
+    </div>
+</div>
+
+               @*  <script>
+                    $(document).ready(function () {
+                        $('#buildingForm').submit(function (event) {
+                            event.preventDefault(); // منع الإرسال الافتراضي للنموذج
+
+                            // مسح الأخطاء السابقة
+                            $('.text-danger').text('');
+
+                            // تحقق من الحقول الفارغة
+                            let formIsValid = true;
+
+                            if (!$('input[name="BuildingNameAr"]').val()) {
+                                $('span[asp-validation-for="BuildingNameAr"]').text('هذا الحقل مطلوب.');
+                                formIsValid = false;
+                            }
+
+                            if (!$('input[name="BuildingNameEn"]').val()) {
+                                $('span[asp-validation-for="BuildingNameEn"]').text('هذا الحقل مطلوب.');
+                                formIsValid = false;
+                            }
+
+                            if (!$('input[name="BuildingNo"]').val()) {
+                                $('span[asp-validation-for="BuildingNo"]').text('هذا الحقل مطلوب.');
+                                formIsValid = false;
+                            }
+
+                            if (!$('input[name="Code"]').val()) {
+                                $('span[asp-validation-for="Code"]').text('هذا الحقل مطلوب.');
+                                formIsValid = false;
+                            }
+
+                            if (!formIsValid) {
+                                return; // إيقاف تقديم النموذج إذا كان هناك حقل فارغ
+                            }
+
+
                     $(document).ready(function () {
                         $('#buildingForm').submit(function (event) {
                             event.preventDefault(); // منع الإرسال الافتراضي للنموذج
@@ -102,5 +225,5 @@
                             });
                         });
                     });
-                </script>
+                </script *@>
             
