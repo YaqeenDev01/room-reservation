@@ -9,7 +9,7 @@
 } 
 <div class="block mb-4">
     <div class="block-header border-bottom px-4 py-4">
-        <h5 class="m-0"> إضاف مبنى </h5>
+        <h5 class="m-0"> إضافة مبنى </h5>
     </div>
     <div class="block-body py-5">
         <div class="row justify-content-center">
@@ -49,8 +49,9 @@
                         </div>
                     </div>
                 </form>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+
+                <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
                 <script>
                     $(document).ready(function () {
                         $('#buildingForm').submit(function (event) {
@@ -64,27 +65,27 @@
                                     if (response.success) {
                                         Swal.fire({
                                             title: 'نجحت العملية!',
-                                            text: 'أُضِيفَ المبنى بنجاح',
+                                            text: 'تمت إضافة المبنى بنجاح.',
                                             icon: 'success'
                                         }).then(() => {
                                             window.location.href = '@Url.Action("Index")'; // إعادة التوجيه إلى صفحة Index بعد النجاح
                                         });
-                                    } else if (response.message === "The code is exit ") {
+                                    } else if (response.message === "The code already exists") {
                                         Swal.fire({
                                             title: 'فشلت العملية!',
-                                            text: 'رمز المبنى محجوز لمبنى آخر',
+                                            text: 'رمز المبنى محجوز لمبنى آخر.',
                                             icon: 'warning'
                                         });
-                                    } else if (response.message === "The building number is exit ") {
+                                    } else if (response.message === "The building number already exists") {
                                         Swal.fire({
                                             title: 'فشلت العملية!',
-                                            text: 'رقم المبنى محجوز لمبنى آخر',
+                                            text: 'رقم المبنى محجوز لمبنى آخر.',
                                             icon: 'warning'
                                         });
                                     } else {
                                         Swal.fire({
                                             title: 'فشلت العملية!',
-                                            text: response.message || 'لم يضَاف المبنى',
+                                            text: response.message || 'لم يتم إضافة المبنى.',
                                             icon: 'error'
                                         });
                                     }
@@ -100,4 +101,3 @@
                         });
                     });
                 </script>
-

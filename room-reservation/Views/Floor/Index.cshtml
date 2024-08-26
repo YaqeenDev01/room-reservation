@@ -10,10 +10,12 @@
 <div class="block mb-4">
     <div class="block-header border-bottom px-4 py-3">
         <h5 class="m-0">إدارة الطوابق</h5>
-        <div class="d-flex gap-2">
+        <div class="d-flex gap-2"  >
             <div class="form-group">
-                <input type="text" class="form-control table__quick_search"
+                <form asp-action="Index" asp-controller="Floor">
+                <input name="searchString" type="text" class="form-control table__quick_search"
                        placeholder="البحث السريع ...">
+                </form>
             </div>
             <button type="button" class="btn btn-primary" id="btnRedirect">
                 إضافة طابق

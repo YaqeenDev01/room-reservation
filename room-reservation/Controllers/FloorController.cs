@@ -20,9 +20,17 @@ namespace room_reservation.Controllers
 
         }
         //return all floors in the view
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString)
         {
-            var floors = await _FloorDomain.GetAllFloors(); 
+            var floors = await _FloorDomain.GetAllFloors();
+            //activate quick search based on the building name 
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                floors = floors
+                    .Where(f => f.BuildingNameAr.Contains(searchString))
+                    .ToList();
+            }
+
             return View(floors);
         }
        
@@ -118,7 +126,11 @@ namespace room_reservation.Controllers
 
           //  return View(floor);
         }
-
+        public async Task<IList<FloorViewModel>> getFloorbyGuid(Guid id)
+        {
+            return await _FloorDomain.GetFloorByBuildingGuid(id);
+            
+        }
         public async Task<IActionResult> Delete(Guid id)
         {
             await _FloorDomain.DeleteFloor(id);

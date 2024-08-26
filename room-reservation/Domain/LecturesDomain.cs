@@ -33,6 +33,15 @@ namespace room_reservation.Domain
 
 
         }
+        public bool IsLectureExists(string buildingNo, string roomNo, DateTime lectureDate, TimeSpan startLectureTime, TimeSpan endLectureTime)
+        {
+            return _context.tblLectures.Any(l => l.BuildingNo == buildingNo
+                                                && l.RoomNo == roomNo
+                                                && l.LectureDate == lectureDate
+                                                && l.StartLectureTime == startLectureTime
+                                                && l.EndLectureTime == endLectureTime);
+        }
+
 
         public List<tblLectures> getlectures()
         {
@@ -78,10 +87,11 @@ namespace room_reservation.Domain
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error: {ex.Message}");
+                
                 return 0;
             }
         }
+
 
         public async Task<int> EditLecture(LecturesViewModel lectures)
         {
@@ -109,39 +119,7 @@ namespace room_reservation.Domain
                 return 0; //updated failed
             }
         }
-        //public async Task DeleteLecture(int id)
-        //{
-        //    var Lectures = _context.tblLectures.Where(x => x.Id == id).SingleOrDefault();
-        //    _context.tblLectures.Remove(Lectures);
-
-        //    await _context.SaveChangesAsync();
-
-        //}
-        //public async Task DeleteLecture(int id)
-        //{
-        //    var lectures = _context.tblLectures.Where(x => x.Id == id).SingleOrDefault();
-        //    _context.tblLectures.Remove(lectures);
-        //    await _context.SaveChangesAsync();
-
-        //}
-        //public async Task<LecturesViewModel> GetLectureById(int Id)
-        //{
-        //    return await _context.tblLectures.Where(x => x.Id == Id).Select(
-        //        x => new LecturesViewModel
-        //        {
-        //            Id = x.Id,
-        //            BuildingNo = x.BuildingNo,
-        //            RoomNo = x.RoomNo,
-        //            LectureDate = x.LectureDate,
-        //            StartLectureTime = x.StartLectureTime,
-        //            EndLectureTime = x.EndLectureTime,
-                   
-        //            Semester = x.Semester
-
-        //        }
-        //        ).FirstOrDefaultAsync();
-
-        //}
+       
         public async Task DeleteLecture(int id)
         {
             var lecture = _context.tblLectures.Where(x => x.Id == id).SingleOrDefault();
@@ -151,23 +129,7 @@ namespace room_reservation.Domain
         }
 
     }
-    //public int DeleteLecture(int Id)
-    //{
-    //    try
-    //    {
-    //        tblLectures Lectureinfo = GetLectureById(Id);
-
-
-    //        _context.tblLectures.Update(Lectureinfo);
-    //        _context.SaveChanges();
-
-    //        return 1;
-    //    }
-    //    catch (Exception ex)
-    //    {
-    //        return 0;
-    //    }
-    //}
+  
 
 }
 
