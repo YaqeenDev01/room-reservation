@@ -10,18 +10,16 @@ namespace room_reservation.ViewModel
         [Required(ErrorMessage = "هذا الحقل مطلوب")]
         [DisplayName("رقم المبنى ")]
         [Range(0, int.MaxValue, ErrorMessage = " هذا الحقل لا يقبل القيم السالبة ")]
-
         public int BuildingNo { get; set; }
         [Required(ErrorMessage = "هذا الحقل مطلوب")]
         [DisplayName("الاسم")]
         public string BuildingNameAr { get; set; }
         [Required(ErrorMessage = "هذا الحقل مطلوب")]
-        [DisplayName("Name ")]
+        [DisplayName("اسم المبنى باللغة الانجليزية ")]
         public string BuildingNameEn { get; set; }
         [Required(ErrorMessage = "هذا الحقل مطلوب")]
         [DisplayName("كود المبنى")]
-        [Range(0, int.MaxValue,ErrorMessage =" هذا الحقل لا يقبل القيم السالبة ") ]
-        public int Code { get; set; } //Unique
+        public string Code { get; set; } //Unique
         public Guid Guid { get; set; }  //Unique
 
         //public ICollection<tblPermissions> Permissions { get; set; }

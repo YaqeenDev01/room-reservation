@@ -12,8 +12,8 @@ using room_reservation.Models;
 namespace room_reservation.Migrations
 {
     [DbContext(typeof(KFUSpaceContext))]
-    [Migration("20240820081955_KFUSapce")]
-    partial class KFUSapce
+    [Migration("20240826193152_dbKFUSpace")]
+    partial class dbKFUSpace
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -265,8 +265,8 @@ namespace room_reservation.Migrations
                     b.Property<int>("BuildingNo")
                         .HasColumnType("int");
 
-                    b.Property<int>("Code")
-                        .HasColumnType("int");
+                    b.Property<string>("Code")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("Guid")
                         .HasColumnType("uniqueidentifier");
