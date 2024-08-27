@@ -20,6 +20,7 @@ namespace room_reservation.Domain
                 {
                     Id = rt.Id,
                     RoomAR = rt.RoomAR,
+                    guid = rt.guid
                 })
                 .ToListAsync();
         }
