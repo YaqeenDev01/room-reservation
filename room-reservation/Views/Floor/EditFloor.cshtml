@@ -61,10 +61,10 @@
         </div>
     </div>
 </div>
-</div>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
-                <script>
+</div> 
+@* <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> *@
+@*                 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script> *@
+<script>
                     $(document).ready(function () {
                         $('#EditFloor').submit(function (event) {
                             event.preventDefault(); // Prevent the default form submission
@@ -78,7 +78,8 @@
                                     if (response.success) {
                                         Swal.fire({
                                             title: '!نجحت العملية',
-                                            text: 'عُدِّلَت البيانات بنجاح',
+                                         //   text: 'عُدِّلَت البيانات بنجاح',
+                                         text: response.message, 
                                             icon: 'success'
                                         }).then(() => {
                                             window.location.href = '@Url.Action("Index")';
@@ -86,7 +87,8 @@
                                     } else {
                                         Swal.fire({
                                             title: '!فشلت العملية',
-                                            text: 'لم تُعدَّل المعلومات',
+                                          //  text: 'لم تُعدَّل المعلومات',
+                                          text:response.message,
                                             icon: 'error'
                                         });
                                     }

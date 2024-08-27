@@ -53,19 +53,21 @@ namespace room_reservation.Controllers
        
        
             var rooms = await _roomDomain.GetRoomByFilter(buildingGuid, floorGuid, roomTypeGuid, seatCapacity);
-    
-            var bookings = rooms.Select(room => new BookingViewModel
-            {
-                BuildingNameAr = room.Floor.Building.BuildingNameAr,
-                FloorNo = room.Floor.FloorNo,
-                RoomNo = room.RoomNo,
-                RoomAR = room.RoomAR,
-                SeatCapacity = room.SeatCapacity,
-                guid = room.Guid
-                
-            }).ToList();
-    
-            return View(bookings); 
+            return View(rooms);
+            //
+            // //map room view model to book view model
+            // var bookings = rooms.Select(room => new BookingViewModel
+            // {
+            //     BuildingNameAr = room.Floor.Building.BuildingNameAr,
+            //     FloorNo = room.Floor.FloorNo,
+            //     RoomNo = room.RoomNo,
+            //     RoomAR = room.RoomAR,
+            //     SeatCapacity = room.SeatCapacity,
+            //     guid = room.Guid
+            //     
+            // }).ToList();
+            //
+            // return View(bookings); 
 
         }
         
@@ -177,13 +179,15 @@ namespace room_reservation.Controllers
         
 
         [HttpGet]
-        public IActionResult Add()
+        public async Task<IActionResult> Add(Guid id)
         {
-            return View();
+
+          
+            return View(  await _BookingDomain.getAllBookingByRoomGuid(id));
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Add(BookingViewModel booking)
+        public async Task<IActionResult> Add(BookingViewModel booking)
         {
 
             if (ModelState.IsValid)
@@ -228,3 +232,4 @@ namespace room_reservation.Controllers
 
 }
 
+ 

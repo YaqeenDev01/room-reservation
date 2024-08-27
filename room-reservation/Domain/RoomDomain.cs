@@ -134,13 +134,14 @@ namespace room_reservation.Domain
         
         public async Task<IEnumerable<RoomViewModel>> GetRoomByFilter(Guid? buildingGuid, Guid? floorGuid,Guid? roomTypeGuid,int? seatCapacity )
         {
-            return await _context.tblRooms.Include(rt => rt.RoomType).Include(f => f.Floor)
+            var rooms= await _context.tblRooms.Include(rt => rt.RoomType).Include(f => f.Floor)
                 .ThenInclude(b => b.Building)
                 .Where(x => 
-                    (!buildingGuid.HasValue || x.Floor.Building.Guid == buildingGuid) && 
-                    (!floorGuid.HasValue || x.Floor.Guid == floorGuid) && (!roomTypeGuid.HasValue || x.RoomType.guid == roomTypeGuid) 
-                    && (!seatCapacity.HasValue ||x.SeatCapacity>=seatCapacity))
-                   .Select(r=>new RoomViewModel
+                  (!buildingGuid.HasValue || x.Floor.Building.Guid == buildingGuid) && 
+                     (!floorGuid.HasValue || x.Floor.Guid == floorGuid)
+                     && (!roomTypeGuid.HasValue || x.RoomType.guid == roomTypeGuid)
+                   && (!seatCapacity.HasValue ||x.SeatCapacity>=seatCapacity))
+                    .Select(r=>new RoomViewModel
                 {
                     Id=r.Id,
                     RoomNo = r.RoomNo,
@@ -150,10 +151,11 @@ namespace room_reservation.Domain
                     FloorId = r.FloorId,
                     Guid = r.guid,
                     IsActive = r.IsActive,
-                    
+                    BuildingNameAr = r.Floor.Building.BuildingNameAr,
+                    FloorNo = r.Floor.FloorNo,
 
                 }).ToListAsync();
-
+            return rooms;
         }
 
         

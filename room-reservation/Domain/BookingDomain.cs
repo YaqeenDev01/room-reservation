@@ -93,6 +93,22 @@ namespace room_reservation.Domain {
                 return $"Error: {ex.Message}";
             }
         }
+        public async Task<BookingViewModel> getAllBookingByRoomGuid(Guid id)
+        {
+            var room =  await _context.tblRooms.Include(x=>x.RoomType).Include(x=> x.Floor).ThenInclude(x=>x.Building).FirstOrDefaultAsync(x=>x.guid==id);
+
+            return new BookingViewModel
+            {
+                FloorNo = room.Floor.FloorNo,
+                BuildingNameAr = room.Floor.Building.BuildingNameAr,
+                SeatCapacity = room.SeatCapacity,
+                RoomNo = room.RoomNo,
+                RoomGuid = room.guid,
+                RoomAR = room.RoomType.RoomAR,
+                BookingDate = DateTime.Now
+            };
+        }
+      
 
         public tblBookings getBookingByGuid(Guid id)
 

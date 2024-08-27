@@ -37,6 +37,7 @@ namespace room_reservation.ViewModel
         public string BuildingNameAr { get; set; }
         public int FloorNo { get; set; }
         public int SeatCapacity { get; set; }
+        public Guid RoomGuid { get; set; }
 
 
 

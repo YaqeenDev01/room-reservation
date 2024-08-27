@@ -8,7 +8,7 @@ namespace room_reservation.Models
         public int BuildingNo { get; set; }
         public string BuildingNameAr { get; set; }
         public string BuildingNameEn { get; set; }
-        public int Code { get; set; } //Unique
+        public string Code { get; set; } //Unique
         public Guid Guid { get; set; } //Unique
         public bool IsDeleted { get; set; }
         public ICollection<tblFloors> Floors { get; set; }
