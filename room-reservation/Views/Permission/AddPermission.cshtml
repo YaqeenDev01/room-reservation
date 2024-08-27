@@ -34,95 +34,96 @@
                                
                             </div>
                         </div>
-                      
+                        
+
                         <div class="d-flex justify-content-start">
                             <button type="submit" class="btn btn-primary px-5" title="إضافة">إضافة</button>
                         </div>
                     </div>
+
                 </form>
 
-                <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
-                
-                <script>
-                    $(document).ready(function () {
-                        $('#emailInput').on('blur', function () {
-                            var email = $(this).val();
 
-                            if (email) {
+                @section Scripts {
+                    <script>
+                        $(document).ready(function () {
+                            $('#emailInput').on('blur', function () {
+                                var email = $(this).val();
+
+                                if (email) {
+                                    $.ajax({
+                                        url: '@Url.Action("DisplayUserName")',
+                                        type: 'POST',
+                                        data: { email: email },
+                                        success: function (response) {
+                                            if (response.success) {
+                                                $('#userNameInput').val(response.userName).css('color', 'black');
+                                            } else {
+                                                $('#userNameInput').val('المستخدم غير موجود').css('color', 'red');
+                                            }
+                                        },
+                                        error: function () {
+                                            Swal.fire({
+                                                title: 'Error!',
+                                                text: 'An unexpected error occurred.',
+                                                icon: 'error'
+                                            });
+                                        }
+                                    });
+                                } else {
+                                    $('#userNameInput').val('');
+                                }
+                            });
+
+                            $('#permissionForm').submit(function (event) {
+                                event.preventDefault();
+
                                 $.ajax({
-                                    url: '@Url.Action("DisplayUserName")',
+                                    url: '@Url.Action("AddPermission")',
                                     type: 'POST',
-                                    data: { email: email },
+                                    data: $(this).serialize(),
                                     success: function (response) {
                                         if (response.success) {
-                                            $('#userNameInput').val(response.userName).css('color', 'black');
+                                            Swal.fire({
+                                                title: 'نجحت العملية!',
+                                                text: response.message,
+                                                icon: 'success'
+                                            }).then(() => {
+                                                window.location.href = '@Url.Action("Index")';
+                                            });
                                         } else {
-                                            $('#userNameInput').val('المستخدم غير موجود').css('color', 'red');
+                                            if (response.errors) {
+                                                $('.text-danger').text('');
+
+                                                $.each(response.errors, function (key, errorMessages) {
+                                                    var field = $('[name="' + key + '"]');
+                                                    var errorContainer = field.siblings('.text-danger');
+
+                                                    if (errorContainer.length) {
+                                                        errorContainer.text(errorMessages.join(', '));
+                                                    }
+                                                });
+                                            } else {
+                                                Swal.fire({
+                                                    title: 'فشلت العملية!',
+                                                    text: response.message,
+                                                    icon: 'error'
+                                                });
+                                            }
                                         }
                                     },
                                     error: function () {
                                         Swal.fire({
-                                            title: 'Error!',
-                                            text: 'An unexpected error occurred.',
+                                            title: 'خطأ!',
+                                            text: 'حدث خطأ غير متوقع',
                                             icon: 'error'
                                         });
                                     }
                                 });
-                            } else {
-                                $('#userNameInput').val('');
-                            }
-                        });
-
-                        $('#permissionForm').submit(function (event) {
-                            event.preventDefault();
-
-                            $.ajax({
-                                url: '@Url.Action("AddPermission")',
-                                type: 'POST',
-                                data: $(this).serialize(),
-                                success: function (response) {
-                                    if (response.success) {
-                                        Swal.fire({
-                                            title: 'نجحت العملية!',
-                                            text: response.message,
-                                            icon: 'success'
-                                        }).then(() => {
-                                            window.location.href = '@Url.Action("Index")';
-                                        });
-                                    } else {
-                                        if (response.errors) {
-                                            
-                                            $('.text-danger').text('');
-
-                                            $.each(response.errors, function (key, errorMessages) {
-                                                var field = $('[name="' + key + '"]');
-                                                var errorContainer = field.siblings('.text-danger');
-
-                                                if (errorContainer.length) {
-                                                    errorContainer.text(errorMessages.join(', '));
-                                                }
-                                            });
-                                        } else {
-                                            Swal.fire({
-                                                title: 'فشلت العملية!',
-                                                text: response.message,
-                                                icon: 'error'
-                                            });
-                                        }
-                                    }
-                                },
-                                error: function () {
-                                    Swal.fire({
-                                        title: 'خطأ!',
-                                        text: 'حدث خطأ غير متوقع',
-                                        icon: 'error'
-                                    });
-                                }
                             });
                         });
-                    });
-                </script>
+                    </script>
+                }
 
             </div>
         </div>

@@ -38,10 +38,22 @@
                     <div class="d-flex justify-content-end">
                         <button type="submit" class="btn btn-primary px-5" title="تعديل">تعديل</button>
                     </div>
+                        <button id="testAlert">Test SweetAlert</button>
+
+                        <script>
+                            $(document).ready(function () {
+                                $('#testAlert').on('click', function () {
+                                    Swal.fire({
+                                        title: 'Test Alert!',
+                                        text: 'If you see this, SweetAlert is working.',
+                                        icon: 'success'
+                                    });
+                                });
+                            });
+                        </script>
                     </div>
                 </form>
-                <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+            
                 <script>
                     $(document).ready(function () {
                         $('#permissionForm').submit(function (event) {
