@@ -4,8 +4,10 @@ using room_reservation.Domain;
 using room_reservation.Models;
 using room_reservation.ViewModel;
 using System.Linq;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+
 
 namespace room_reservation.Controllers
 {
@@ -39,8 +41,7 @@ namespace room_reservation.Controllers
                 ViewBag.RoomTypes = new SelectList(await _roomTypeDomain.GetAllRoomTypes(), "guid", "RoomAR");
            
                 return View();
-
-           
+                
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -167,8 +168,6 @@ namespace room_reservation.Controllers
             return await _floorDomain.GetFloorByBuildingGuid(id);
             
         }
-   
-        
 
         // view the bookings page 
         public async Task<IActionResult> Book()
@@ -181,18 +180,17 @@ namespace room_reservation.Controllers
         [HttpGet]
         public async Task<IActionResult> Add(Guid id)
         {
-
-          
-            return View(  await _BookingDomain.getAllBookingByRoomGuid(id));
+            return View(await _BookingDomain.getAllBookingByRoomGuid(id));
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Add(BookingViewModel booking)
         {
-
+          
             if (ModelState.IsValid)
             {
-                _BookingDomain.AddBooking(booking);
+                booking.Email =User.FindFirst(ClaimTypes.Email).Value;
+                await _BookingDomain.AddBooking(booking);
                 return RedirectToAction(nameof(Index));
             }
             return View();

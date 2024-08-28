@@ -142,6 +142,7 @@ namespace room_reservation.Controllers
                     var identity = new ClaimsIdentity(new[]
                     {
                     new Claim(ClaimTypes.Name , user.FullNameEN),
+                    new Claim(ClaimTypes.Email , user.Email),
                     new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                     new Claim(ClaimTypes.Role, role),
                     new Claim(ClaimTypes.GivenName, user.FullNameAR)
