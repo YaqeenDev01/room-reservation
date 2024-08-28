@@ -9,6 +9,19 @@ namespace room_reservation.ViewModel
     public class BookingViewModel
     {
         public int Id { get; set; }
+        
+                
+        public int Duration { get; set; }
+
+        public string FullName { get; set; }
+        
+        public string Email { get; set; }
+        
+        public string PhoneNumber { get; set; }
+        
+        [Required(ErrorMessage = "هذا الحقل مطلوب")]
+        [DisplayName("سبب الرفض")]
+        public string? RejectReason { get; set; }
 
         [Required(ErrorMessage = "هذا الحقل مطلوب")]
         [DisplayName("تاريخ الحجز")]
@@ -29,7 +42,7 @@ namespace room_reservation.ViewModel
 
         public tblBookingStatues BookingStatues { get; set; }
         public int BookingStatuesId { get; set; }
-        
+
         
         //adding room and room type  details for the booking details view to show them 
         public string RoomAR { get; set; }
@@ -37,6 +50,7 @@ namespace room_reservation.ViewModel
         public string BuildingNameAr { get; set; }
         public int FloorNo { get; set; }
         public int SeatCapacity { get; set; }
+        public Guid RoomGuid { get; set; }
 
 
 

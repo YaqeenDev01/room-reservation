@@ -41,12 +41,12 @@ namespace room_reservation.Domain
                     {
                         // Check if FloorNo and building ID exists or not in db 
                         var floorExists = _context.tblFloors
-                            .Any(fn => fn.FloorNo == floor.FloorNo && fn.BuildingId == floor.BuildingId);
+                            .Any(fn => fn.FloorNo == floor.FloorNo && fn.BuildingId == floor.BuildingId && fn.IsDeleted==false);
                         
                         if (floorExists)
                         {
-                            //if it doesnt exist
-                            return 0;
+                            //if it duplicates exists 
+                            return 2;
                         }
                         tblFloors floorInfo = new tblFloors();
                        // floorInfo.Id = floor.Id;
