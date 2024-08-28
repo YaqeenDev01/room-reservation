@@ -16,9 +16,16 @@ namespace room_reservation.Domain
             _context = context;
         }
         //return list of data 
-        public async Task <IEnumerable<tblUsers>> GetAllUsers()
+        public async Task <IEnumerable<UserViewModel>> GetAllUsers()
         {
-            return await _context.tblUsers.ToListAsync();
+            return await _context.tblUsers.Where(user=>!user.IsDeleted).Select(u=>new UserViewModel
+                {
+                    UserType = u.UserType,
+                    FullNameEN = u.FullNameEN,
+                    FullNameAR = u.FullNameAR,
+                    Email = u.Email,
+                    PhoneNumber = u.PhoneNumber
+                }).ToListAsync();
         }
  
         public List<tblUsers> getUsers()
@@ -74,7 +81,7 @@ namespace room_reservation.Domain
         public int DeleteUser(tblUsers user)
         {
 
-            user.IsDeleted = false;
+            user.IsDeleted = true;
             _context.SaveChanges();
             return 1;
 
