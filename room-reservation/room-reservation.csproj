@@ -30,4 +30,10 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Areas\FacultyMember\" />
+    <Folder Include="Areas\Student\" />
+    <Folder Include="Areas\SiteAdmin\" />
+  </ItemGroup>
+
 </Project>

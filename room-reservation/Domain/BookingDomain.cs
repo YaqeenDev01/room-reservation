@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 using room_reservation.Models;
 using room_reservation.ViewModel;
 
@@ -6,13 +7,14 @@ namespace room_reservation.Domain {
     public class BookingDomain
     {
         private readonly KFUSpaceContext _context;
-      
-        public BookingDomain(KFUSpaceContext context)
+        private readonly UserDomain _userDomain;
+        public BookingDomain(KFUSpaceContext context,UserDomain userDomain)
         {
             _context = context;
-   
-        }
+            _userDomain = userDomain;
 
+        }
+        [Authorize]
         public async Task<IEnumerable<BookingViewModel>> GetAllBooking()
         {
             return await _context.tblBookings.Where(booking => !booking.IsDeleted).Select(x=> new BookingViewModel
@@ -23,7 +25,15 @@ namespace room_reservation.Domain {
                 BookingEnd = x.BookingEnd,
                 guid = x.guid,
                 RoomId = x.RoomId, 
-                // RoomNo = x.Rooms.RoomNo,
+                RoomNo = x.Rooms.RoomNo,
+                BookingStatues = x.BookingStatues,
+                PhoneNumber = x.PhoneNumber,
+                FullName = x.FullName,
+                Email = x.Email,
+                Duration = x.Duration,
+                RejectReason = x.RejectReason,
+                
+                
                 // FloorNo = x.Rooms.Floor.FloorNo,
                 // BuildingNameAr = x.Rooms.Floor.Building.BuildingNameAr,
                 // SeatCapacity=x.Rooms.SeatCapacity,
@@ -63,21 +73,25 @@ namespace room_reservation.Domain {
         {
             return await _context.tblBookings.ToListAsync();
         }
-        public string AddBooking(BookingViewModel Booking)
+        public async Task<string> AddBooking(BookingViewModel Booking)
         {
             try
             {
+                
+                var user= await _userDomain.GetUserByEmail(Booking.Email);
+               
                 tblBookings Bookings = new tblBookings();
                 Bookings.Id = Booking.Id;
                 Bookings.BookingDate = Booking.BookingDate;
                 Bookings.BookingStart = Booking.BookingStart;
                 Bookings.BookingEnd = Booking.BookingEnd;
-                //Bookings.BookingStatues = booking.BookingStatues;
+                //Bookings.BookingStatues = Booking.BookingStatues;
                 //Bookings.RejectReason = booking.RejectReason;
-                //Bookings.Duration = booking.Duration;
-                //Bookings.Email = booking.Email;
-                //Bookings.FullName = booking.FullName;
-                //Bookings.PhoneNumber = booking.PhoneNumber;
+                //Bookings.Duration = Booking.Duration;
+                
+                Bookings.Email = user.Email;
+                Bookings.FullName = user.FullNameAR;
+                Bookings.PhoneNumber = user.PhoneNumber;
                
                 Bookings.guid = Guid.NewGuid();
                 Bookings.IsDeleted = false;

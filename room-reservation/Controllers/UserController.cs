@@ -22,9 +22,17 @@ namespace room_reservation.Controllers
             _PermissionDomain = PermissionDomain;
 
         }
-        public async Task <IActionResult> Index()
+        public async Task <IActionResult> Index(String searchString)
         {
+          
+          
             var users = await _UserDomain.GetAllUsers();
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                users = users
+                    .Where(u => u.FullNameAR.Contains(searchString)||u.FullNameEN.Contains(searchString)||u.Email.Contains(searchString))
+                    .ToList();
+            }
             return View(users);
         }
 
@@ -32,6 +40,14 @@ namespace room_reservation.Controllers
         [HttpGet]
         public IActionResult AddUser()
         {
+            ViewBag.UserType = new SelectList(new List<string>
+            {
+                "طالب",
+                "عضو هيئة تدريس",
+                "منسق الكلية",
+                "مدير النظام"
+              
+            });
             return View();
         }
 
@@ -39,6 +55,14 @@ namespace room_reservation.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddUser(UserViewModel user) {
             //is model state valid to check if the user has entered data or not and if not it will send that the [Required (ErrorMessage="")] in view model
+            ViewBag.UserType = new SelectList(new List<string>
+            {
+                "طالب",
+                "عضو هيئة تدريس",
+                "منسق الكلية",
+                "مدير النظام"
+              
+            });
             try
             {
                 if (ModelState.IsValid)
@@ -63,12 +87,28 @@ namespace room_reservation.Controllers
         [HttpGet]
         public IActionResult EditUser(int id)
         {
+            ViewBag.UserType = new SelectList(new List<string>
+            {
+                "طالب",
+                "عضو هيئة تدريس",
+                "منسق الكلية",
+                "مدير النظام"
+              
+            });
             return View(_UserDomain.getUserById(id));
         }
 
         [HttpPost]
         public IActionResult EditUser(tblUsers user)
         {
+            ViewBag.UserType = new SelectList(new List<string>
+            {
+                "طالب",
+                "عضو هيئة تدريس",
+                "منسق الكلية",
+                "مدير النظام"
+              
+            });
             if (ModelState.IsValid)
             {
                 _UserDomain.EditUser(user);
@@ -132,6 +172,7 @@ namespace room_reservation.Controllers
 
                     string role = "";
                     PermissionViewModel permission = await _PermissionDomain.GetPermissionByEmail(user.Email);
+                    
                     if (permission == null) {
                         role = "No Role";
                     }
@@ -142,6 +183,7 @@ namespace room_reservation.Controllers
                     var identity = new ClaimsIdentity(new[]
                     {
                     new Claim(ClaimTypes.Name , user.FullNameEN),
+                    new Claim(ClaimTypes.Email , user.Email),
                     new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                     new Claim(ClaimTypes.Role, role),
                     new Claim(ClaimTypes.GivenName, user.FullNameAR)
