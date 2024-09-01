@@ -8,7 +8,6 @@
     ViewData["Title"] = "عرض بيانات طلب الحجز";
 }
 
-
 <div class="block-header border-bottom px-4 py-4">
     <h5 class="m-0">عرض بيانات الحجز</h5>
 </div>
@@ -24,8 +23,8 @@
                     <div class="mb-4">
                         <label  asp-for="BuildingNameAr" class="mb-1"> أسم المبنى</label>
                           <input readonly asp-for="BuildingNameAr" type="text" class="form-control" asp-items="@ViewBag.buildingsName"/>
-                        <span asp-validation-for="BuildingNameAr" class="text-danger"> </span>
-                        <p class="form-control-plaintext">@Model.BuildingNameAr</p>
+@*                         <span asp-validation-for="BuildingNameAr" class="text-danger"> </span>
+ *@                        <p class="form-control-plaintext">@Model.BuildingNameAr</p>
 
                     </div>
                 </div><!-- END ITEM -->
@@ -34,44 +33,44 @@
                     <div class="mb-4">
                         <label asp-for="FloorNo" class="cobtrol-label">رقم الطابق </label>
                          <input readonly asp-for="FloorNo" type="number" class="form-control" />
-                        <span asp-validation-for="FloorNo" class="text-danger"></span>
-                        <p class="form-control-plaintext">@Model.FloorNo</p>
+@*                         <span asp-validation-for="FloorNo" class="text-danger"></span>
+ *@                        <p class="form-control-plaintext">@Model.FloorNo</p>
                     </div>
                 </div><!-- END ITEM -->
                 <!-- START ITEM -->
                 <div class="col-md-6">
                     <div class="mb-4">
                         <label asp-for="RoomNo" class="cobtrol-label">رقم القاعة</label>
-                        @*  <input asp-for="RoomNo" type="number" class="form-control" />
-                        <span asp-validation-for="RoomNo" class="text-danger"></span> *@
-                        <p class="form-control-plaintext">@Model.RoomNo</p>
+                         <input readonly asp-for="RoomNo" type="number" class="form-control" />
+@*                         <span asp-validation-for="RoomNo" class="text-danger"></span>
+ *@                        <p class="form-control-plaintext">@Model.RoomNo</p>
                     </div>
                 </div><!-- END ITEM -->
                 <!-- START ITEM -->
                 <div class="col-md-6">
                     <div class="mb-4">
                         <label asp-for="BookingDate" class="cobtrol-label">تاريخ الحجز</label>
-                        @* <input asp-for="BookingDate" type="number" class="form-control" />
-                        <span asp-validation-for="BookingDate" class="text-danger"></span> *@
-                        <p class="form-control-plaintext">@Model.BookingDate.ToString("yyyy-MM-dd")</p>
+                        <input readonly asp-for="BookingDate" type="number" class="form-control" />
+@*                         <span asp-validation-for="BookingDate" class="text-danger"></span>
+ *@                        <p class="form-control-plaintext">@Model.BookingDate.ToString("yyyy-MM-dd")</p>
                     </div>
                 </div><!-- END ITEM -->
                 <!-- START ITEM -->
                 <div class="col-md-6">
                     <div class="mb-4">
                         <label asp-for="SeatCapacity" class="cobtrol-label">الاستيعاب</label>
-                        @* <input asp-for="SeatCapacity" type="number" class="form-control" />
-                        <span asp-validation-for="SeatCapacity" class="text-danger"></span> *@
-                        <p class="form-control-plaintext">@Model.SeatCapacity</p>
+                         <input readonly asp-for="SeatCapacity" type="number" class="form-control" />
+@*                         <span asp-validation-for="SeatCapacity" class="text-danger"></span> 
+ *@                        <p class="form-control-plaintext">@Model.SeatCapacity</p>
                     </div>
                 </div><!-- END ITEM -->
                 <!-- START ITEM -->
                 <div class="col-md-6">
                     <div class="mb-4">
                         <label asp-for="BookingStart" class="cobtrol-label">بداية الحجز</label>
-                        @* <input asp-for="BookingStart" type="number" class="form-control" />
-                        <span asp-validation-for="BookingStart" class="text-danger"></span> *@
-                        <p class="form-control-plaintext">@Model.BookingStart.ToString("HH:mm")</p>
+                        <input readonly asp-for="BookingStart" type="number" class="form-control" />
+@*                         <span asp-validation-for="BookingStart" class="text-danger"></span>
+ *@                        <p class="form-control-plaintext">@Model.BookingStart.ToString("HH:mm")</p>
                     </div>
                 </div><!-- END ITEM -->
                 <!-- START ITEM -->
