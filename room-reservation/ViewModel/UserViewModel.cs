@@ -30,7 +30,7 @@ namespace room_reservation.ViewModel
         [Required(ErrorMessage = " هذا الحقل مطلوب")]
         [DisplayName("نوع المستخدم")]
         public string UserType { get; set; }
-       
+        public bool IsDeleted { get; set; }
 
 
     }
