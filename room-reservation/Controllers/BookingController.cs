@@ -7,7 +7,7 @@ using System.Linq;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-
+using Microsoft.AspNetCore.Authorization;
 
 namespace room_reservation.Controllers
 {
@@ -30,7 +30,7 @@ namespace room_reservation.Controllers
             _roomDomain = roomDomain;
             _roomTypeDomain = roomTypeDomain;
         }
-
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> Index()
         {

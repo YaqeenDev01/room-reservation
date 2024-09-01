@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 using room_reservation.Models;
 using room_reservation.ViewModel;
 
@@ -13,7 +14,7 @@ namespace room_reservation.Domain {
             _userDomain = userDomain;
 
         }
-
+        [Authorize]
         public async Task<IEnumerable<BookingViewModel>> GetAllBooking()
         {
             return await _context.tblBookings.Where(booking => !booking.IsDeleted).Select(x=> new BookingViewModel

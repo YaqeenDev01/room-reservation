@@ -132,6 +132,7 @@ namespace room_reservation.Controllers
 
                     string role = "";
                     PermissionViewModel permission = await _PermissionDomain.GetPermissionByEmail(user.Email);
+                    
                     if (permission == null) {
                         role = "No Role";
                     }
