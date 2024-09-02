@@ -8,7 +8,7 @@ namespace room_reservation.ViewModel
 {
     public class BookingViewModel
     {
-        public int Id { get; set; }
+        public  int BookingId { get; set; }
         
                 
         public int Duration { get; set; }
@@ -19,9 +19,9 @@ namespace room_reservation.ViewModel
         
         public string PhoneNumber { get; set; }
         
-        [Required(ErrorMessage = "هذا الحقل مطلوب")]
+  
         [DisplayName("سبب الرفض")]
-        public string? RejectReason { get; set; }
+        public string RejectReason { get; set; }
 
         [Required(ErrorMessage = "هذا الحقل مطلوب")]
         [DisplayName("تاريخ الحجز")]

@@ -8,18 +8,19 @@ namespace room_reservation.Domain {
     {
         private readonly KFUSpaceContext _context;
         private readonly UserDomain _userDomain;
-        public BookingDomain(KFUSpaceContext context,UserDomain userDomain)
+        private readonly RoomDomain _roomDomain;
+        public BookingDomain(KFUSpaceContext context,UserDomain userDomain,RoomDomain roomDomain)
         {
             _context = context;
             _userDomain = userDomain;
-
+            _roomDomain = roomDomain;
         }
         [Authorize]
         public async Task<IEnumerable<BookingViewModel>> GetAllBooking()
         {
             return await _context.tblBookings.Where(booking => !booking.IsDeleted).Select(x=> new BookingViewModel
             {
-                Id = x.Id,
+                BookingId = x.Id,
                 BookingDate = x.BookingDate,
                 BookingStart = x.BookingStart,
                 BookingEnd = x.BookingEnd,
@@ -73,38 +74,43 @@ namespace room_reservation.Domain {
         {
             return await _context.tblBookings.ToListAsync();
         }
-        public async Task<string> AddBooking(BookingViewModel Booking)
+        public  async Task<int> AddBooking(BookingViewModel Booking)
         {
             try
             {
                 
                 var user= await _userDomain.GetUserByEmail(Booking.Email);
-               
+                var room = await _roomDomain.GetRoomByGuid(Booking.RoomGuid);
+                
                 tblBookings Bookings = new tblBookings();
-                Bookings.Id = Booking.Id;
-                Bookings.BookingDate = Booking.BookingDate;
+                Bookings.Id = Booking.BookingId;
+                Bookings.BookingDate = DateTime.Now;
                 Bookings.BookingStart = Booking.BookingStart;
                 Bookings.BookingEnd = Booking.BookingEnd;
-                //Bookings.BookingStatues = Booking.BookingStatues;
+                Bookings.BookingStatues = Booking.BookingStatues;
+         
                 //Bookings.RejectReason = booking.RejectReason;
-                //Bookings.Duration = Booking.Duration;
-                
+               // Bookings.Duration = Booking.BookingEnd - Booking.BookingStart;
+               //since duration is int this wont work 
+               /**/
+               
+               Bookings.Duration = Booking.Duration;
                 Bookings.Email = user.Email;
                 Bookings.FullName = user.FullNameAR;
                 Bookings.PhoneNumber = user.PhoneNumber;
                
                 Bookings.guid = Guid.NewGuid();
                 Bookings.IsDeleted = false;
-                Bookings.RoomId = Booking.RoomId;
-
+                Bookings.RoomId = room.Id;
+                Bookings.BookingStatuesId = 2;
                 _context.tblBookings.Add(Bookings);
-                _context.SaveChanges();
-                return "successful";
+               await _context.SaveChangesAsync();
+                return 1;
             }
             catch (Exception ex)
             {
                 // تسجيل الخطأ أو معالجته هنا
-                return $"Error: {ex.Message}";
+                return 0;
             }
         }
         public async Task<BookingViewModel> getAllBookingByRoomGuid(Guid id)
@@ -137,7 +143,7 @@ namespace room_reservation.Domain {
             BookingViewModel models = new BookingViewModel
             {
              
-                Id = BookingId.Id,
+                BookingId  = BookingId.Id,
                 BookingDate = BookingId.BookingDate,
                 BookingStart = BookingId.BookingStart,
                 BookingEnd = BookingId.BookingEnd,
@@ -159,7 +165,7 @@ namespace room_reservation.Domain {
             try
             {
                 tblBookings Bookings = getBookingByGuid(booking.guid);
-                Bookings.Id = booking.Id;
+                Bookings.Id = booking.BookingId;
                 Bookings.BookingDate = booking.BookingDate;
                 Bookings.BookingStart = booking.BookingStart;
                 Bookings.BookingEnd = booking.BookingEnd;
@@ -225,7 +231,7 @@ namespace room_reservation.Domain {
                 // Map the tblBookings entity to BookingViewModel
                 BookingViewModel bookingViewModel = new BookingViewModel
                 {
-                    Id = bookings.Id,
+                    BookingId= bookings.Id,
                     BookingDate = bookings.BookingDate,
                     BookingStart = bookings.BookingStart,
                     BookingEnd = bookings.BookingEnd,

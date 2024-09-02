@@ -17,45 +17,48 @@
             <input hidden asp-for="guid"/>
             <form id="bookingForm" method="post">
                 <div class="row">
+                    <input type="hidden" asp-for="RoomGuid" />
+                   
+
                     <div class="col-md-6">
                         <div class="mb-4">
                             <label asp-for="BuildingNameAr" class="mb-1"> اسم المبنى </label>
-                            <input asp-for="BuildingNameAr" class="form-control text-start">
+                            <input  readonly asp-for="BuildingNameAr" class="form-control text-start">
                             <span asp-validation-for="BuildingNameAr" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="mb-4">
                             <label asp-for="FloorNo" class="control-label cb-1">رقم الطابق </label>
-                            <input asp-for="FloorNo" class="form-control"/>
+                            <input readonly asp-for="FloorNo" class="form-control"/>
                             <span asp-validation-for="FloorNo" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="mb-4">
                             <label asp-for="RoomNo" class="mb-1">رقم القاعة </label>
-                            <input asp-for="RoomNo" class="form-control" asp-items="Model.Buildings"/>
+                            <input readonly asp-for="RoomNo" class="form-control" asp-items="Model.Buildings"/>
                             <span asp-validation-for="RoomNo" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="mb-4">
                             <label asp-for="RoomAR" class="control-label cb-1">نوع القاعة </label>
-                            <input asp-for="RoomAR" class="form-control"></input>
+                            <input readonly asp-for="RoomAR" class="form-control"></input>
                             <span asp-validation-for="RoomAR" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="mb-4">
                             <label asp-for="SeatCapacity" class="mb-1"> الاستيعاب</label>
-                            <input asp-for="SeatCapacity" class="form-control text-start">
+                            <input readonly asp-for="SeatCapacity" class="form-control text-start">
                             <span asp-validation-for="SeatCapacity" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="mb-4">
                             <label asp-for="BookingDate" class="control-label cb-1"> التاريخ </label>
-                            <input asp-for="BookingDate" type="datetime-local" class="form-control"/>
+                            <input asp-for="BookingDate" type="datetime" class="form-control"/>
                             <span asp-validation-for="BookingDate" class="text-danger"></span>
                         </div>
                     </div>
@@ -79,8 +82,8 @@
                     </div>
                 </div>
             </form>
-            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+            @* <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> *@
+            @* <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script> *@
 
             <script>
                     $(document).ready(function () {
@@ -110,8 +113,8 @@
                                 },
                                 error: function () {
                                     Swal.fire({
-                                        title: 'Error!',
-                                        text: 'An unexpected error occurred.',
+                                        title: 'خطأ!',
+                                        text: 'حدث خطأ غير متوقع',
                                         icon: 'error'
                                     });
                                 }

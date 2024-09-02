@@ -5,9 +5,10 @@ using room_reservation.Models;
 using room_reservation.ViewModel;
 using System.Linq;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Authorization;
+
 
 namespace room_reservation.Controllers
 {
@@ -30,6 +31,7 @@ namespace room_reservation.Controllers
             _roomDomain = roomDomain;
             _roomTypeDomain = roomTypeDomain;
         }
+
         [Authorize]
         [HttpGet]
         public async Task<IActionResult> Index()
@@ -45,6 +47,7 @@ namespace room_reservation.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> Index(Guid? buildingGuid, Guid? floorGuid,Guid? roomTypeGuid,int? seatCapacity)
         {
            // var rooms = await _roomDomain.GetAllRooms();
@@ -55,112 +58,10 @@ namespace room_reservation.Controllers
        
             var rooms = await _roomDomain.GetRoomByFilter(buildingGuid, floorGuid, roomTypeGuid, seatCapacity);
             return View(rooms);
-            //
-            // //map room view model to book view model
-            // var bookings = rooms.Select(room => new BookingViewModel
-            // {
-            //     BuildingNameAr = room.Floor.Building.BuildingNameAr,
-            //     FloorNo = room.Floor.FloorNo,
-            //     RoomNo = room.RoomNo,
-            //     RoomAR = room.RoomAR,
-            //     SeatCapacity = room.SeatCapacity,
-            //     guid = room.Guid
-            //     
-            // }).ToList();
-            //
-            // return View(bookings); 
+ 
 
         }
         
-        // [HttpPost]
-        // public async Task<IActionResult> Index(int? buildingId, int? floorId, int? roomTypeId, int? seatCapacity)
-        // {
-        //     // Populate dropdowns for filtering
-        //     ViewBag.Building = new SelectList(await _buildingDomain.GetAllBuilding(), "Id", "BuildingNameAr");
-        //
-        //     ViewBag.RoomTypes = new SelectList(await _roomTypeDomain.GetAllRoomTypes(), "Id", "RoomAR");
-        //
-        //     var rooms = await _roomDomain.GetAllRooms();
-        //
-        //     // Apply filters based on selected values
-        //     if (buildingId.HasValue)
-        //     {
-        //         rooms = rooms.Where(r => r.BuildingId == buildingId.Value);
-        //     }
-        //
-        //     if (floorId.HasValue)
-        //     {
-        //         rooms = rooms.Where(r => r.FloorId == floorId.Value);
-        //     }
-        //
-        //     if (roomTypeId.HasValue)
-        //     {
-        //         rooms = rooms.Where(r => r.RoomTypeId == roomTypeId.Value);
-        //     }
-        //
-        //     if (seatCapacity.HasValue)
-        //     {
-        //         rooms = rooms.Where(r => r.SeatCapacity >= seatCapacity.Value);
-        //     }
-        //
-        //     // Convert to ViewModel and pass to the view
-        //     var roomViewModels = rooms.Select(r => new RoomViewModel
-        //     {
-        //         Guid = r.Guid,
-        //         RoomNo = r.RoomNo,
-        //         SeatCapacity = r.SeatCapacity,
-        //         FloorId = r.FloorId,
-        //         RoomTypeId = r.RoomTypeId,
-        //         BuildingNameAr = r.BuildingNameAr,
-        //         FloorNo = r.FloorNo,
-        //         RoomAR = r.RoomAR
-        //     }).ToList();
-        //
-        //     ViewBag.Rooms = roomViewModels;
-        //     return View(roomViewModels);
-        // }
-        //
-        // [HttpPost]
-        // public async Task<IActionResult> Index()
-        // {
-        //     
-        //     
-        //     // building name , floor no , capacity() 
-        //     ViewBag.Building = new SelectList(await _buildingDomain.GetAllBuilding(),"Guid","BuildingNameAr");
-        //     ViewBag.RoomTypes = new SelectList(await _roomTypeDomain.GetAllRoomTypes(), "guid", "RoomAR");
-        //     ViewBag.Room = await _roomDomain.GetAllRooms();
-        //     //ViewBag.Rooms = rooms;
-        //     return View();
-        // }
-        // // public async Task<IActionResult> Index(int? buildingId, int? floorId, int? roomTypeId, int? seatCapacity)
-        // {
-        //     // Call the FilterRooms to get filtered rooms
-        //     var rooms = FilterRooms(buildingId, floorId, roomTypeId, seatCapacity);
-        //
-        //     
-        //     ViewBag.Building = new SelectList(await _buildingDomain.GetAllBuilding(),"Guid","BuildingNameAr");
-        //     ViewBag.RoomTypes = new SelectList(await _roomTypeDomain.GetAllRoomTypes(), "guid", "RoomAR");
-        //     return View(rooms);
-        // }
-
-        // public IEnumerable<BookingViewModel>  FilterRooms(Guid? buildingId, Guid? floorId, Guid? roomTypeId, int? seatCapacity)
-        // {
-        //     var rooms = _BookingDomain.getAllBooking(); // Get all rooms initially
-        //
-        //     if (floorId.HasValue)
-        //         rooms = rooms.Where(r => r.FloorId == floorId.Value);
-        //
-        //     if (roomTypeId.HasValue)
-        //         rooms = rooms.Where(r => r.RoomTypeId == roomTypeId.Value);
-        //
-        //     if (seatCapacity.HasValue)
-        //         rooms = rooms.Where(r => r.SeatCapacity >= seatCapacity.Value);
-        //
-        //     var roomList = rooms.ToList();
-        //
-        //     return roomList; // Returns partial view with filtered rooms
-        // }
-
         
         
         public async Task<IList<FloorViewModel>> getFloorbyGuid(Guid id)
@@ -176,7 +77,7 @@ namespace room_reservation.Controllers
             return View(booking);
         }
         
-
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> Add(Guid id)
         {
@@ -184,16 +85,37 @@ namespace room_reservation.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> Add(BookingViewModel booking)
         {
           
-            if (ModelState.IsValid)
-            {
+         
                 booking.Email =User.FindFirst(ClaimTypes.Email).Value;
-                await _BookingDomain.AddBooking(booking);
-                return RedirectToAction(nameof(Index));
-            }
-            return View();
+                try
+                {
+                    if (ModelState.IsValid)
+                    {
+                        int check =  await _BookingDomain.AddBooking(booking);
+                        if (check == 1)
+                        {
+                            return Json(new { success = true, message = "تم الحجز بنجاح" });
+
+                        }
+                        else
+                        {
+                            return Json(new { success = false, message = "لم يتم الحجز" });
+                        }
+                    }
+                    else
+                    {
+                        return Json(new { success = false, message = "لابد من إدخال بيانات الحجز" });
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return Json(new { success = false, message = ex.Message });
+                }
+            
         }
 
         [HttpPost]
