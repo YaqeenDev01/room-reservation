@@ -26,14 +26,14 @@
                         <div class="col-md-6">
                             <div class="mb-4">
                                 <label asp-for="IsActive" class="control-label">حالة القاعة</label>
-                                <input asp-for="IsActive" class="form-control" />
+                                <input type="checkbox" asp-for="IsActive" class="form-check-input" />
                                 <span asp-validation-for="IsActive" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-4">
                                 <label asp-for="BuildingNameAr" class="control-label">المبنى</label>
-                                <select asp-for="BuildingNameAr" id="BuildingId" class="form-control" asp-items="@ViewBag.Building"></select>
+                                <select asp-for="BuildingGuid" id="BuildingGuid" class="form-control" asp-items="@ViewBag.Building"></select>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -45,9 +45,9 @@
                         </div>
                         <div class="col-md-6">
                             <div class="mb-4">
-                                <label asp-for="RoomAR" class="control-label">نوع القاعة</label>
-                                <select asp-for="RoomAR" class="form-control" asp-items="Model.RoomTypes"></select>
-                                <span asp-validation-for="RoomAR" class="text-danger"></span>
+                                <label asp-for="RoomTypeId" class="control-label">نوع القاعة</label>
+                                <select asp-for="RoomTypeId" class="form-control" asp-items="Model.RoomTypes"></select>
+                                <span asp-validation-for="RoomTypeId" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="d-flex justify-content-end">
@@ -56,30 +56,64 @@
                     </div>
                 </form>
 
+                <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+
                 <script>
                     $(document).ready(function () {
-                        showValue($("#BuildingId").val());
+                        // Initialize the floor dropdown based on the selected building
+                        loadFloors($("#BuildingGuid").val());
+
+                        $("#BuildingGuid").on('change', function () {
+                            loadFloors($(this).val());
+                        });
+
+                        $("#RoomForm").submit(function (event) {
+                            event.preventDefault(); // Prevent the default form submission
+                            $.ajax({
+                                url: '@Url.Action("AddRoom")', // URL to the controller action
+                                type: 'POST',
+                                data: $(this).serialize(),
+                                success: function (response) {
+                                    if (response.success) {
+                                        Swal.fire({
+                                            title: '!نجحت العملية',
+                                            text: 'أُضِيفَت القاعة بنجاح',
+                                            icon: 'success'
+                                        }).then(() => {
+                                            window.location.href = '@Url.Action("Index")'; // Redirect to Index page after success
+                                        });
+                                    } else {
+                                        Swal.fire({
+                                            title: '!فشلت العملية',
+                                            text: 'لم تضَاف القاعة',
+                                            icon: 'error'
+                                        });
+                                    }
+                                },
+                                error: function () {
+                                    Swal.fire({
+                                        title: 'Error!',
+                                        text: 'حصل خطأ.',
+                                        icon: 'error'
+                                    });
+                                }
+                            });
+                        });
                     });
 
-                    $("#BuildingId").on('change', function () {
-                        showValue($(this).val());
-                    });
+                    function loadFloors(buildingId) {
+                        $("#FloorId").html(""); // Clear existing options
+                        if (!buildingId) return; // Exit if no building is selected
 
-                    function showValue(val) {
-                        $.getJSON('@Url.Action("getFloorbyGuid", "Booking")/' + val, function (result) {
-                            console.log(result);
-                            $("#FloorId").html(""); // makes select null before filling process
-                            console.log(result.length);
-                            for (let i = 0; i < result.length; i++) {
-                                $("#FloorId").append("<option value='" + result[i].guid + "'>" + result[i].floorNo + "</option>")
-                            }
+                        $.getJSON('@Url.Action("getFloorbyGuid", "Booking")/' + buildingId, function (result) {
+                            $.each(result, function (index, floor) {
+                                $("#FloorId").append("<option value='" + floor.guid + "'>" + floor.floorNo + "</option>");
+                            });
                         });
                     }
-
                 </script>
             </div>
         </div>
     </div>
 </div>
-
-

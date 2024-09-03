@@ -34,6 +34,7 @@ namespace room_reservation.Domain
                     BuildingNameAr = r.Floor.Building.BuildingNameAr,
                     FloorNo = r.Floor.FloorNo,
                     Floor = r.Floor,
+                    BuildingGuid = r.Floor.Building.Guid,
 
 
                 }).ToListAsync();
@@ -60,8 +61,8 @@ namespace room_reservation.Domain
                         RoomTypeId = r.RoomTypeId,
                         RoomType = r.RoomType,
                         FloorNo = r.Floor.FloorNo,
-
-
+                        BuildingNameAr = r.Floor.Building.BuildingNameAr,
+                        BuildingGuid = r.Floor.Building.Guid,
                     })
                     .FirstOrDefault();
 
@@ -96,7 +97,7 @@ namespace room_reservation.Domain
                 };  
 
                 _context.Add(roomInfo);
-                 await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
                 return 1;
             }
             catch (Exception exception)

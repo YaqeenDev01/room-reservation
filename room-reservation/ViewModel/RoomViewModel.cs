@@ -15,7 +15,6 @@ namespace room_reservation.ViewModel
         [DisplayName("رقم الغرفة")]
         public int RoomNo { get; set; }
 
-
         public int SeatCapacity { get; set; }
 
         public bool IsActive { get; set; }
@@ -28,7 +27,7 @@ namespace room_reservation.ViewModel
         [Required(ErrorMessage = "هذا الحقل مطلوب")]
         [DisplayName("نوع الغرفة")]
         public int RoomTypeId { get; set; }
-        public  tblRoomType RoomType;
+        public  tblRoomType RoomType { get; set; }
         public IEnumerable<SelectListItem> RoomTypes { get; set; }
         public string RoomAR { get; set; }
         
@@ -38,7 +37,8 @@ namespace room_reservation.ViewModel
         public string BuildingNameAr { get; set; }
         
         public string BuildingNameEn { get; set; }
-        public int BuildingId { get; set; }
+        public tblBuildings Building { get; set; }
+        public Guid BuildingGuid { get; set; }
 
   
     }

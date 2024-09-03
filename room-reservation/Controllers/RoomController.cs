@@ -30,7 +30,7 @@ namespace room_reservation.Controllers
         public async Task<IActionResult> AddRoom()
         {
             ViewBag.Building = new SelectList(await _buildingDomain.GetAllBuilding(), "Guid", "BuildingNameAr");
-            ViewBag.Floor = new SelectList(await _floorDomain.GetAllFloors(), "Guid", "FloorNo");
+            //ViewBag.Floor = new SelectList(await _floorDomain.GetAllFloors(), "Guid", "FloorNo");
 
             var roomTypes = await _roomTypeDomain.GetAllRoomTypes();
             var roomViewModel = new RoomViewModel
@@ -46,10 +46,11 @@ namespace room_reservation.Controllers
 
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddRoom(RoomViewModel roomViewModel)
         {
             ViewBag.Building = new SelectList(await _buildingDomain.GetAllBuilding(), "Guid", "BuildingNameAr");
-            ViewBag.Floor = new SelectList(await _floorDomain.GetAllFloors(), "Guid", "FloorNo");
+            //ViewBag.Floor = new SelectList(await _floorDomain.GetAllFloors(), "Guid", "FloorNo");
 
             try
             {
@@ -71,7 +72,7 @@ namespace room_reservation.Controllers
         public async Task<IActionResult> EditRoom(int Id)
         {
             ViewBag.Building = new SelectList(await _buildingDomain.GetAllBuilding(), "Guid", "BuildingNameAr");
-            ViewBag.Floor = new SelectList(await _floorDomain.GetAllFloors(), "Guid", "FloorNo");
+            //ViewBag.Floor = new SelectList(await _floorDomain.GetAllFloors(), "Guid", "FloorNo");
 
             var rooms =  _roomDomain.GetRoomById(Id);
             var roomTypes = await _roomTypeDomain.GetAllRoomTypes();
@@ -92,7 +93,7 @@ namespace room_reservation.Controllers
         public async Task<IActionResult> EditRoom(RoomViewModel roomViewModel)
         {
             ViewBag.Building = new SelectList(await _buildingDomain.GetAllBuilding(), "Guid", "BuildingNameAr");
-            ViewBag.Floor = new SelectList(await _floorDomain.GetAllFloors(), "Guid", "FloorNo");
+            //ViewBag.Floor = new SelectList(await _floorDomain.GetAllFloors(), "Guid", "FloorNo");
 
             try
             {
