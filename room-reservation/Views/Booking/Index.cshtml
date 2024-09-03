@@ -1,7 +1,7 @@
 ﻿@using Microsoft.EntityFrameworkCore.Metadata.Internal
-@model IEnumerable<BookingViewModel>
-
+@model IEnumerable<RoomViewModel>
 @{
+    
 ViewData["Title"] = "الصفحة الرئيسية";
 }
 <div class="block mb-4">
@@ -16,7 +16,7 @@ ViewData["Title"] = "الصفحة الرئيسية";
                 <div class="col-md-6">
                     <div class="mb-4">
                         <label class="control-label">اسم المبنى</label>
-                        <select id="BuildingId" name="buildingGuid" class="form-control" asp-items="@ViewBag.Building">
+                        <select id="BuildingId" name="BuildingGuid" class="form-control" asp-items="@ViewBag.Building">
                             <option value="">غير محدد</option>
 
                         </select>
@@ -58,7 +58,7 @@ ViewData["Title"] = "الصفحة الرئيسية";
 @if (Model!= null)
 {
     <div class="block-body">
-        <table id="datatable" class="table table-hover js-dataTable">
+        <table id="datatable" class="table table-hover js-datatable">
             <thead>
             <tr>
                 <th>أسم المبنى</th>
@@ -79,7 +79,7 @@ ViewData["Title"] = "الصفحة الرئيسية";
                     <td>@item.RoomAR</td>
                     <td>@item.SeatCapacity</td>
                     <td>
-                        <a asp-action="Add" asp-route-id="@item.guid" class="btn btn-sm btn-primary">حجز</a>
+                        <a asp-action="Add" asp-route-id="@item.Guid" class="btn btn-sm btn-primary">حجز</a>
                     </td>
                 </tr>
             }

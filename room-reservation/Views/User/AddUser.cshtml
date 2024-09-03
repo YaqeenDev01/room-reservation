@@ -3,7 +3,9 @@
 
 <!-- span is the validation for each input as required-->
 
-
+@{
+ViewData["Title"]="إضافة مستخدم جديد";
+}
 
 
 
@@ -63,7 +65,7 @@
                             <div class="mb-4">
 
                                 <label asp-for="UserType" class="control-label">نوع المستخدم</label>
-                                <input asp-for="UserType" class="form-control" />
+                                <select asp-for="UserType" class="form-control" asp-items="@ViewBag.UserType" ></select>
                                 <span asp-validation-for="UserType" class="text-danger"></span>
                             </div>
                         </div><!-- END ITEM -->
@@ -73,8 +75,8 @@
                         <button type="submit" class="btn btn-primary px-5" title="add">إضافة</button>
                     </div>
                 </form>
-                <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+                @* <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> *@
+                @* <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script> *@
 
                 <script>
                     $(document).ready(function () {

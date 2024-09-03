@@ -1,4 +1,4 @@
-﻿@model IEnumerable<room_reservation.ViewModel.BuildingViewModel>;
+﻿ @model IEnumerable<room_reservation.ViewModel.BuildingViewModel>;
 @{
 
 }
@@ -85,6 +85,25 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
 <script>
+document.addEventListener('DOMContentLoaded', function () {
+    function search() {
+        const searchInput = document.getElementById('quickSearch').value.toLowerCase(); // Use 'quickSearch' instead of 'search'
+        const rows = document.querySelectorAll('tbody tr'); // Use the correct selector for the table rows
+
+        rows.forEach(row => {
+            const rowText = row.textContent.toLowerCase(); // Get the text content of the entire row
+
+            if (rowText.includes(searchInput)) {
+                row.style.display = ''; // Show rows that match the search
+            } else {
+                row.style.display = 'none'; // Hide others
+            }
+        });
+    }
+
+    // Add an event listener to the search bar
+    document.getElementById('quickSearch').addEventListener('input', search); // Use 'quickSearch' instead of 'search'
+
     $(document).ready(function () {
         $('.delete-btn').click(function (event) {
             event.preventDefault();
@@ -135,13 +154,5 @@
             });
         });
     });
-
-</script>
-<script>
-    $(document).ready(function () {
-        $("#quickSearch").on("keyup", function () {
-            var value = $(this).val().toLowerCase();
-           
-        });
-    });
+});
 </script>

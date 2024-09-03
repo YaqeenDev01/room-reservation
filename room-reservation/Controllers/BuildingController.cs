@@ -29,41 +29,36 @@ namespace room_reservation.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task <IActionResult> AddBuilding(BuildingViewModel building)
+        public async Task<IActionResult> AddBuilding(BuildingViewModel building)
         {
+            if (!ModelState.IsValid)
+            {
+                // إذا كان هناك أخطاء في النموذج، إرجاع الأخطاء
+                return Json(new { success = false, message = "Invalid data" });
+            }
+
             try
             {
-                if (ModelState.IsValid)
-                {
-                    int check = await _BuildingDomain.InsertBuilding(building);
+                int result = await _BuildingDomain.InsertBuilding(building);
 
-                    if (check == 1)
-                    {
+                switch (result)
+                {
+                    case 1:
                         return Json(new { success = true, message = "Added successfully" });
-                    }
-                    else if (check == 3)
-                    {
-                        return Json(new { success = false, message = "The code is exit " });
-                    }
-                    else if (check == 4)
-                    {
-                        return Json(new { success = false, message = "The building number is exit " });
-                    }
+                    case 3:
+                        return Json(new { success = false, message = "The code already exists" });
+                    case 4:
+                        return Json(new { success = false, message = "The building number already exists" });
+                    default:
+                        return Json(new { success = false, message = "An unexpected error occurred" });
                 }
-                else
-                {
-                    return Json(new { success = false, message = "Invalid data" });
-                }
-                return View();
-
             }
             catch (Exception ex)
             {
+                // التعامل مع الاستثناءات وإرجاع رسالة الخطأ
                 return Json(new { success = false, message = ex.Message });
             }
-
         }
-
 
         [HttpGet]
         public async Task<IActionResult> EditBuilding(Guid id)
@@ -75,38 +70,35 @@ namespace room_reservation.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditBuilding(BuildingViewModel building)
         {
+            if (!ModelState.IsValid)
+            {
+                // إذا كان هناك أخطاء في النموذج، إرجاع الأخطاء
+                return Json(new { success = false, message = "Invalid data" });
+            }
+
             try
             {
-                if (ModelState.IsValid)
-                {
-                    int check= await _BuildingDomain.UpdatBuilding(building);
+                int result = await _BuildingDomain.UpdatBuilding(building);
 
-                    if (check == 1)
-                    {
-                        return Json(new { success = true, message = "Added successfully" });
-                    }
-                    else if (check == 3)
-                     {
-                        return Json(new { success = false, message = "The code is exit " });
-                      }
-                    else if (check == 4)
-                    { 
-                        return Json(new { success = false, message = "The building number is exit " });
-                     }
-
-                }
-                else
+                switch (result)
                 {
-                    return Json(new { success = false, message = "Invalid data" });
+                    case 1:
+                        return Json(new { success = true, message = " successfully" });
+                    case 3:
+                        return Json(new { success = false, message = "The code already exists" });
+                    case 4:
+                        return Json(new { success = false, message = "The building number already exists" });
+                    default:
+                        return Json(new { success = false, message = "An unexpected error occurred" });
                 }
-                return View();
             }
             catch (Exception ex)
             {
+                // التعامل مع الاستثناءات وإرجاع رسالة الخطأ
                 return Json(new { success = false, message = ex.Message });
             }
         }
-        
+
         public async Task<IActionResult> Delet(Guid id)
         {
                await _BuildingDomain.DeleteBuilding(id);

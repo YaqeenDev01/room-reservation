@@ -1,27 +1,40 @@
-﻿@model room_reservation.ViewModel.UserViewModel
-
-
+﻿@using System.Security.Claims;
 <!DOCTYPE html>
-<html dir="ltr" lang="ar">
+<html lang="en" dir="rtl" data-theme="light">
+
+@model room_reservation.ViewModel.UserViewModel
+
+@{
+    Layout = null;
+}
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>تسجيل الدخول</title>
-    <link href="https://fonts.googleapis.com/css?family=Tajawal&display=swap" rel="stylesheet">
-    <link href="@Url.Content("~/css/bootstrap.min.css")" rel="stylesheet">
-    <link href="@Url.Content("~/css/stylesheet.css")" rel="stylesheet">
-    <link href="@Url.Content("~/css/datatables.min.css")" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/boxicons@2.0.4/css/boxicons.min.css" rel="stylesheet">
+    <title>لوحة التحكم  بالنظام</title>
 
-    <script src="@Url.Content("~/js/jquery-3.4.1.min.js")"></script>
-    <script src="@Url.Content("~/js/jquery.unobtrusive-ajax.min.js")"></script>
-    <script src="@Url.Content("~/js/jquery.validate.min.js")"></script>
-    <script src="@Url.Content("~/js/jquery.validate.unobtrusive.min.js")"></script>
-    <script src="@Url.Content("~/js/bootstrap.min.js")"></script>
-    <script src="@Url.Content("~/lib/popper/popper.min.js")"></script>
-    <script src="@Url.Content("~/js/datatables.min.js")"></script>
+    <!-- Favico -->
+    <link rel="apple-touch-icon" sizes="180x180" href="~/assets/imgs/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="~/assets/imgs/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="~/assets/imgs/favicon/favicon-16x16.png">
+    <link rel="manifest" href="~/assets/imgs/favicon/site.webmanifest">
+    <link rel="mask-icon" href="~/assets/imgs/favicon/safari-pinned-tab.svg" color="#5bbad5">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="theme-color" content="#ffffff">
+
+    <link rel="stylesheet" href="~/Assets/css/bootstrap.rtl.min.css">
+    <link rel="stylesheet" href="~/Assets/css/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="~/Assets/css/root.css">
+    <!---->
+    <!--------- CSS Liberaries ---------->
+    <!-- Data Table -->
+    <!-- <link rel="stylesheet" href="Assets/lib/DataTable/css/select.dataTables.min.css" /> -->
+    <!-- <link rel="stylesheet" href="Assets/lib/DataTable/css/datatables_customization.css" /> -->
+    <!-- customization -->
+    <link rel="stylesheet" href="~/Assets/css/app_rtl.css">
+
 </head>
+
 <body class="vertical-layout vertical-menu-modern boxicon-layout no-card-shadow 1-column  navbar-sticky footer-static bg-full-screen-image  blank-page blank-page" data-open="click" data-menu="vertical-menu-modern" data-col="1-column">
     <!-- BEGIN: Content-->
     <div class="app-content content">

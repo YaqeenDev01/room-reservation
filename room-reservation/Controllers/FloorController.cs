@@ -20,11 +20,12 @@ namespace room_reservation.Controllers
 
         }
         //return all floors in the view
-        public async Task<IActionResult> Index(string searchString)
+        public async Task<IActionResult> Index(String searchString)
         {
             var floors = await _FloorDomain.GetAllFloors();
             //activate quick search based on the building name 
             if (!String.IsNullOrEmpty(searchString))
+                
             {
                 floors = floors
                     .Where(f => f.BuildingNameAr.Contains(searchString))
@@ -61,12 +62,16 @@ namespace room_reservation.Controllers
                     int check = await _FloorDomain.addFloor(floor);
                     if (check == 1)
                     {
-                        return Json(new { success = true, message = "Added successfully" });
+                        return Json(new { success = true, message = "أ\u064fض\u0650يف\u064e الطابق بنجاح" });
 
+                    }
+                    else if(check == 2)
+                    {
+                        return Json(new { success = false, message = "رقم الطابق م\u064fدرج مسبق\u064bا" });
                     }
                     else
                     {
-                        return Json(new { success = false, message = "Invalid data" });
+                        return Json(new { success = false, message = "لم يض\u064eاف الطابق" });
                     }
                 }
                 else
@@ -106,12 +111,16 @@ namespace room_reservation.Controllers
                     int check = await _FloorDomain.editFloor(floor);
                     if (check == 1)
                     {
-                        return Json(new { success = true, message = "Added successfully" });
+                        return Json(new { success = true, message = "ع\u064fد\u0651\u0650ل\u064eت البيانات بنجاح" });
 
+                    }
+                    else if(check == 2)
+                    {
+                        return Json(new { success = false, message = "رقم الطابق م\u064fدرج مسبق\u064bا" });
                     }
                     else
                     {
-                        return Json(new { success = false, message = "Invalid data" });
+                        return Json(new { success = false, message = "لم ت\u064fعد\u0651\u064eل المعلومات" });
                     }
                 }
                 else

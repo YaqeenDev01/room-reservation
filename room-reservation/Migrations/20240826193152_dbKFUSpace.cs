@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace room_reservation.Migrations
 {
-    public partial class KFUSapce : Migration
+    public partial class dbKFUSpace : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -120,7 +120,7 @@ namespace room_reservation.Migrations
                     BuildingNo = table.Column<int>(type: "int", nullable: false),
                     BuildingNameAr = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     BuildingNameEn = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Code = table.Column<int>(type: "int", nullable: false),
+                    Code = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false)
                 },

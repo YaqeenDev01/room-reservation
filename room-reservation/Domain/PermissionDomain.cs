@@ -52,35 +52,69 @@ namespace room_reservation.Domain
 
         }
 
+        public async Task<bool> permissionExists (string email)
+        {
+          if (await _context.tblPermissions.FirstOrDefaultAsync(p => p.Email == email && !p.IsDeleted) != null)
+            {
+                return true;
+            }
+          else
+            {
+                return false;
+            }
+        }
         public async Task<PermissionViewModel> GetPermissionByEmail(string email)
         {
-            
-            return await _context.tblPermissions.Where(x => x.Email == email ).Include(r => r.Role).Select(
+
+            return await _context.tblPermissions.Where(x => x.Email == email).Include(r => r.Role).Select(
                 permission => new PermissionViewModel
                 {
                     guid = permission.guid,
                     Email = permission.Email,
                     RoleName = permission.Role.RoleNameEN
-                   
-                    
+
+
 
                 }).FirstOrDefaultAsync();
-           
 
         }
         [HttpPost]
         public async Task<int> AddPermission(PermissionViewModel permission)
-        { 
+        {
+
+            //try
+            //{
+            //    var permissionInfo = new tblPermissions
+            //    {
+            //        Email = permission.Email,
+            //        RoleId = permission.RoleId,
+            //        BuildingId = permission.BuildingId,
+            //        IsDeleted = false
+
+            //    };
+
+            //    _context.Add(permissionInfo);
+            //    await _context.SaveChangesAsync();
+            //    return 1;
+            //}
+            //catch (Exception ex)
+            //{
+            //    return 0;
+            //}
 
             try
             {
+                var user = await _context.tblUsers.FirstOrDefaultAsync(u => u.Email == permission.Email);
+                if(user == null)
+                {
+                    return -1;
+                }
                 var permissionInfo = new tblPermissions
                 {
-                    Email = permission.Email,
+                    Email = user.Email,            
                     RoleId = permission.RoleId,
                     BuildingId = permission.BuildingId,
                     IsDeleted = false
-
                 };
 
                 _context.Add(permissionInfo);
