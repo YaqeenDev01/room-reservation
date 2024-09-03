@@ -45,7 +45,7 @@ namespace room_reservation.Domain
             return  _context.tblFloors;
         }
 
-        public RoomViewModel GetRoomByGuid(Guid guid)
+        public async Task <RoomViewModel> GetRoomByGuid(Guid guid)
         {
             try
             {
@@ -74,7 +74,7 @@ namespace room_reservation.Domain
             }
         }
 
-        public tblRooms GetRoomById(int Id)
+        public async Task<tblRooms> GetRoomById(int Id)
         {
             var room = _context.tblRooms
                 .Include(b => b.Floor)
