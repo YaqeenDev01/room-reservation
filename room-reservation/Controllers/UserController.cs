@@ -33,6 +33,7 @@ namespace room_reservation.Controllers
                     .Where(u => u.FullNameAR.Contains(searchString)||u.FullNameEN.Contains(searchString)||u.Email.Contains(searchString))
                     .ToList();
             }
+            
             return View(users);
         }
 
@@ -85,7 +86,7 @@ namespace room_reservation.Controllers
         
         }
         [HttpGet]
-        public IActionResult EditUser(int id)
+        public async Task<IActionResult> EditUser(int id)
         {
             ViewBag.UserType = new SelectList(new List<string>
             {
@@ -95,40 +96,61 @@ namespace room_reservation.Controllers
                 "مدير النظام"
               
             });
-            return View(_UserDomain.getUserById(id));
-        }
-
-        [HttpPost]
-        public IActionResult EditUser(tblUsers user)
-        {
-            ViewBag.UserType = new SelectList(new List<string>
+            var user =_UserDomain.getUserById(id);
+            if (user == null)
             {
-                "طالب",
-                "عضو هيئة تدريس",
-                "منسق الكلية",
-                "مدير النظام"
-              
-            });
-            if (ModelState.IsValid)
-            {
-                _UserDomain.EditUser(user);
-                return RedirectToAction(nameof(Index));
+                return NotFound(); // Handle the case where the user doesn't exist
             }
-            return View();
 
-
+            return View(user);
         }
-        [HttpGet]
-        public IActionResult Delete(int id)
-        {
 
-            return View(_UserDomain.getUserById(id));
-        }
         [HttpPost]
-        public IActionResult Delete(tblUsers user)
+        public async Task<IActionResult> EditUser(UserViewModel user)
         {
-            _UserDomain.DeleteUser(user);
-            return RedirectToAction(nameof(Index));
+            ViewBag.UserType = new SelectList(new List<string>
+            {
+                "طالب",
+                "عضو هيئة تدريس",
+                "منسق الكلية",
+                "مدير النظام"
+              
+            });
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    int check =await _UserDomain.EditUser(user);
+                    if (check == 1)
+                    {
+                        return Json(new { success = true, message = "ع\u064fد\u0651\u0650ل\u064eت البيانات بنجاح" });
+                    } else
+                    {
+                        return Json(new { success = false, message = "لم ت\u064fعد\u0651\u064eل المعلومات" });
+                    }
+
+                }
+                else
+                {
+                    return Json(new { success = false, message = "Model state is invalid" });
+                }
+            }
+            catch (Exception exception)
+            {
+                return Json(new { success = false, message = exception.Message });
+            }
+        }
+        // [HttpGet]
+        // public IActionResult Delete(int id)
+        // {
+        //
+        //     return View(_UserDomain.getUserById(id));
+        // }
+        // [HttpPost]
+        public async Task<IActionResult> Delete(int id)
+        {
+           await _UserDomain.DeleteUser(id);
+           return Json(new { success = true });
         }
         [HttpGet]
         [AllowAnonymous] //Allow any one to enter this page
@@ -184,7 +206,7 @@ namespace room_reservation.Controllers
                     {
                     new Claim(ClaimTypes.Name , user.FullNameEN),
                     new Claim(ClaimTypes.Email , user.Email),
-                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                    new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
                     new Claim(ClaimTypes.Role, role),
                     new Claim(ClaimTypes.GivenName, user.FullNameAR)
 
