@@ -55,7 +55,8 @@
                     <th>اسم المبنى  </th>
                     <th>اسم المبنى باللغة الانجليزية </th>
                     <th>رقم المبنى</th>
-                    <th>رمز المبنى </th>
+                     <th>نوع القسم </th>
+                     <th>رمز المبنى </th>
                     <th class=""></th>
                 </tr>
             </thead>
@@ -65,6 +66,7 @@
                             <td>@x.BuildingNameAr</td>
                             <td>@x.BuildingNameEn </td>
                             <td>@x.BuildingNo </td>
+                            @* <td>@(x.GenderId == 0 ? "غير محدد" : x.GenderId == 1 ? "طالبات" : "طلاب")</td> *@
                             <td>@x.Code </td>
                             
                             <td> 

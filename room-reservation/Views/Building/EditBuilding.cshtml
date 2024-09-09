@@ -39,6 +39,15 @@
                                 <span asp-validation-for="BuildingNo" class="text-danger"></span>
                             </div>
                         </div>
+                        @* <div class="col-md-6">
+                        <div class="mb-4">
+                        <label asp-for="GenderId" class="control-label cb-1">  القسم</label>
+                        <select asp-for="GenderId" class="form-control" asp-items="@ViewBag.tblGender"></select>
+                        <option value="0">غير محدد</option>
+                        <option value="1">طالبات  </option>
+                        <option value="2"> طلاب  </option>
+                        </div>
+                        </div> *@
                         <div class="col-md-6">
                             <div class="mb-4">
                                 <label asp-for="Code" class="control-label cb-1">رمز المبنى</label>
