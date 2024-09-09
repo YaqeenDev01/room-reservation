@@ -18,7 +18,7 @@ namespace room_reservation.Domain
             return await _context.tblFloors.Where(floor => !floor.IsDeleted).Include(f => f.Building) 
                 .Select(f => new FloorViewModel
             {
-               // Id = f.Id,
+                Id = f.Id,
                 FloorNo = f.FloorNo,
                 Guid = f.Guid,
                 BuildingId = f.BuildingId,
@@ -120,11 +120,36 @@ namespace room_reservation.Domain
                         throw new Exception($"Error retrieving floor: {ex.Message}");
                     }
                 }
-                
-           
+
+        public async Task<IList<FloorViewModel>> GetFloorByBuildingId(int id)
+        {
+            try
+            {
+                var floor = await _context.tblFloors
+                    .Where(x => x.Building.Id == id && x.IsDeleted == false)
+                    .Select(f => new FloorViewModel
+                    {
+                        Id = f.Id,
+                        FloorNo = f.FloorNo,
+                        Guid = f.Guid,
+                        BuildingId = f.BuildingId,
+                        BuildingNameAr = f.Building.BuildingNameAr,
+                        BuildingNo = f.Building.BuildingNo,
+                        //Rooms = f.Rooms // not used 
+                    }).ToListAsync();
+
+                return floor;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error retrieving floor: {ex.Message}");
+            }
+        }
 
 
-                public tblFloors GetFloorById(Guid id)
+
+
+        public tblFloors GetFloorById(Guid id)
                 {
                     var floorId = _context.tblFloors.Include(b => b.Building).FirstOrDefault(x => x.Guid == id);
                    return floorId;

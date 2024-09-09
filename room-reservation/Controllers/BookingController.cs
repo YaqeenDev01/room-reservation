@@ -70,6 +70,12 @@ namespace room_reservation.Controllers
             
         }
 
+        public async Task<IList<FloorViewModel>> getFloorbyId(int id)
+        {
+            return await _floorDomain.GetFloorByBuildingId(id);
+
+        }
+
         // view the bookings page 
         public async Task<IActionResult> Book()
         {
