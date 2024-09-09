@@ -25,12 +25,13 @@ namespace room_reservation.Controllers
             _BuildingDomain = buildingDomain;
             _UserDomain = userDomain;
         }
-
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index()
         {
             return View(await _PermissionDomain.getAllPermissions());
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> AddPermission()
         {
@@ -40,7 +41,7 @@ namespace room_reservation.Controllers
 
         }
 
-
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> AddPermission(PermissionViewModel permissionViewModel, int BuildingId)
         {
@@ -68,6 +69,13 @@ namespace room_reservation.Controllers
                     int check = await _PermissionDomain.AddPermission(permissionViewModel);
                     if (check == 1)
                     {
+                        var permissionLog = new PermissionsLog();
+                        permissionLog.Id = 0;
+                        permissionLog.OperationType = "إضافة صلاحية";
+                        permissionLog.DateTime = DateTime.Now;
+                        permissionLog.PermissionType = "";
+                        permissionLog.GrantedBy = "";
+                        permissionLog.GrantedTo = permissionViewModel.Email;
                         return Json(new { success = true, message = "أُضِيفت الصلاحية بنجاح" });
                     }
                     else
@@ -90,7 +98,7 @@ namespace room_reservation.Controllers
                 return Json(new { success = false, message = ex.Message });
             }
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> DisplayUserName(string email)
         {
@@ -101,9 +109,10 @@ namespace room_reservation.Controllers
             }
             else
             {
-                return Json(new { success = false, message = "User not found" });
+                return Json(new { success = false, message = "المتسخدم غير موجود" });
             }
         }
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> EditPermission(PermissionViewModel permissionViewModel)
         {
@@ -111,16 +120,23 @@ namespace room_reservation.Controllers
     {
                 try
                 {
-                    
 
+                    
                     var result = await _PermissionDomain.UpdatePermission(permissionViewModel);
                     if (result)
                     {
-                        return Json(new { success = true, message = "Updated successfully" });
+                        var permissionLog = new PermissionsLog();
+                        permissionLog.Id = 0;
+                        permissionLog.OperationType = "تعديل صلاحية";
+                        permissionLog.DateTime = DateTime.Now;
+                        permissionLog.PermissionType = "";
+                        permissionLog.GrantedBy = "";
+                        permissionLog.GrantedTo = permissionViewModel.Email;
+                        return Json(new { success = true, message = "عُدِّلت الصلاحية بنجاح" });
                     }
                     else
                     {
-                        return Json(new { success = false, message = "Update failed" });
+                        return Json(new { success = false, message = "لم تُعدَّل الصلاحية" });
                     }
                 }
                 catch (Exception ex)
@@ -129,11 +145,10 @@ namespace room_reservation.Controllers
                 }
             }
 
-            return Json(new { success = false, message = "Invalid data" });
+            return Json(new { success = false, message = "بيانات غير صالحة" });
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpGet]
-
         public async Task<IActionResult> EditPermission(int Id)
         {
 
@@ -164,7 +179,7 @@ namespace room_reservation.Controllers
             return View(permissionViewModel);
         }
 
-
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> DeletePermission(int id)
         {

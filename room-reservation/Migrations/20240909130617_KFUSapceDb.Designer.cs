@@ -12,8 +12,8 @@ using room_reservation.Models;
 namespace room_reservation.Migrations
 {
     [DbContext(typeof(KFUSpaceContext))]
-    [Migration("20240904193159_KFUSpaceDB")]
-    partial class KFUSpaceDB
+    [Migration("20240909130617_KFUSapceDb")]
+    partial class KFUSapceDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -547,7 +547,7 @@ namespace room_reservation.Migrations
                         .IsRequired();
 
                     b.HasOne("room_reservation.Models.tblRooms", "Room")
-                        .WithMany()
+                        .WithMany("Bookings")
                         .HasForeignKey("RoomId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -644,6 +644,11 @@ namespace room_reservation.Migrations
             modelBuilder.Entity("room_reservation.Models.tblRoles", b =>
                 {
                     b.Navigation("Permissions");
+                });
+
+            modelBuilder.Entity("room_reservation.Models.tblRooms", b =>
+                {
+                    b.Navigation("Bookings");
                 });
 
             modelBuilder.Entity("room_reservation.Models.tblRoomType", b =>
