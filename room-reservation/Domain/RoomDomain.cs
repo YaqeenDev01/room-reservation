@@ -49,7 +49,7 @@ namespace room_reservation.Domain
         {
             try
             {
-                var room =  _context.tblRooms
+                return await  _context.tblRooms
                     .Where(r => r.guid == guid && !r.IsDeleted)
                     .Select(r => new RoomViewModel
                     {
@@ -66,7 +66,6 @@ namespace room_reservation.Domain
                     })
                     .FirstOrDefault();
 
-                return room;
             }
             catch (Exception ex)
             {
