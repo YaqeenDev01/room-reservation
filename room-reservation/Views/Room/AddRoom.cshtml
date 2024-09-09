@@ -33,13 +33,13 @@
                         <div class="col-md-6">
                             <div class="mb-4">
                                 <label asp-for="BuildingNameAr" class="control-label">المبنى</label>
-                                <select asp-for="BuildingGuid" id="BuildingGuid" class="form-control" asp-items="@ViewBag.Building"></select>
+                                <select name="BuildingId" id="BuildingId" class="form-control" asp-items="@ViewBag.Building"></select>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-4">
                                 <label asp-for="FloorId" class="control-label">رقم الدور</label>
-                                <select asp-for="FloorId" id="FloorId" class="form-control"></select>
+                                <select name="FloorId" id="FloorId" class="form-control"></select>
                                 <span asp-validation-for="FloorId" class="text-danger"></span>
                             </div>
                         </div>
@@ -60,58 +60,63 @@
                 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
 
                 <script>
-                    $(document).ready(function () {
-                        // Initialize the floor dropdown based on the selected building
-                        loadFloors($("#BuildingGuid").val());
 
-                        $("#BuildingGuid").on('change', function () {
-                            loadFloors($(this).val());
-                        });
+                    $("#BuildingId").on('change', function () {
+                        loadFloors($(this).val());
+                    });
 
-                        $("#RoomForm").submit(function (event) {
-                            event.preventDefault(); // Prevent the default form submission
-                            $.ajax({
-                                url: '@Url.Action("AddRoom")', // URL to the controller action
-                                type: 'POST',
-                                data: $(this).serialize(),
-                                success: function (response) {
-                                    if (response.success) {
-                                        Swal.fire({
-                                            title: '!نجحت العملية',
-                                            text: 'أُضِيفَت القاعة بنجاح',
-                                            icon: 'success'
-                                        }).then(() => {
-                                            window.location.href = '@Url.Action("Index")'; // Redirect to Index page after success
-                                        });
-                                    } else {
-                                        Swal.fire({
-                                            title: '!فشلت العملية',
-                                            text: 'لم تضَاف القاعة',
-                                            icon: 'error'
-                                        });
-                                    }
-                                },
-                                error: function () {
+                    $("#RoomForm").submit(function (event) {
+                        event.preventDefault(); // Prevent the default form submission
+                        $.ajax({
+                            url: '@Url.Action("AddRoom")', // URL to the controller action
+                            type: 'POST',
+                            data: $(this).serialize(),
+                            success: function (response) {
+                                if (response.success) {
                                     Swal.fire({
-                                        title: 'Error!',
-                                        text: 'حصل خطأ.',
+                                        title: '!نجحت العملية',
+                                        text: 'أُضِيفَت القاعة بنجاح',
+                                        icon: 'success'
+                                    }).then(() => {
+                                        window.location.href = '@Url.Action("Index")'; // Redirect to Index page after success
+                                    });
+                                } else {
+                                    Swal.fire({
+                                        title: '!فشلت العملية',
+                                        text: 'لم تضَاف القاعة',
                                         icon: 'error'
                                     });
                                 }
-                            });
+                            },
+                            error: function () {
+                                Swal.fire({
+                                    title: 'Error!',
+                                    text: 'حصل خطأ.',
+                                    icon: 'error'
+                                });
+                            }
                         });
                     });
 
-                    function loadFloors(buildingId) {
-                        $("#FloorId").html(""); // Clear existing options
-                        if (!buildingId) return; // Exit if no building is selected
-
-                        $.getJSON('@Url.Action("getFloorbyGuid", "Booking")/' + buildingId, function (result) {
-                            $.each(result, function (index, floor) {
-                                $("#FloorId").append("<option value='" + floor.guid + "'>" + floor.floorNo + "</option>");
-                            });
+                        $(document).ready(function(){
+                            showValue($("#BuildingId").val());
                         });
-                    }
+
+                        $("#BuildingId").on('change', function () {
+                            showValue($(this).val());
+                        });
+
+                        function showValue(val) {
+                            $.getJSON('@Url.Action("getFloorbyId", "Booking")/' + val, function (result) {
+                                console.log(result);
+                                $("#FloorId").html(""); // makes select null before filling process
+                                console.log(result.length);
+                                for (let i = 0; i < result.length; i++) {
+                                    $("#FloorId").append("<option value='" + result[i].guid + "'>" + result[i].floorNo + "</option>")
+                                }
+                            });
+                        }
+
                 </script>
             </div>
         </div>

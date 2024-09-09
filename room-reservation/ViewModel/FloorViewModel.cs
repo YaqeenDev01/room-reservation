@@ -8,7 +8,7 @@ namespace room_reservation.ViewModel
     public class FloorViewModel
     {
 
-        //public int Id { get; set; }
+        public int Id { get; set; }
 
         [Required(ErrorMessage = " هذا الحقل مطلوب")]
         [DisplayName("رقم الطابق")]
