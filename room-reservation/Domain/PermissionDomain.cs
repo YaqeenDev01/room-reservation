@@ -82,26 +82,6 @@ namespace room_reservation.Domain
         public async Task<int> AddPermission(PermissionViewModel permission)
         {
 
-            //try
-            //{
-            //    var permissionInfo = new tblPermissions
-            //    {
-            //        Email = permission.Email,
-            //        RoleId = permission.RoleId,
-            //        BuildingId = permission.BuildingId,
-            //        IsDeleted = false
-
-            //    };
-
-            //    _context.Add(permissionInfo);
-            //    await _context.SaveChangesAsync();
-            //    return 1;
-            //}
-            //catch (Exception ex)
-            //{
-            //    return 0;
-            //}
-
             try
             {
                 var user = await _context.tblUsers.FirstOrDefaultAsync(u => u.Email == permission.Email);
@@ -132,7 +112,7 @@ namespace room_reservation.Domain
             try
             {
                 var permission = await _context.tblPermissions
-                    .FirstOrDefaultAsync(x => x.Id == permissionViewModel.Id);
+                    .FirstOrDefaultAsync(x => x.guid == permissionViewModel.guid);
 
               
                 permission.Email = permissionViewModel.Email;

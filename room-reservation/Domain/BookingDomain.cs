@@ -26,7 +26,7 @@ namespace room_reservation.Domain {
                 BookingEnd = x.BookingEnd,
                 guid = x.guid,
                 RoomId = x.RoomId, 
-                RoomNo = x.Rooms.RoomNo,
+                RoomNo = x.Room.RoomNo,
                 BookingStatues = x.BookingStatues,
                 PhoneNumber = x.PhoneNumber,
                 FullName = x.FullName,

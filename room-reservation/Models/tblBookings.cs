@@ -20,8 +20,7 @@ namespace room_reservation.Models
         
         public TimeSpan BookingEnd { get; set; }
        
-        public int Duration { get; set; }
-        
+        public decimal Duration { get; set; }
         
         public Guid guid { get; set; }
 
@@ -29,11 +28,14 @@ namespace room_reservation.Models
      
         public  bool IsDeleted { get; set; }
 
-        public tblRooms Rooms { get; set; }
+        public tblRooms Room { get; set;}
         public int RoomId { get; set; }
 
         public  tblBookingStatues BookingStatues { get; set; }
         public int BookingStatuesId { get; set; }
+
+        public tblGender Gender { get; set; }
+        public int GenderId { get; set;}
         
     }
 }

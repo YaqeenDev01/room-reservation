@@ -13,5 +13,8 @@ namespace room_reservation.Models
         public bool IsDeleted { get; set; }
         public ICollection<tblFloors> Floors { get; set; }
         public ICollection<tblPermissions> Permissions { get; set; }
+
+        public tblGender Gender { get; set; }
+        public int GenderId { get; set; }
     }
 }

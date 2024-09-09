@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace room_reservation.Migrations
 {
-    public partial class dbKFUSpace : Migration
+    public partial class KFUSpaceDB : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -112,21 +112,19 @@ namespace room_reservation.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "tblBuildings",
+                name: "tblGender",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    BuildingNo = table.Column<int>(type: "int", nullable: false),
-                    BuildingNameAr = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    BuildingNameEn = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Code = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    GenderAR = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    GenderEN = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_tblBuildings", x => x.Id);
+                    table.PrimaryKey("PK_tblGender", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -192,11 +190,38 @@ namespace room_reservation.Migrations
                     PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserType = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    genderAR = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    genderEN = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_tblUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "tblBuildings",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    BuildingNo = table.Column<int>(type: "int", nullable: false),
+                    BuildingNameAr = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    BuildingNameEn = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Code = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    GenderId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_tblBuildings", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_tblBuildings_tblGender_GenderId",
+                        column: x => x.GenderId,
+                        principalTable: "tblGender",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -218,7 +243,7 @@ namespace room_reservation.Migrations
                         column: x => x.BuildingId,
                         principalTable: "tblBuildings",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -246,7 +271,7 @@ namespace room_reservation.Migrations
                         column: x => x.RoleId,
                         principalTable: "tblRoles",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -271,13 +296,13 @@ namespace room_reservation.Migrations
                         column: x => x.FloorId,
                         principalTable: "tblFloors",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
                         name: "FK_tblRooms_tblRoomType_RoomTypeId",
                         column: x => x.RoomTypeId,
                         principalTable: "tblRoomType",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -292,13 +317,13 @@ namespace room_reservation.Migrations
                     BookingDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     BookingStart = table.Column<TimeSpan>(type: "time", nullable: false),
                     BookingEnd = table.Column<TimeSpan>(type: "time", nullable: false),
-                    Duration = table.Column<int>(type: "int", nullable: false),
+                    Duration = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     RejectReason = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    RoomsId = table.Column<int>(type: "int", nullable: true),
                     RoomId = table.Column<int>(type: "int", nullable: false),
-                    BookingStatuesId = table.Column<int>(type: "int", nullable: false)
+                    BookingStatuesId = table.Column<int>(type: "int", nullable: false),
+                    GenderId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -308,12 +333,19 @@ namespace room_reservation.Migrations
                         column: x => x.BookingStatuesId,
                         principalTable: "tblBookingStatues",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
-                        name: "FK_tblBookings_tblRooms_RoomsId",
-                        column: x => x.RoomsId,
+                        name: "FK_tblBookings_tblGender_GenderId",
+                        column: x => x.GenderId,
+                        principalTable: "tblGender",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.NoAction);
+                    table.ForeignKey(
+                        name: "FK_tblBookings_tblRooms_RoomId",
+                        column: x => x.RoomId,
                         principalTable: "tblRooms",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateIndex(
@@ -322,9 +354,19 @@ namespace room_reservation.Migrations
                 column: "BookingStatuesId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_tblBookings_RoomsId",
+                name: "IX_tblBookings_GenderId",
                 table: "tblBookings",
-                column: "RoomsId");
+                column: "GenderId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_tblBookings_RoomId",
+                table: "tblBookings",
+                column: "RoomId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_tblBuildings_GenderId",
+                table: "tblBuildings",
+                column: "GenderId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_tblFloors_BuildingId",
@@ -398,6 +440,9 @@ namespace room_reservation.Migrations
 
             migrationBuilder.DropTable(
                 name: "tblBuildings");
+
+            migrationBuilder.DropTable(
+                name: "tblGender");
         }
     }
 }

@@ -37,8 +37,16 @@ namespace  room_reservation.Models
            .Build();
             optionsBuilder.UseSqlServer(configuration.GetConnectionString("DBCS"));
         }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<tblBookings>()
+                .HasOne(b => b.Room)
+                .WithMany()
+                .HasForeignKey(b => b.RoomId)
+                .OnDelete(DeleteBehavior.Cascade);
+        }
 
-    
+
     }
 
 
