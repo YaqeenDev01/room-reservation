@@ -80,8 +80,8 @@
 
                             </td>
                             <td>
-                                <a asp-action="EditUser" asp-route-id="@x.Id" class="btn btn-success">تعديل</a>
-                                <a  onclick="confirmDelete(@x.Id)" data-id="@x.Id" class="btn  btn-danger delete-btn">حذف</a>
+                                <a asp-action="EditUser" asp-route-id="@x.UserId" class="btn btn-success">تعديل</a>
+                                <a  onclick="confirmDelete(@x.UserId)" data-id="@x.UserId" class="btn  btn-danger delete-btn">حذف</a>
                             </td>
                         </tr>
                     }

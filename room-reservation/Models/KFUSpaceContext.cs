@@ -14,6 +14,7 @@ namespace  room_reservation.Models
         public DbSet<tblFloors> tblFloors { get; set; }
         public DbSet<tblLectures> tblLectures { get; set; }
         public DbSet<tblUsers>  tblUsers { get; set; }
+        public DbSet<tblGender> tblGender { get; set; }
         public DbSet<FloorsLog> FloorsLog { get; set; }
         public DbSet<BuildingsLog> BuildingsLog { get; set; }
         public DbSet<PermissionsLog> PermissionsLog { get; set; }
@@ -37,16 +38,7 @@ namespace  room_reservation.Models
            .Build();
             optionsBuilder.UseSqlServer(configuration.GetConnectionString("DBCS"));
         }
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<tblBookings>()
-                .HasOne(b => b.Room)
-                .WithMany()
-                .HasForeignKey(b => b.RoomId)
-                .OnDelete(DeleteBehavior.Cascade);
-        }
-
-
+    
     }
 
 

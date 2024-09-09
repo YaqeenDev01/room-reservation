@@ -545,7 +545,7 @@ namespace room_reservation.Migrations
                         .IsRequired();
 
                     b.HasOne("room_reservation.Models.tblRooms", "Room")
-                        .WithMany()
+                        .WithMany("Bookings")
                         .HasForeignKey("RoomId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -642,6 +642,11 @@ namespace room_reservation.Migrations
             modelBuilder.Entity("room_reservation.Models.tblRoles", b =>
                 {
                     b.Navigation("Permissions");
+                });
+
+            modelBuilder.Entity("room_reservation.Models.tblRooms", b =>
+                {
+                    b.Navigation("Bookings");
                 });
 
             modelBuilder.Entity("room_reservation.Models.tblRoomType", b =>
