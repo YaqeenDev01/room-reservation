@@ -5,7 +5,7 @@ namespace room_reservation.ViewModel
 {
     public class UserViewModel
     {
-        public int Id { get; set; }
+        public int UserId { get; set; }
 
         [Required(ErrorMessage = " هذا الحقل مطلوب")]
         [DisplayName("الأسم الكامل بالعربي")]
@@ -30,7 +30,7 @@ namespace room_reservation.ViewModel
         [Required(ErrorMessage = " هذا الحقل مطلوب")]
         [DisplayName("نوع المستخدم")]
         public string UserType { get; set; }
-        public bool IsDeleted { get; set; }
+       
 
 
     }

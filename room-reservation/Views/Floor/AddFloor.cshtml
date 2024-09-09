@@ -20,7 +20,7 @@ ViewData["Title"] = "إضافة طابق";
                         <div class="col-md-6">
                             <div class="mb-4">
                                 <label asp-for="BuildingId" class="mb-1"> أسم المبنى</label>
-                                <select  id="BuildingName" name="buildingGuid" type="text" class="form-control" asp-items="@ViewBag.buildingsName"></select>
+                                <select  id="BuildingName" name="BuildingId" type="text" class="form-control" asp-items="@ViewBag.buildingsName"></select>
                                 <option value="">غير محدد</option>
                             </div>
                         </div><!-- END ITEM -->
@@ -28,7 +28,7 @@ ViewData["Title"] = "إضافة طابق";
                         <div class="col-md-6">
                             <div class="mb-4">
                                 <label asp-for="BuildingId" class="mb-1"> رقم المبنى </label>
-                                <select id="BuildingNo" name="buildingNoGuid" type="text" class="form-control" asp-items="@ViewBag.buildingsNo "> </select>
+                                <select id="BuildingNo" name="BuildingId" type="text" class="form-control" asp-items="@ViewBag.buildingsNo "> </select>
                                 <option value="">غير محدد</option>
 
                             </div>
@@ -110,11 +110,11 @@ ViewData["Title"] = "إضافة طابق";
                                     }
                                 },
                                 error: function () {
-                                    Swal.fire({
-                                        title: 'Error!',
-                                        text: 'An unexpected error occurred.',
-                                        icon: 'error'
-                                    });
+                                    Swal.fire(
+                                        'خطأ!',
+                                        'حدث خطأ غير متوقع.',
+                                        'error'
+                                    );
                                 }
                             });
                         });

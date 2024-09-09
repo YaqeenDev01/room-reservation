@@ -20,6 +20,7 @@ namespace room_reservation.Domain
         {
             return await _context.tblUsers.Where(user=>!user.IsDeleted).Select(u=>new UserViewModel
                 {
+                    UserId = u.Id,
                     UserType = u.UserType,
                     FullNameEN = u.FullNameEN,
                     FullNameAR = u.FullNameAR,
@@ -62,28 +63,64 @@ namespace room_reservation.Domain
 
 
         }
-        public tblUsers getUserById(int id) {
-            return _context.tblUsers.SingleOrDefault(x=> x.Id == id);
+        public UserViewModel getUserById(int id) {
+            //return _context.tblUsers.SingleOrDefault(x=> x.Id == id);
+            try
+            {
+                var user = _context.tblUsers
+                    .Where(u => u.Id == id)
+                    .Select(u => new UserViewModel
+                    { 
+                        UserId = u.Id,
+                        FullNameEN = u.FullNameEN,
+                        FullNameAR = u.FullNameAR,
+                        PhoneNumber = u.PhoneNumber,
+                        Email = u.Email,
+                        Password = u.Password,
+                        UserType = u.UserType,
+                    }).FirstOrDefault();
+                return user;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error retrieving floor: {ex.Message}");
+            }
         }
 
-
-        public int EditUser(tblUsers user)
+        public tblUsers GetUserByID(int id)
         {
+            var userId = _context.tblUsers.FirstOrDefault(i => i.Id == id);
+            return userId;
+        }
 
-            // user.Guid=Guid.NewGuid();
-            user.IsDeleted = false;
-            _context.tblUsers.Update(user);
-            _context.SaveChanges();
-            return 1;
+        public async Task<int> EditUser(UserViewModel user)
+        {
+            try
+            {
+                var userInfo = GetUserByID(user.UserId);
+                userInfo.FullNameAR = user.FullNameAR;
+                userInfo.Email = user.Email;
+                userInfo.Password = user.Password;
+                userInfo.FullNameEN = user.FullNameEN;
+                userInfo.UserType = user.UserType;
+                userInfo.IsDeleted = false;
+                _context.tblUsers.Update(userInfo);
+                await _context.SaveChangesAsync();
+                return 1;
+            }
+            catch (Exception exception)
+            {
+                return 0;
+            }
+            
 
 
         }
-        public int DeleteUser(tblUsers user)
+        public async Task DeleteUser(int id)
         {
-
+            var user = _context.tblUsers.Where(x => x.Id == id).SingleOrDefault();
             user.IsDeleted = true;
-            _context.SaveChanges();
-            return 1;
+            await _context.SaveChangesAsync();
 
 
         }
@@ -101,7 +138,7 @@ namespace room_reservation.Domain
                 Email = userData.Email,
                 FullNameAR = userData.FullNameAR,
                 PhoneNumber = userData.PhoneNumber,
-                Id = userData.Id,
+                UserId = userData.Id,
                 FullNameEN = userData.FullNameEN
             };
         }
