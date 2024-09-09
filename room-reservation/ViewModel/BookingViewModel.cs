@@ -11,7 +11,7 @@ namespace room_reservation.ViewModel
         public  int BookingId { get; set; }
         
                 
-        public int Duration { get; set; }
+        public decimal Duration { get; set; }
 
         public string FullName { get; set; }
         

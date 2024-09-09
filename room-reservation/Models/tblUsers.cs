@@ -11,7 +11,10 @@ namespace room_reservation.Models
         public string PhoneNumber { get; set; }
         public string Password { get; set; }
         public string UserType { get; set; }
-      
         public bool IsDeleted { get; set; }
+        public string genderAR { get; set; } //أنثى ذكر dropdown list
+        public string genderEN { get; set; } //Female Male dropdown list
+
+
     }
 }

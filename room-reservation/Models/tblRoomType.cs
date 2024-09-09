@@ -10,6 +10,6 @@ namespace room_reservation.Models
         public Guid guid { get; set; } 
         public bool IsDeleted { get; set; }
 
-         public ICollection<tblRooms> RoomsCollection { get; set; }
+        public ICollection<tblRooms> RoomsCollection { get; set; }
     }
 }

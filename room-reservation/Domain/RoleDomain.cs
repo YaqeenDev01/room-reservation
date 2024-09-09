@@ -14,7 +14,7 @@ namespace room_reservation.Domain
 
         public async Task<IEnumerable<RoleViewModel>> GetAllRoles()
         {
-            return await _context.tblRoles.Select(x => new RoleViewModel {
+            return await _context.tblRoles.Where(x=>x.IsDeleted==false).Select(x => new RoleViewModel {
                 Id = x.Id,
                 RoleName = x.RoleNameAR,
             }).ToListAsync();

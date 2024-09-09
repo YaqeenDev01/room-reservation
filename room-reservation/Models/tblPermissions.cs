@@ -17,7 +17,5 @@ namespace room_reservation.Models
 
 
 
-
-
     }
 }

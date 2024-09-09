@@ -12,8 +12,8 @@ using room_reservation.Models;
 namespace room_reservation.Migrations
 {
     [DbContext(typeof(KFUSpaceContext))]
-    [Migration("20240826193152_dbKFUSpace")]
-    partial class dbKFUSpace
+    [Migration("20240904193159_KFUSpaceDB")]
+    partial class KFUSpaceDB
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -193,14 +193,17 @@ namespace room_reservation.Migrations
                     b.Property<int>("BookingStatuesId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Duration")
-                        .HasColumnType("int");
+                    b.Property<decimal>("Duration")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FullName")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("GenderId")
+                        .HasColumnType("int");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -214,9 +217,6 @@ namespace room_reservation.Migrations
                     b.Property<int>("RoomId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("RoomsId")
-                        .HasColumnType("int");
-
                     b.Property<Guid>("guid")
                         .HasColumnType("uniqueidentifier");
 
@@ -224,7 +224,9 @@ namespace room_reservation.Migrations
 
                     b.HasIndex("BookingStatuesId");
 
-                    b.HasIndex("RoomsId");
+                    b.HasIndex("GenderId");
+
+                    b.HasIndex("RoomId");
 
                     b.ToTable("tblBookings");
                 });
@@ -268,6 +270,9 @@ namespace room_reservation.Migrations
                     b.Property<string>("Code")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("GenderId")
+                        .HasColumnType("int");
+
                     b.Property<Guid>("Guid")
                         .HasColumnType("uniqueidentifier");
 
@@ -275,6 +280,8 @@ namespace room_reservation.Migrations
                         .HasColumnType("bit");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("GenderId");
 
                     b.ToTable("tblBuildings");
                 });
@@ -304,6 +311,31 @@ namespace room_reservation.Migrations
                     b.HasIndex("BuildingId");
 
                     b.ToTable("tblFloors");
+                });
+
+            modelBuilder.Entity("room_reservation.Models.tblGender", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("GenderAR")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("GenderEN")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid>("guid")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("tblGender");
                 });
 
             modelBuilder.Entity("room_reservation.Models.tblLectures", b =>
@@ -489,6 +521,12 @@ namespace room_reservation.Migrations
                     b.Property<string>("UserType")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("genderAR")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("genderEN")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.ToTable("tblUsers");
@@ -502,13 +540,34 @@ namespace room_reservation.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("room_reservation.Models.tblRooms", "Rooms")
+                    b.HasOne("room_reservation.Models.tblGender", "Gender")
+                        .WithMany("BookingsCollection")
+                        .HasForeignKey("GenderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("room_reservation.Models.tblRooms", "Room")
                         .WithMany()
-                        .HasForeignKey("RoomsId");
+                        .HasForeignKey("RoomId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("BookingStatues");
 
-                    b.Navigation("Rooms");
+                    b.Navigation("Gender");
+
+                    b.Navigation("Room");
+                });
+
+            modelBuilder.Entity("room_reservation.Models.tblBuildings", b =>
+                {
+                    b.HasOne("room_reservation.Models.tblGender", "Gender")
+                        .WithMany("BuildingsCollection")
+                        .HasForeignKey("GenderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Gender");
                 });
 
             modelBuilder.Entity("room_reservation.Models.tblFloors", b =>
@@ -573,6 +632,13 @@ namespace room_reservation.Migrations
             modelBuilder.Entity("room_reservation.Models.tblFloors", b =>
                 {
                     b.Navigation("Rooms");
+                });
+
+            modelBuilder.Entity("room_reservation.Models.tblGender", b =>
+                {
+                    b.Navigation("BookingsCollection");
+
+                    b.Navigation("BuildingsCollection");
                 });
 
             modelBuilder.Entity("room_reservation.Models.tblRoles", b =>

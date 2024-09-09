@@ -34,7 +34,7 @@ namespace room_reservation.Domain
                     BuildingNameAr = r.Floor.Building.BuildingNameAr,
                     FloorNo = r.Floor.FloorNo,
                     Floor = r.Floor,
-                    BuildingGuid = r.Floor.Building.Guid,
+                    Guid = r.Floor.Building.Guid,
 
 
                 }).ToListAsync();
@@ -62,7 +62,7 @@ namespace room_reservation.Domain
                         RoomType = r.RoomType,
                         FloorNo = r.Floor.FloorNo,
                         BuildingNameAr = r.Floor.Building.BuildingNameAr,
-                        BuildingGuid = r.Floor.Building.Guid,
+                        Guid = r.Floor.Building.Guid,
                     })
                     .FirstOrDefault();
 
