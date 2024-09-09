@@ -44,11 +44,11 @@ namespace room_reservation.Domain
             return  _context.tblFloors;
         }
 
-        public RoomViewModel GetRoomByGuid(Guid guid)
+        public async Task<RoomViewModel> GetRoomByGuid(Guid guid)
         {
             try
             {
-                var room =  _context.tblRooms
+                return await  _context.tblRooms
                     .Where(r => r.guid == guid && !r.IsDeleted)
                     .Select(r => new RoomViewModel
                     {
@@ -62,10 +62,8 @@ namespace room_reservation.Domain
                         FloorNo = r.Floor.FloorNo,
 
 
-                    })
-                    .FirstOrDefault();
+                    }).FirstOrDefaultAsync();
 
-                return room;
             }
             catch (Exception ex)
             {
