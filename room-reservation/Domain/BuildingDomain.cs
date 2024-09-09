@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using room_reservation.Models;
  using room_reservation.ViewModel;
+using System.Linq.Expressions;
 
 namespace room_reservation.Domain
 {
@@ -57,6 +58,11 @@ namespace room_reservation.Domain
 
                 _context.tblBuildings.Add(newBuilding);
                 await _context.SaveChangesAsync();
+
+                var building = new BuildingsLog();
+                building.BuildingId = newBuilding.Id;
+                //building.GrantdBy = 
+                
 
                 return 1; // نجاح العملية
             }

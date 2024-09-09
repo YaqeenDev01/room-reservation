@@ -34,6 +34,7 @@ namespace room_reservation.Domain
                     BuildingNameAr = r.Floor.Building.BuildingNameAr,
                     FloorNo = r.Floor.FloorNo,
                     Floor = r.Floor,
+                    BuildingGuid = r.Floor.Building.Guid,
 
 
                 }).ToListAsync();
@@ -44,7 +45,7 @@ namespace room_reservation.Domain
             return  _context.tblFloors;
         }
 
-        public async Task<RoomViewModel> GetRoomByGuid(Guid guid)
+        public async Task <RoomViewModel> GetRoomByGuid(Guid guid)
         {
             try
             {
@@ -60,9 +61,10 @@ namespace room_reservation.Domain
                         RoomTypeId = r.RoomTypeId,
                         RoomType = r.RoomType,
                         FloorNo = r.Floor.FloorNo,
-
-
-                    }).FirstOrDefaultAsync();
+                        BuildingNameAr = r.Floor.Building.BuildingNameAr,
+                        BuildingGuid = r.Floor.Building.Guid,
+                    })
+                    .FirstOrDefault();
 
             }
             catch (Exception ex)
@@ -71,7 +73,7 @@ namespace room_reservation.Domain
             }
         }
 
-        public tblRooms GetRoomById(int Id)
+        public async Task<tblRooms> GetRoomById(int Id)
         {
             var room = _context.tblRooms
                 .Include(b => b.Floor)
@@ -94,7 +96,7 @@ namespace room_reservation.Domain
                 };  
 
                 _context.Add(roomInfo);
-                 await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
                 return 1;
             }
             catch (Exception exception)

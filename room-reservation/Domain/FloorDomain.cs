@@ -149,20 +149,19 @@ namespace room_reservation.Domain
                         floorInfo.BuildingId = floor.BuildingId;
 
                         _context.tblFloors.Update(floorInfo);
-                        _context.SaveChanges();
+                       await _context.SaveChangesAsync();
                         return 1;
                         
                     }
                     catch (Exception exception)
                     {
-                        Console.WriteLine($"Error: {exception.Message}");
+                       // Console.WriteLine($"Error: {exception.Message}");
                         return 0;
                     }
                 }
                 public async Task DeleteFloor(Guid id)
                 {
-                        var floor = _context.tblFloors.Where(f => f.Guid == id).SingleOrDefault();
-                        // is deleted will delete the record in web 
+                    tblFloors floor = GetFloorById(id);                        // is deleted will delete the record in web 
                         floor.IsDeleted = true;
                         // remove will delete the record from Db
                        // _context.tblFloors.Remove(floorInfo);

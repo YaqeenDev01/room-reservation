@@ -94,11 +94,11 @@
                                     }
                                 },
                                 error: function () {
-                                    Swal.fire({
-                                        title: 'Error!',
-                                        text: 'An unexpected error occurred.',
-                                        icon: 'error'
-                                    });
+                                    Swal.fire(
+                                        'خطأ!',
+                                        'حدث خطأ غير متوقع.',
+                                        'error'
+                                    );
                                 }
                             });
                         });
