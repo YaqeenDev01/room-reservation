@@ -64,7 +64,7 @@ namespace room_reservation.Domain
                         BuildingNameAr = r.Floor.Building.BuildingNameAr,
                         Guid = r.Floor.Building.Guid,
                     })
-                    .FirstOrDefault();
+                    .FirstOrDefaultAsync();
 
             }
             catch (Exception ex)
