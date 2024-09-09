@@ -47,7 +47,7 @@ namespace room_reservation.Controllers
         {
             ViewBag.Building = new SelectList(await _BuildingDomain.GetAllBuilding(), "BuildingId", "BuildingNameAr");
             ViewBag.Roles = new SelectList(await _RoleDomain.GetAllRoles(), "Id", "RoleName");
-
+            
             try
             {
                 if (ModelState.IsValid)

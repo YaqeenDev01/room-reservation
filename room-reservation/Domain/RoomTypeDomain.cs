@@ -19,7 +19,7 @@ namespace room_reservation.Domain
                 .Select(rt => new RoomTypeViewModel
                 {
                     Id = rt.Id,
-                    RoomAR = rt.RoomAR,
+                    RoomAR = rt.RoomTypeAR,
                     guid = rt.guid
                 })
                 .ToListAsync();

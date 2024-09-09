@@ -34,8 +34,7 @@ namespace room_reservation.Models
         public  tblBookingStatues BookingStatues { get; set; }
         public int BookingStatuesId { get; set; }
 
-        public tblGender Gender { get; set; }
-        public int GenderId { get; set;}
+        
         
     }
 }

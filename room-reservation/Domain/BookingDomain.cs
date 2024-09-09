@@ -124,7 +124,7 @@ namespace room_reservation.Domain {
                 SeatCapacity = room.SeatCapacity,
                 RoomNo = room.RoomNo,
                 RoomGuid = room.guid,
-                RoomAR = room.RoomType.RoomAR,
+                RoomAR = room.RoomType.RoomTypeAR,
                 BookingDate = DateTime.Now
             };
         }

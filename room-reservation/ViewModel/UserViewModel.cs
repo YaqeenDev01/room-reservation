@@ -30,7 +30,14 @@ namespace room_reservation.ViewModel
         [Required(ErrorMessage = " هذا الحقل مطلوب")]
         [DisplayName("نوع المستخدم")]
         public string UserType { get; set; }
-       
+
+        [Required(ErrorMessage ="هذا الحقل مطلوب")]
+        [DisplayName("الجنس")]
+        public string GenderAR { get; set; }
+        [DisplayName("Gender")]
+        public string GenderEN { get; set; }
+
+
 
 
     }
