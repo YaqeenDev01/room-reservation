@@ -92,11 +92,9 @@ namespace room_reservation.Domain {
                 Bookings.BookingStatues = Booking.BookingStatues;
          
                 //Bookings.RejectReason = booking.RejectReason;
-               // Bookings.Duration = Booking.BookingEnd - Booking.BookingStart;
-               //since duration is int this wont work 
-               /**/
-               
-                Bookings.Duration = Booking.Duration;
+                // to calculate the duration first substract the end time from the start then convert it it to decimal
+                var BookingDuration = Booking.BookingEnd - Booking.BookingStart;
+                Bookings.Duration = Convert.ToDecimal(BookingDuration.TotalHours);
                 Bookings.Email = user.Email;
                 Bookings.FullName = user.FullNameAR;
                 Bookings.PhoneNumber = user.PhoneNumber;

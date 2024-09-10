@@ -93,10 +93,8 @@ namespace room_reservation.Controllers
         [Authorize]
         public async Task<IActionResult> Add(BookingViewModel booking)
         {
-          
-         
                 booking.Email =User.FindFirst(ClaimTypes.Email).Value;
-         
+                
                 try
                 {
                     if (ModelState.IsValid)
@@ -124,8 +122,8 @@ namespace room_reservation.Controllers
             
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
+  // Change to cancel and user booking statues to change it to cancel 
+     
         public async Task<IActionResult> Delete(Guid id)
         {
             
