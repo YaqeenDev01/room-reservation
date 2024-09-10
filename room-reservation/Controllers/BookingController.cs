@@ -124,10 +124,10 @@ namespace room_reservation.Controllers
 
   // Change to cancel and user booking statues to change it to cancel 
      
-        public async Task<IActionResult> Delete(Guid id)
+        public async Task<IActionResult> Cancel(Guid id)
         {
             
-                await _BookingDomain.DeleteBooking(id);
+                await _BookingDomain.CancelBooking(id);
                 return Json(new { success = true });
                 
         }

@@ -64,7 +64,7 @@
                             <td>
                                 <a asp-action="Details" asp-route-id="@x.guid" class="btn btn-sm btn-primary">عرض</a>
 
-                                <a  onclick="confirmDelete(@x.guid)" data-id="@x.guid" class="btn btn-sm btn-danger delete-btn">حذف</a>
+                                <a  onclick="confirmDelete(@x.guid)" data-id="@x.guid" class="btn btn-sm btn-danger delete-btn">إلغاء</a>
                             </td>
                         </tr>
                     }
@@ -99,14 +99,14 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
-                        url: '@Url.Action("Delete")',
+                        url: '@Url.Action("Cancel")',
                         type: 'POST',
                         data: { id: id },
                         success: function (response) {
                             if (response.success) {
                                 Swal.fire(
                                     'نجحت العملية!',
-                                    'حُذِفت الصلاحية.',
+                                    'تم إلغاء الحجز.',
                                     'success'
                                 ).then(() => {
                                     window.location.reload();
@@ -114,7 +114,7 @@
                             } else {
                                 Swal.fire(
                                     'فشلت العملية!',
-                                    'لم تُحذف الصلاحية.',
+                                    'لم يتم إلغاء الحجز.',
                                     'error'
                                 );
                             }

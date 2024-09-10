@@ -161,11 +161,11 @@ namespace room_reservation.Domain {
             return models;
         } 
 
-        public async Task DeleteBooking(Guid id)
+        public async Task CancelBooking(Guid id)
         {
 
                 tblBookings Bookings = getBookingByGuid(id);
-                Bookings.IsDeleted = true;
+                Bookings.BookingStatuesId = 4;
                 await _context.SaveChangesAsync();
         
         }
