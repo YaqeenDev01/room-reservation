@@ -43,8 +43,7 @@ namespace room_reservation.Controllers
         {
             ViewBag.UserType = new SelectList(new List<string>
             {
-                "طالب",
-                "عضو هيئة تدريس",
+         
                 "منسق الكلية",
                 "مدير النظام"
               
@@ -58,8 +57,7 @@ namespace room_reservation.Controllers
             //is model state valid to check if the user has entered data or not and if not it will send that the [Required (ErrorMessage="")] in view model
             ViewBag.UserType = new SelectList(new List<string>
             {
-                "طالب",
-                "عضو هيئة تدريس",
+               
                 "منسق الكلية",
                 "مدير النظام"
               
@@ -90,8 +88,7 @@ namespace room_reservation.Controllers
         {
             ViewBag.UserType = new SelectList(new List<string>
             {
-                "طالب",
-                "عضو هيئة تدريس",
+               
                 "منسق الكلية",
                 "مدير النظام"
               
@@ -110,8 +107,7 @@ namespace room_reservation.Controllers
         {
             ViewBag.UserType = new SelectList(new List<string>
             {
-                "طالب",
-                "عضو هيئة تدريس",
+               
                 "منسق الكلية",
                 "مدير النظام"
               
