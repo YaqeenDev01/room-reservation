@@ -27,21 +27,12 @@ namespace room_reservation.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> AddRoom()
+        public async Task<IActionResult> AddRoom(Guid guid)
         {
             ViewBag.Building = new SelectList(await _buildingDomain.GetAllBuilding(), "Guid", "BuildingNameAr");
+            ViewBag.RoomTypes = new SelectList(await _roomTypeDomain.GetAllRoomTypes(), "Id", "RoomAR");
             //ViewBag.Floor = new SelectList(await _floorDomain.GetAllFloors(), "Guid", "FloorNo");
-
-            var roomTypes = await _roomTypeDomain.GetAllRoomTypes();
-            var roomViewModel = new RoomViewModel
-            {
-                RoomTypes = roomTypes.Select( x => new SelectListItem
-                {
-                    Value = x.Id.ToString(),
-                    Text = x.RoomAR
-                }).ToList()
-            };
-            return View(roomViewModel);
+            return View(_roomDomain.GetFloorIdByGuid(guid));
         }
 
 
@@ -50,6 +41,7 @@ namespace room_reservation.Controllers
         public async Task<IActionResult> AddRoom(RoomViewModel roomViewModel)
         {
             ViewBag.Building = new SelectList(await _buildingDomain.GetAllBuilding(), "Guid", "BuildingNameAr");
+            ViewBag.RoomTypes = new SelectList(await _roomTypeDomain.GetAllRoomTypes(), "Id", "RoomAR");
             //ViewBag.Floor = new SelectList(await _floorDomain.GetAllFloors(), "Guid", "FloorNo");
 
             try

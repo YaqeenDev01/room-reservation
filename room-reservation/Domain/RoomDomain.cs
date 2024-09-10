@@ -9,10 +9,11 @@ namespace room_reservation.Domain
     public class RoomDomain
     {
         private readonly KFUSpaceContext _context;
-
-        public RoomDomain(KFUSpaceContext context)
+        private readonly FloorDomain _floorDomain;
+        public RoomDomain(KFUSpaceContext context,FloorDomain floorDomain)
         {
             _context = context;
+            _floorDomain = floorDomain;
         }
 
         public async Task<IEnumerable<RoomViewModel>> GetAllRooms()
@@ -39,7 +40,29 @@ namespace room_reservation.Domain
 
                 }).ToListAsync();
         }
-
+        public RoomViewModel GetFloorIdByGuid(Guid id)
+        {
+            try
+            {
+                var floor = _context.tblFloors
+                    .Where(x => x.Guid == id)
+                    .Select(f => new RoomViewModel
+                    {
+                        Id = f.Id,
+                        Guid = f.Guid,
+                     
+                        //Rooms = f.Rooms // not used 
+                    })
+                    .FirstOrDefault();
+                       
+                return floor;
+            }
+            catch (Exception ex)
+            {
+                // Log the exception or handle it as needed
+                throw new Exception($"Error retrieving floor: {ex.Message}");
+            }
+        }
         public IEnumerable<tblFloors> GetAllFloors()
         {
             return  _context.tblFloors;
@@ -85,13 +108,15 @@ namespace room_reservation.Domain
         {
             try
             {
+               var floor =  _floorDomain.GetFloorByGuid(room.FloorGuid);
                 var roomInfo = new tblRooms
                 {
 
                 RoomNo = room.RoomNo,
+                
                 SeatCapacity = room.SeatCapacity,
                 IsActive = room.IsActive,
-                FloorId = room.FloorId,
+                FloorId = floor.Id,
                 RoomTypeId = room.RoomTypeId,
                 };  
 

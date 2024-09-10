@@ -39,14 +39,14 @@
                         <div class="col-md-6">
                             <div class="mb-4">
                                 <label asp-for="FloorId" class="control-label">رقم الدور</label>
-                                <select name="FloorId" id="FloorId" class="form-control"></select>
-                                <span asp-validation-for="FloorId" class="text-danger"></span>
+                                <select asp-for="FloorGuid" id="FloorId" class="form-control"></select>
+                                <span asp-validation-for="FloorGuid" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-4">
                                 <label asp-for="RoomTypeId" class="control-label">نوع القاعة</label>
-                                <select asp-for="RoomTypeId" class="form-control" asp-items="Model.RoomTypes"></select>
+                                <select asp-for="RoomTypeId" class="form-control" asp-items="@ViewBag.RoomTypes"></select>
                                 <span asp-validation-for="RoomTypeId" class="text-danger"></span>
                             </div>
                         </div>
@@ -107,7 +107,7 @@
                         });
 
                         function showValue(val) {
-                            $.getJSON('@Url.Action("getFloorbyId", "Booking")/' + val, function (result) {
+                            $.getJSON('@Url.Action("getFloorbyGuid", "Booking")/' + val, function (result) {
                                 console.log(result);
                                 $("#FloorId").html(""); // makes select null before filling process
                                 console.log(result.length);
@@ -122,3 +122,5 @@
         </div>
     </div>
 </div>
+
+
