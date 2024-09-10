@@ -16,7 +16,7 @@
                        placeholder="البحث السريع ...">
             </div>
             <button type="button" class="btn btn-primary" id="btnRedirect">
-                إضافة طابق
+                حجز قاعة
             </button>
             <script>
                 document.getElementById('btnRedirect').onclick = function () {
@@ -59,12 +59,12 @@
                             </td>
                             
                             <td>
-                                @x.BookingStatues
+                                @x.BookingStatues.StatuesAR
                             </td>
                             <td>
                                 <a asp-action="Details" asp-route-id="@x.guid" class="btn btn-sm btn-primary">عرض</a>
-                
-                                <a asp-action="Delete" asp-route-id="@x.guid" class="btn btn-sm btn-danger">حذف</a>
+
+                                <a  onclick="confirmDelete(@x.guid)" data-id="@x.guid" class="btn btn-sm btn-danger delete-btn">حذف</a>
                             </td>
                         </tr>
                     }
@@ -77,6 +77,9 @@
 @* *@
 @* <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> *@
 @* <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script> *@
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
 <script>
     $(document).ready(function () {
         $('.delete-btn').click(function (event) {

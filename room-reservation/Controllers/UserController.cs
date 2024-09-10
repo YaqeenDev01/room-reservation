@@ -208,7 +208,9 @@ namespace room_reservation.Controllers
                     new Claim(ClaimTypes.Email , user.Email),
                     new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
                     new Claim(ClaimTypes.Role, role),
-                    new Claim(ClaimTypes.GivenName, user.FullNameAR)
+                    new Claim(ClaimTypes.GivenName, user.FullNameAR),
+                    new Claim(ClaimTypes.Gender,user.GenderAR)
+                    
 
                 }, CookieAuthenticationDefaults.AuthenticationScheme);
 

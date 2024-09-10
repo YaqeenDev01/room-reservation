@@ -67,7 +67,6 @@ namespace room_reservation.Controllers
         public async Task<IList<FloorViewModel>> getFloorbyGuid(Guid id)
         {
             return await _floorDomain.GetFloorByBuildingGuid(id);
-            
         }
 
         public async Task<IList<FloorViewModel>> getFloorbyId(int id)
@@ -97,6 +96,7 @@ namespace room_reservation.Controllers
           
          
                 booking.Email =User.FindFirst(ClaimTypes.Email).Value;
+         
                 try
                 {
                     if (ModelState.IsValid)
@@ -126,15 +126,12 @@ namespace room_reservation.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Delete(BookingViewModel booking)
+        public async Task<IActionResult> Delete(Guid id)
         {
-            if (ModelState.IsValid)
-            {
-                _BookingDomain.DeleteBooking(booking);
-                return RedirectToAction(nameof(Index));
-            }
-            return View();
-
+            
+                await _BookingDomain.DeleteBooking(id);
+                return Json(new { success = true });
+                
         }
         [HttpGet]
         public IActionResult Details(Guid id) {

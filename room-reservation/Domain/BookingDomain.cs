@@ -9,11 +9,13 @@ namespace room_reservation.Domain {
         private readonly KFUSpaceContext _context;
         private readonly UserDomain _userDomain;
         private readonly RoomDomain _roomDomain;
+
         public BookingDomain(KFUSpaceContext context,UserDomain userDomain,RoomDomain roomDomain)
         {
             _context = context;
             _userDomain = userDomain;
             _roomDomain = roomDomain;
+            
         }
         [Authorize]
         public async Task<IEnumerable<BookingViewModel>> GetAllBooking()
@@ -78,10 +80,10 @@ namespace room_reservation.Domain {
         {
             try
             {
-                
+               // to get user info through claims  
                 var user= await _userDomain.GetUserByEmail(Booking.Email);
                 var room = await _roomDomain.GetRoomByGuid(Booking.RoomGuid);
-                
+         
                 tblBookings Bookings = new tblBookings();
                 Bookings.Id = Booking.BookingId;
                 Bookings.BookingDate = DateTime.Now;
@@ -94,7 +96,7 @@ namespace room_reservation.Domain {
                //since duration is int this wont work 
                /**/
                
-               Bookings.Duration = Booking.Duration;
+                Bookings.Duration = Booking.Duration;
                 Bookings.Email = user.Email;
                 Bookings.FullName = user.FullNameAR;
                 Bookings.PhoneNumber = user.PhoneNumber;
@@ -133,7 +135,8 @@ namespace room_reservation.Domain {
         public tblBookings getBookingByGuid(Guid id)
 
         {
-            return _context.tblBookings.FirstOrDefault(x => x.guid == id);
+          var bookingId= _context.tblBookings.FirstOrDefault(x => x.guid == id);
+          return bookingId;
         }
 
 
@@ -160,34 +163,13 @@ namespace room_reservation.Domain {
             return models;
         } 
 
-        public string DeleteBooking(BookingViewModel booking)
+        public async Task DeleteBooking(Guid id)
         {
-            try
-            {
-                tblBookings Bookings = getBookingByGuid(booking.guid);
-                Bookings.Id = booking.BookingId;
-                Bookings.BookingDate = booking.BookingDate;
-                Bookings.BookingStart = booking.BookingStart;
-                Bookings.BookingEnd = booking.BookingEnd;
-                //Bookings.BookingStatues = booking.BookingStatues;
-                //Bookings.RejectReason = booking.RejectReason;
-                //Bookings.Duration = booking.Duration;
-                //Bookings.Email = booking.Email;
-                //Bookings.FullName = booking.FullName;
-                //Bookings.PhoneNumber = booking.PhoneNumber;
-                Bookings.guid = Guid.NewGuid();
-                Bookings.IsDeleted = false;
-                Bookings.RoomId = booking.RoomId;
 
-                _context.tblBookings.Remove(Bookings);
-                _context.SaveChanges();
-                return "successful";
-            }
-            catch (Exception ex)
-            {
-                // تسجيل الخطأ أو معالجته هنا
-                return $"Error: {ex.Message}";
-            }
+                tblBookings Bookings = getBookingByGuid(id);
+                Bookings.IsDeleted = true;
+                await _context.SaveChangesAsync();
+        
         }
         //public string DetailsBooking(BookingViewModel booking)
         //{
