@@ -23,9 +23,14 @@ namespace room_reservation.ViewModel
         public Guid Guid { get; set; }  //Unique
 
         //public ICollection<tblPermissions> Permissions { get; set; }
-    
-        //public ICollection<tblFloors> Floors { get; set; }
 
+        //public ICollection<tblFloors> Floors { get; set; }
+        public int GenderId { get; set; }
+        [Required(ErrorMessage = "هذا الحقل مطلوب")]
+        [DisplayName("القسم")]
+        public string GenderAR { get; set; }
+
+        public string GenderEN { get; set; }
     }
 }
 

@@ -136,6 +136,11 @@ namespace room_reservation.Domain {
           var bookingId= _context.tblBookings.FirstOrDefault(x => x.guid == id);
           return bookingId;
         }
+        public async Task<tblBookings> getBookingByguid(Guid id)
+
+        {
+            return await _context.tblBookings.FirstOrDefaultAsync(x => x.guid == id);
+        }
 
 
         public BookingViewModel getBookingByid(Guid id)
@@ -232,9 +237,69 @@ namespace room_reservation.Domain {
                 // For simplicity, just rethrow or return null
                 throw new ApplicationException("An error occurred while retrieving the booking details.", ex);
             }
+
         }
 
- 
+        public async Task<IEnumerable<BookingViewModel>> GetExternalBookings()
+        {
+            return await _context.tblBookings
+                .Include(b => b.Room)   
+                .ThenInclude(r => r.Floor) 
+                .ThenInclude(f => f.Building) 
+                .Join(_context.tblUsers, b => b.Email, u => u.Email, (b, u) => new { Booking = b, User = u }) 
+                .Where(bu => bu.User.CollegeName != bu.Booking.Room.Floor.Building.BuildingNameAr) 
+                .Select(bu => new BookingViewModel
+                {
+                    BookingId = bu.Booking.Id,
+                    FullName = bu.Booking.FullName,
+                    Email = bu.Booking.Email,
+                    RoomNo = bu.Booking.Room.RoomNo,
+                    BookingDate = bu.Booking.BookingDate,
+                    guid = bu.Booking.guid,
+                })
+                .ToListAsync();
+        }
+
+
+
+        public async Task<bool> ApproveBooking(Guid bookingGuid)
+        {
+            var booking = await _context.tblBookings.FirstOrDefaultAsync(b => b.guid == bookingGuid);
+
+            if (booking == null)
+            {
+                return false; 
+            }
+
+            booking.BookingStatuesId = 1; 
+            _context.tblBookings.Update(booking);
+
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
+
+        public async Task<bool> RejectBooking(Guid bookingGuid,string rejectReason)
+        {
+            var booking = await _context.tblBookings.FirstOrDefaultAsync(b => b.guid == bookingGuid);
+
+            if (booking == null)
+            {
+                return false; 
+            }
+
+            booking.BookingStatuesId = 3; 
+
+            booking.RejectReason = rejectReason;
+
+            _context.tblBookings.Update(booking);
+
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
+
+
     }
 }
 
