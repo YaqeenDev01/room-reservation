@@ -102,7 +102,15 @@ namespace room_reservation.Domain {
                 Bookings.guid = Guid.NewGuid();
                 Bookings.IsDeleted = false;
                 Bookings.RoomId = room.Id;
-                Bookings.BookingStatuesId = 2;
+                if (user.CollegeName == Booking.BuildingNameAr)
+                {
+                    Bookings.BookingStatuesId = 1;
+                }
+                else
+                {
+                    Bookings.BookingStatuesId = 2;
+                }
+
                 _context.tblBookings.Add(Bookings);
                await _context.SaveChangesAsync();
                 return 1;

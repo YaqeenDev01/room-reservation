@@ -64,7 +64,7 @@
                             <td>
                                 <a asp-action="Details" asp-route-id="@x.guid" class="btn btn-sm btn-primary">عرض</a>
 
-                                <a  onclick="confirmDelete(@x.guid)" data-id="@x.guid" class="btn btn-sm btn-danger delete-btn">إلغاء</a>
+                                <a  onclick="confirmDelete(@x.guid)" data-id="@x.guid" id="cancel" class="btn btn-sm btn-danger delete-btn">إلغاء</a>
                             </td>
                         </tr>
                     }
@@ -86,7 +86,7 @@
             event.preventDefault(); 
 
             var id = $(this).data('id');
-
+            var $cancelButton = $(this);
             Swal.fire({
                 title: 'هل أنت متأكد؟',
                 text: "",
@@ -108,9 +108,8 @@
                                     'نجحت العملية!',
                                     'تم إلغاء الحجز.',
                                     'success'
-                                ).then(() => {
-                                    window.location.reload();
-                                });
+                                );
+                                $cancelButton.hide();
                             } else {
                                 Swal.fire(
                                     'فشلت العملية!',
@@ -127,6 +126,8 @@
                             );
                         }
                     });
+
+           
                 }
             });
         });
