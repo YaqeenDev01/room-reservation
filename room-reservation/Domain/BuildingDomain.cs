@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Components.RenderTree;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using room_reservation.Models;
  using room_reservation.ViewModel;
@@ -23,8 +24,11 @@ namespace room_reservation.Domain
                 BuildingNo = x.BuildingNo,
                 Code = x.Code,
                 Guid = x.Guid,
-                BuildingId = x.Id
-  
+                BuildingId = x.Id,
+                GenderId = x.Id,
+                GenderAR = x.GenderAR,
+                //GenderEN=x.Gender.GenderEN,
+
             }).ToListAsync();
         }
 
@@ -53,16 +57,18 @@ namespace room_reservation.Domain
                     BuildingNameAr = buildings.BuildingNameAr,
                     Code = buildings.Code,
                     BuildingNo = buildings.BuildingNo,
+                    GenderAR= buildings.GenderAR,
                     Guid = Guid.NewGuid()
                 };
 
                 _context.tblBuildings.Add(newBuilding);
                 await _context.SaveChangesAsync();
 
-                var building = new BuildingsLog();
-                building.BuildingId = newBuilding.Id;
-                //building.GrantdBy = 
-                
+                var buildingLog = new BuildingsLog();
+                buildingLog.BuildingId = newBuilding.Id;
+                buildingLog.OperationType = " اضافة مبنى ";
+                buildingLog.OperationDate = buildingLog.OperationDate;
+                //buildingLog.GrantdBy=                
 
                 return 1; // نجاح العملية
             }
@@ -82,6 +88,7 @@ namespace room_reservation.Domain
                 BuildingNameAr = buildingId.BuildingNameAr,
                 BuildingNo = buildingId.BuildingNo,
                 BuildingNameEn = buildingId.BuildingNameEn,
+                GenderAR = buildingId.GenderAR,
                 Code = buildingId.Code,
             };
             return models;
@@ -120,9 +127,15 @@ namespace room_reservation.Domain
                 buildingsinfo.BuildingNameAr = buildings.BuildingNameAr;
                 buildingsinfo.Code = buildings.Code;
                 buildingsinfo.BuildingNo = buildings.BuildingNo;
-
+                buildingsinfo.GenderAR= buildings.GenderAR;
                 _context.tblBuildings.Update(buildingsinfo);
                 await _context.SaveChangesAsync();
+
+                var buildingLog = new BuildingsLog();
+                buildingLog.BuildingId = buildings.BuildingId;
+                buildingLog.OperationType = " تعديل مبنى ";
+                buildingLog.OperationDate = buildingLog.OperationDate;
+                //buildingLog.GrantdBy=   
 
                 return 1; // نجاح العملية
             }
@@ -134,7 +147,7 @@ namespace room_reservation.Domain
         }
 
    
-        public async Task DeleteBuilding(Guid id)
+        public async Task DeleteBuilding(Guid id)  
         {
            
                 tblBuildings buildinginfo = await getBuildingByGuid(id);
@@ -142,6 +155,12 @@ namespace room_reservation.Domain
                 buildinginfo.IsDeleted = true;
                 //_context.tblBuildings.Update(buildinginfo);
                await _context.SaveChangesAsync();
+
+            var buildingLog = new BuildingsLog();
+            buildingLog.BuildingId = buildinginfo.Id;
+            buildingLog.OperationType = "حذف مبنى ";
+            buildingLog.OperationDate = buildingLog.OperationDate;
+            //buildingLog.GrantdBy=   
 
         }
     }

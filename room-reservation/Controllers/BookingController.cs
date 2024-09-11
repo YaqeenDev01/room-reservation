@@ -21,15 +21,18 @@ namespace room_reservation.Controllers
         private readonly BuildingDomain _buildingDomain;
         private readonly RoomDomain _roomDomain;
         private readonly RoomTypeDomain _roomTypeDomain;
+        private readonly UserDomain _userDomain;
         
-        
-        public BookingController(BookingDomain bookingDomain,BuildingDomain buildingDomain, FloorDomain floorDomain, RoomDomain roomDomain ,RoomTypeDomain roomTypeDomain)
+        public BookingController(BookingDomain bookingDomain,BuildingDomain buildingDomain, FloorDomain floorDomain, RoomDomain roomDomain ,RoomTypeDomain roomTypeDomain,UserDomain userDomain)
         {
             _BookingDomain = bookingDomain;
             _buildingDomain = buildingDomain;
             _floorDomain = floorDomain;
             _roomDomain = roomDomain;
             _roomTypeDomain = roomTypeDomain;
+            _userDomain = userDomain;
+
+
         }
 
         [Authorize]
@@ -154,7 +157,37 @@ namespace room_reservation.Controllers
 
         }
 
+        [HttpGet]
+        public async Task<IActionResult> ExternalBookings()
+        {
+            var bookings = await _BookingDomain.GetExternalBookings();
+            return View(bookings);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ApproveBooking(Guid bookingguid)
+        {
+            bool result = await _BookingDomain.ApproveBooking(bookingguid);
+            if (result)
+            {
+            }
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RejectBooking(Guid bookingguid, string rejectReason)
+        {
+            bool result = await _BookingDomain.RejectBooking(bookingguid, rejectReason);
+            if (result)
+            {
+            }
+            return View();
+        }
+
+
+
     }
+
 
 }
 

@@ -38,13 +38,27 @@
                                 <span asp-validation-for="BuildingNo" class="text-danger"></span>
                             </div>
                         </div>
-                        @* <div class="col-md-6">
+                        <div class="col-md-6">
                             <div class="mb-4">
-                        <label asp-for="GenderId" class="control-label cb-1">  القسم</label>
-                        <select asp-for="GenderId" class="form-control" asp-items="@ViewBag.tblGender"></select>
-                        <option value="0">غير محدد</option>
-                        <option value="1">طالبات  </option>
-                        <option value="2"> طلاب  </option>
+                                 <label class="col-form-label">القسم </label>
+                            <select class="form-control " asp-for="GenderAR">
+                                <option value="0">الرجاء اختيار القسم </option>
+                                <option value="طالبات">طالبات</option>
+                                <option value="طلاب ">طلاب </option>
+                                </select>
+                                @* <label asp-for="GenderAR" class="mb-1">القسم  </label>
+                                <input asp-for="GenderAR" class="form-control" type="number">
+                                <span asp-validation-for="GenderAR" class="text-danger"></span> *@
+                            </div>
+                        </div>
+                        <@* div class="col-md-6">
+                            <div class="mb-4">
+                        <label asp-for="GenderId" class="control-label cb-1"> القسم</label>
+                        <select asp-for="GenderId" class="form-control" >
+                                    <option value="0">غير محدد</option>
+                                    <option value="1">طالبات</option>
+                                    <option value="2"> طلاب</option>
+                                </select>
                             </div>
                         </div> *@
                         <div class="col-md-6">

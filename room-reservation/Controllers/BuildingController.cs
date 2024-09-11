@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using room_reservation.Domain;
 using room_reservation.Models;
@@ -13,24 +14,24 @@ namespace room_reservation.Controllers
         public BuildingController(BuildingDomain buildingDomain)
         {
             _BuildingDomain = buildingDomain;
-
         }
         public async Task<IActionResult> Index()
         {
             var buildings = await _BuildingDomain.GetAllBuilding();
             return View(buildings);
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> AddBuilding()
         {
             return View();
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddBuilding(BuildingViewModel building)
         {
+
             if (!ModelState.IsValid)
             {
                 // إذا كان هناك أخطاء في النموذج، إرجاع الأخطاء
@@ -60,16 +61,20 @@ namespace room_reservation.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> EditBuilding(Guid id)
         {
+
             return View(  await _BuildingDomain.getBuildingByguid(id));
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditBuilding(BuildingViewModel building)
         {
+
             if (!ModelState.IsValid)
             {
                 // إذا كان هناك أخطاء في النموذج، إرجاع الأخطاء
@@ -98,7 +103,7 @@ namespace room_reservation.Controllers
                 return Json(new { success = false, message = ex.Message });
             }
         }
-
+        [Authorize(Roles = "Admin")] 
         public async Task<IActionResult> Delet(Guid id)
         {
                await _BuildingDomain.DeleteBuilding(id);
