@@ -1,0 +1,111 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model room_reservation.ViewModel.BookingViewModel
+@{
+    ViewData["Title"] = " عرض طلب الحجز";
+}
+
+<div class="block mb-4">
+    <div class="block-header border-bottom px-4 py-4">
+        <h5 class="m-0">  عرض بيانات طلب الحجز </h5>
+    </div>
+    <div class="block-body py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <form asp-action="Orderinfo" id="BookingForm" method="post">
+                    <input hidden asp-for="guid" />
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-4">
+                                <label asp-for="FullName" class="mb-1"> اسم مقدم الطلب</label>
+                                <span asp-validation-for="FullName" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-4">
+                                <label asp-for="Email" class="control-label cb-1"> البريد الالكتروني</label>
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-4">
+                                <label asp-for="PhoneNumber" class="mb-1">رقم الجوال </label>
+                                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-4">
+                                <label asp-for="BookingDate" class="mb-1">تاريخ الحجز   </label>
+                                <span asp-validation-for="BookingDate" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-4">
+                                <label asp-for="BookingStart" class="control-label cb-1">بداية الحجز </label>
+                                <span asp-validation-for="BookingStart" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-4">
+                                <label asp-for="BookingEnd" class="mb-1"> نهاية الحجز </label>
+                                <span asp-validation-for="BookingEnd" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-4">
+                                <label asp-for="BookingStatues" class="mb-1"> حالة الحجز</label>
+                                <span asp-validation-for="BookingStatues" class="text-danger"></span>
+                            </div>
+                        </div>
+                       @*  <div class="col-md-6">
+                            <div class="mb-4">
+                                <label asp-for="RoomAR" class="mb-1">نوع القاعة </label>
+                                <span asp-validation-for="RoomAR" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-4">
+                                <label asp-for="RoomNo" class="mb-1"> رقم القاعة </label>
+                                <span asp-validation-for="RoomNo" class="text-danger"></span>
+                            </div>
+                        </div> *@
+                        <div class="d-flex justify-content-end">
+                            <button asp-action="ApproveBooking" type="submit" class="btn btn-success px-5" title="قبول">قبول</button>
+                            <button type="button" class="btn btn-danger px-5" title="رفض" data-bs-toggle="modal" data-bs-target="#rejectModal">رفض</button>
+                        </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Reject Modal -->
+        <div class="modal fade" id="rejectModal" tabindex="-1" aria-labelledby="rejectModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="rejectModalLabel">سبب الرفض</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Form for Rejecting the Booking -->
+                        <form asp-action="RejectBooking" method="post">
+                            <input type="hidden" asp-for="BookingId" />
+                            <div class="mb-3">
+                                <label for="RejectionReason" class="form-label">السبب</label>
+                                <textarea asp-for="RejectReason" class="form-control" rows="3"></textarea>
+                            </div>
+                            <div class="d-flex justify-content-end">
+                                <button type="submit" class="btn btn-danger">رفض الحجز</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @section Scripts {
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        }

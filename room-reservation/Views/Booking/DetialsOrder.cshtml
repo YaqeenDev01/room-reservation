@@ -1,28 +1,26 @@
-﻿@*
+﻿
+@* 
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
     }
 
 @model room_reservation.ViewModel.BookingViewModel
-@{
-    ViewData["Title"] = "عرض بيانات طلب الحجز";
-}
 
 <div class="block-header border-bottom px-4 py-4">
     <h5 class="m-0">عرض بيانات طلب الحجز</h5>
 </div>
 <div class="row justify-content-center">
     <div class="col-md-8">
-        <!-- Form for Accepting the Booking -->
-        <form asp-action="ApproveBooking" method="post">
-            <input type="hidden" asp-for="BookingId" />
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        
+        <form id="bookingForm" method="post">
+            <input hidden asp-for="guid" />
             <div class="row">
-                <!-- Displaying Booking Details -->
+@*                 <input type="hidden" asp-for="guid" />
+ *@                <!-- Displaying Booking Details -->
                 <div class="col-md-6">
                     <div class="mb-4">
-                        <label class="mb-1"> الاسم   </label>
+                        <label class="mb-1">  اسم مقدم الطلب</label>
                         <p class="form-control-plaintext">@Model.FullName</p>
                     </div>
                 </div>
@@ -38,7 +36,7 @@
                         <p class="form-control-plaintext">@Model.PhoneNumber</p>
                     </div>
                 </div>
-                <div class="col-md-6">
+              @*   <div class="col-md-6">
                     <div class="mb-4">
                         <label class="mb-1">أسم المبنى</label>
                         <p class="form-control-plaintext">@Model.BuildingNameAr</p>
@@ -50,7 +48,7 @@
                         <label class="control-label">رقم الطابق</label>
                         <p class="form-control-plaintext">@Model.FloorNo</p>
                     </div>
-                </div>
+                </div> *@
 
                 <div class="col-md-6">
                     <div class="mb-4">
@@ -102,9 +100,8 @@
                 </div>
             </div>
 
-            <!-- Buttons for Accepting or Rejecting -->
             <div class="d-flex justify-content-end">
-                <button type="submit" class="btn btn-success px-5" title="قبول">قبول</button>
+                <button asp-action="ApproveBooking" type="submit" class="btn btn-success px-5" title="قبول">قبول</button>
                 <button type="button" class="btn btn-danger px-5" title="رفض" data-bs-toggle="modal" data-bs-target="#rejectModal">رفض</button>
             </div>
         </form>
@@ -140,3 +137,4 @@
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 }
+ 

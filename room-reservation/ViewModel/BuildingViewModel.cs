@@ -31,6 +31,8 @@ namespace room_reservation.ViewModel
         public string GenderAR { get; set; }
 
         public string GenderEN { get; set; }
+
+        public string Email { get; set;}
     }
 }
 

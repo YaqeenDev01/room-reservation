@@ -157,13 +157,6 @@ namespace room_reservation.Controllers
 
         }
 
-        [HttpGet]
-        public async Task<IActionResult> ExternalBookings()
-        {
-            var bookings = await _BookingDomain.GetExternalBookings();
-            return View(bookings);
-        }
-
         [HttpPost]
         public async Task<IActionResult> ApproveBooking(Guid bookingguid)
         {
@@ -184,6 +177,33 @@ namespace room_reservation.Controllers
             return View();
         }
 
+        public async Task<IActionResult> Orders()
+        {
+            var userEmail = User.FindFirst(ClaimTypes.Email)?.Value;
+            var orders = await _BookingDomain.GetExtrnalBooking(userEmail);
+            return View(orders);
+        }
+        [HttpGet]
+        public async Task<IActionResult> Orderinfo(Guid guid)
+        {
+
+             return View(await _BookingDomain.GetBookingByGuid(guid));
+        }
+        [HttpPost]
+        public async Task<IActionResult> Orderinfo( BookingViewModel booking)
+        {
+            if (ModelState.IsValid)
+            {
+
+                _BookingDomain.Orderinfo(booking);
+                return View ( );
+            }
+            return View();
+
+
+        }
+
+        
 
 
     }
@@ -191,4 +211,4 @@ namespace room_reservation.Controllers
 
 }
 
- 
+  

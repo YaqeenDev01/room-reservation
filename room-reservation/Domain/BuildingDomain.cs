@@ -4,15 +4,18 @@ using Microsoft.EntityFrameworkCore;
 using room_reservation.Models;
  using room_reservation.ViewModel;
 using System.Linq.Expressions;
+using System.Security.Claims;
 
 namespace room_reservation.Domain
 {
     public class BuildingDomain
     {
         private readonly KFUSpaceContext _context;
-        public BuildingDomain(KFUSpaceContext context)
+        private readonly UserDomain _userDomain;
+        public BuildingDomain(KFUSpaceContext context, UserDomain userDomain)
         {
             _context = context;
+            _userDomain = userDomain;
         }
 
         public async Task<IEnumerable<BuildingViewModel>> GetAllBuilding()
@@ -34,6 +37,8 @@ namespace room_reservation.Domain
 
         public async Task<int> InsertBuilding(BuildingViewModel buildings)
         {
+            var user = await _userDomain.GetUserByEmail(buildings.Email);
+
             try
             {   // التحقق من وجود رمز المبنى بالفعل
                 var existingBuildingCode = await _context.tblBuildings.AsNoTracking().SingleOrDefaultAsync(b => b.Code == buildings.Code);
@@ -67,8 +72,11 @@ namespace room_reservation.Domain
                 var buildingLog = new BuildingsLog();
                 buildingLog.BuildingId = newBuilding.Id;
                 buildingLog.OperationType = " اضافة مبنى ";
-                buildingLog.OperationDate = buildingLog.OperationDate;
-                //buildingLog.GrantdBy=                
+                buildingLog.OperationDate = DateTime.Now;
+                buildingLog.GrantdBy = user.Email;
+                buildingLog.AdditionalDetails = " ";
+                _context.BuildingsLog.Add(buildingLog);
+                await _context.SaveChangesAsync();
 
                 return 1; // نجاح العملية
             }
@@ -103,6 +111,8 @@ namespace room_reservation.Domain
 
         public async Task<int> UpdatBuilding(BuildingViewModel buildings)
         {
+            var user = await _userDomain.GetUserByEmail(buildings.Email);
+
             try
             {   // التحقق من وجود رمز المبنى بالفعل
                 tblBuildings buildingsinfo = await getBuildingByGuid(buildings.Guid);
@@ -121,7 +131,6 @@ namespace room_reservation.Domain
                     return 4; // رقم المبنى موجود بالفعل ولم يتم حذفه
                 }
 
-                // إذا لم يتم العثور على رمز المبنى أو رقم المبنى، يتم إنشاء المبنى الجديد
                 
                 buildingsinfo.BuildingNameEn = buildings.BuildingNameEn;
                 buildingsinfo.BuildingNameAr = buildings.BuildingNameAr;
@@ -134,8 +143,11 @@ namespace room_reservation.Domain
                 var buildingLog = new BuildingsLog();
                 buildingLog.BuildingId = buildings.BuildingId;
                 buildingLog.OperationType = " تعديل مبنى ";
-                buildingLog.OperationDate = buildingLog.OperationDate;
-                //buildingLog.GrantdBy=   
+                buildingLog.OperationDate = DateTime.Now;
+                buildingLog.GrantdBy = user.Email;
+                buildingLog.AdditionalDetails = " ";
+                _context.BuildingsLog.Add(buildingLog);
+                await _context.SaveChangesAsync();
 
                 return 1; // نجاح العملية
             }
@@ -149,8 +161,8 @@ namespace room_reservation.Domain
    
         public async Task DeleteBuilding(Guid id)  
         {
-           
-                tblBuildings buildinginfo = await getBuildingByGuid(id);
+
+            tblBuildings buildinginfo = await getBuildingByGuid(id);
 
                 buildinginfo.IsDeleted = true;
                 //_context.tblBuildings.Update(buildinginfo);
@@ -160,7 +172,13 @@ namespace room_reservation.Domain
             buildingLog.BuildingId = buildinginfo.Id;
             buildingLog.OperationType = "حذف مبنى ";
             buildingLog.OperationDate = buildingLog.OperationDate;
-            //buildingLog.GrantdBy=   
+            buildingLog.GrantdBy = ClaimTypes.Email;
+            buildingLog.AdditionalDetails = " ";
+            _context.BuildingsLog.Add(buildingLog);
+            await _context.SaveChangesAsync();
+
+
+
 
         }
     }
