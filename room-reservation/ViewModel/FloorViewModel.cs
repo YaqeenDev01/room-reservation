@@ -8,13 +8,13 @@ namespace room_reservation.ViewModel
     public class FloorViewModel
     {
 
-        public int Id { get; set; }
+        public int FloorId { get; set; }
 
         [Required(ErrorMessage = " هذا الحقل مطلوب")]
         [DisplayName("رقم الطابق")]
         [Range(1,100,ErrorMessage = "رقم الطابق لا يمكن أن يكون سالبًا")]
         public int FloorNo {get; set;}
-        public Guid Guid {get; set;} = Guid.NewGuid();
+        public Guid Guid {get; set;}// = Guid.NewGuid();
         
         public bool IsDeleted { get; set; }
         
@@ -31,5 +31,7 @@ namespace room_reservation.ViewModel
         public int BuildingId { get; set; }
         
         public ICollection<tblRooms> Rooms { get; set; }
+        
+        public string Email { get; set; }// in order to get user email for FloorLog
     }
 }
