@@ -139,7 +139,10 @@ namespace room_reservation.Domain
                 FullNameAR = userData.FullNameAR,
                 PhoneNumber = userData.PhoneNumber,
                 UserId = userData.Id,
-                FullNameEN = userData.FullNameEN
+                FullNameEN = userData.FullNameEN,
+                GenderEN = userData.GenderEN,
+                GenderAR = userData.GenderAR
+                
             };
         }
 

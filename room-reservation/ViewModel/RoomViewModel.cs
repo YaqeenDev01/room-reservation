@@ -20,7 +20,7 @@ namespace room_reservation.ViewModel
         public bool IsActive { get; set; }
 
         public int FloorId { get; set; }
-
+        public Guid FloorGuid { get; set; }
         public tblFloors Floor { get; set; }
         public int FloorNo { get; set; }
 

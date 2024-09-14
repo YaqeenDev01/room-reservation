@@ -70,7 +70,6 @@ namespace room_reservation.Controllers
         public async Task<IList<FloorViewModel>> getFloorbyGuid(Guid id)
         {
             return await _floorDomain.GetFloorByBuildingGuid(id);
-            
         }
 
         public async Task<IList<FloorViewModel>> getFloorbyId(int id)
@@ -97,9 +96,8 @@ namespace room_reservation.Controllers
         [Authorize]
         public async Task<IActionResult> Add(BookingViewModel booking)
         {
-          
-         
                 booking.Email =User.FindFirst(ClaimTypes.Email).Value;
+                
                 try
                 {
                     if (ModelState.IsValid)
@@ -127,17 +125,14 @@ namespace room_reservation.Controllers
             
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Delete(BookingViewModel booking)
+  // Change to cancel and user booking statues to change it to cancel 
+     
+        public async Task<IActionResult> Cancel(Guid id)
         {
-            if (ModelState.IsValid)
-            {
-                _BookingDomain.DeleteBooking(booking);
-                return RedirectToAction(nameof(Index));
-            }
-            return View();
-
+            
+                await _BookingDomain.CancelBooking(id);
+                return Json(new { success = true });
+                
         }
         [HttpGet]
         public IActionResult Details(Guid id) {
@@ -156,26 +151,46 @@ namespace room_reservation.Controllers
             return View();
 
         }
-
         [HttpPost]
-        public async Task<IActionResult> ApproveBooking(Guid bookingguid)
+        public async Task<IActionResult> ApproveBooking(Guid id)
         {
-            bool result = await _BookingDomain.ApproveBooking(bookingguid);
+            bool result = await _BookingDomain.ApproveBooking(id);
             if (result)
             {
+                return Json(new { success = true });
             }
-            return View();
+            return Json(new { success = false });
         }
 
         [HttpPost]
-        public async Task<IActionResult> RejectBooking(Guid bookingguid, string rejectReason)
+        public async Task<IActionResult> RejectBooking(Guid id, string rejectReason)
         {
-            bool result = await _BookingDomain.RejectBooking(bookingguid, rejectReason);
+            bool result = await _BookingDomain.RejectBooking(id, rejectReason);
             if (result)
             {
+                return Json(new { success = true });
             }
-            return View();
+            return Json(new { success = false });
         }
+
+
+        //[HttpPost]
+        //public async Task<IActionResult> ApproveBooking(Guid id)
+        //{
+        //    bool result = await _BookingDomain.ApproveBooking(id);
+        //               return RedirectToAction(nameof(Index));
+
+        //}
+
+        //[HttpPost]
+        //public async Task<IActionResult> RejectBooking(Guid id, string rejectReason)
+        //{
+        //    bool result = await _BookingDomain.RejectBooking(id, rejectReason);
+
+        //    return RedirectToAction(nameof(Index));
+
+
+        //}
 
         public async Task<IActionResult> Orders()
         {
@@ -184,10 +199,10 @@ namespace room_reservation.Controllers
             return View(orders);
         }
         [HttpGet]
-        public async Task<IActionResult> Orderinfo(Guid guid)
+        public async Task<IActionResult> Orderinfo(Guid id)
         {
 
-             return View(await _BookingDomain.GetBookingByGuid(guid));
+             return View(await _BookingDomain.GetBookingByGuid(id));
         }
         [HttpPost]
         public async Task<IActionResult> Orderinfo( BookingViewModel booking)
@@ -202,13 +217,15 @@ namespace room_reservation.Controllers
 
 
         }
-
+       
+    }
+}
         
 
 
-    }
+    
 
 
-}
+
 
   

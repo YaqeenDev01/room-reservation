@@ -69,15 +69,15 @@ namespace room_reservation.Domain
 
                     
                 }
-                public FloorViewModel GetFloorByGuid(Guid id)
+                public async Task<FloorViewModel> GetFloorByGuid(Guid id)
                 {
                     try
                     {
-                        var floor = _context.tblFloors
+                        var floor =await _context.tblFloors
                             .Where(x => x.Guid == id)
                             .Select(f => new FloorViewModel
                             {
-                                //Id = f.Id,
+                                Id = f.Id,
                                 FloorNo = f.FloorNo,
                                 Guid = f.Guid,
                                 BuildingId = f.BuildingId,
@@ -85,7 +85,7 @@ namespace room_reservation.Domain
                                 BuildingNo = f.Building.BuildingNo,
                                 //Rooms = f.Rooms // not used 
                             })
-                            .FirstOrDefault();
+                            .FirstOrDefaultAsync();
                        
                         return floor;
                     }

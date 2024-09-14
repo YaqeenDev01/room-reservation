@@ -1,11 +1,14 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using room_reservation.Models;
 using room_reservation.ViewModel;
 using System.Security;
 using System.Security.Claims;
+using System.Linq;
 
-namespace room_reservation.Domain {
+namespace room_reservation.Domain
+{
     public class BookingDomain
     {
         private readonly KFUSpaceContext _context;
@@ -83,7 +86,7 @@ namespace room_reservation.Domain {
         {
             try
             {
-
+                // to get user info through claims  
                 var user = await _userDomain.GetUserByEmail(Booking.Email);
                 var room = await _roomDomain.GetRoomByGuid(Booking.RoomGuid);
 
@@ -95,11 +98,9 @@ namespace room_reservation.Domain {
                 Bookings.BookingStatues = Booking.BookingStatues;
 
                 //Bookings.RejectReason = booking.RejectReason;
-                // Bookings.Duration = Booking.BookingEnd - Booking.BookingStart;
-                //since duration is int this wont work 
-                /**/
-
-                Bookings.Duration = Booking.Duration;
+                // to calculate the duration first substract the end time from the start then convert it it to decimal
+                var BookingDuration = Booking.BookingEnd - Booking.BookingStart;
+                Bookings.Duration = Convert.ToDecimal(BookingDuration.TotalHours);
                 Bookings.Email = user.Email;
                 Bookings.FullName = user.FullNameAR;
                 Bookings.PhoneNumber = user.PhoneNumber;
@@ -107,7 +108,15 @@ namespace room_reservation.Domain {
                 Bookings.guid = Guid.NewGuid();
                 Bookings.IsDeleted = false;
                 Bookings.RoomId = room.Id;
-                Bookings.BookingStatuesId = 2;
+                if (user.CollegeName == Booking.BuildingNameAr)
+                {
+                    Bookings.BookingStatuesId = 1;
+                }
+                else
+                {
+                    Bookings.BookingStatuesId = 2;
+                }
+
                 _context.tblBookings.Add(Bookings);
                 await _context.SaveChangesAsync();
                 return 1;
@@ -138,7 +147,8 @@ namespace room_reservation.Domain {
         public tblBookings getBookingByGuid(Guid id)
 
         {
-            return _context.tblBookings.FirstOrDefault(x => x.guid == id);
+            var bookingId = _context.tblBookings.FirstOrDefault(x => x.guid == id);
+            return bookingId;
         }
         public async Task<tblBookings> getBookingByguid(Guid id)
 
@@ -170,34 +180,13 @@ namespace room_reservation.Domain {
             return models;
         }
 
-        public string DeleteBooking(BookingViewModel booking)
+        public async Task CancelBooking(Guid id)
         {
-            try
-            {
-                tblBookings Bookings = getBookingByGuid(booking.guid);
-                Bookings.Id = booking.BookingId;
-                Bookings.BookingDate = booking.BookingDate;
-                Bookings.BookingStart = booking.BookingStart;
-                Bookings.BookingEnd = booking.BookingEnd;
-                //Bookings.BookingStatues = booking.BookingStatues;
-                //Bookings.RejectReason = booking.RejectReason;
-                //Bookings.Duration = booking.Duration;
-                //Bookings.Email = booking.Email;
-                //Bookings.FullName = booking.FullName;
-                //Bookings.PhoneNumber = booking.PhoneNumber;
-                Bookings.guid = Guid.NewGuid();
-                Bookings.IsDeleted = false;
-                Bookings.RoomId = booking.RoomId;
 
-                _context.tblBookings.Remove(Bookings);
-                _context.SaveChanges();
-                return "successful";
-            }
-            catch (Exception ex)
-            {
-                // تسجيل الخطأ أو معالجته هنا
-                return $"Error: {ex.Message}";
-            }
+            tblBookings Bookings = getBookingByGuid(id);
+            Bookings.BookingStatuesId = 4;
+            await _context.SaveChangesAsync();
+
         }
         //public string DetailsBooking(BookingViewModel booking)
         //{
@@ -258,9 +247,9 @@ namespace room_reservation.Domain {
             }
 
         }
-        public async Task<bool> ApproveBooking(Guid bookingGuid)
+        public async Task<bool> ApproveBooking(Guid id)
         {
-            var booking = await _context.tblBookings.FirstOrDefaultAsync(b => b.guid == bookingGuid);
+            var booking = await _context.tblBookings.FirstOrDefaultAsync(b => b.guid == id);
 
             if (booking == null)
             {
@@ -275,9 +264,9 @@ namespace room_reservation.Domain {
             return true;
         }
 
-        public async Task<bool> RejectBooking(Guid bookingGuid, string rejectReason)
+        public async Task<bool> RejectBooking(Guid id, string rejectReason)
         {
-            var booking = await _context.tblBookings.FirstOrDefaultAsync(b => b.guid == bookingGuid);
+            var booking = await _context.tblBookings.FirstOrDefaultAsync(b => b.guid == id);
 
             if (booking == null)
             {
@@ -294,11 +283,47 @@ namespace room_reservation.Domain {
 
             return true;
         }
+
+        //        // جلب المستخدم بناءً على البريد الإلكتروني
+        //        var user = await _userDomain.GetUserByEmail(Booking.Email);
+        //        if (user == null)
+        //        {
+        //            throw new Exception("User not found");
+        //        }
+
+        //        // جلب الغرفة بناءً على RoomGuid
+        //        var room = await _roomDomain.GetRoomByGuid(Booking.RoomGuid);
+        //        if (room == null)
+        //        {
+        //            throw new Exception("Room not found");
+        //        }
+
+        //        // إعداد ViewModel بناءً على البيانات المستردة
+        //        
+        //            RoomId = room.Id,
+        //            BookingStatuesId = Booking.BookingStatuesId,
+        //            RoomAR = room.RoomAR,
+        //            BuildingNameAr = room.BuildingNameAr,
+        //            FloorNo = room.FloorNo,
+        //            RoomNo = room.RoomNo,
+        //            SeatCapacity = room.SeatCapacity,
+        //        };
+
+        //        return 1;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // تسجيل الخطأ أو معالجته هنا
+        //        return 0;
+        //    }
+        //}
+
+
         public async Task<IEnumerable<BookingViewModel>> GetExtrnalBooking(string userEmail)
         {
             var permission = await _permissionDomain.GetPermissionByEmail(userEmail);
 
-            return await _context.tblBookings.Where(booking => !booking.IsDeleted && /*booking.Room.Floor.BuildingId == permission.BuildingId &&*/ booking.BookingStatuesId == 2).Select(x => new BookingViewModel
+            return await _context.tblBookings.Where(booking => !booking.IsDeleted && booking.Room.Floor.BuildingId == permission.BuildingId && booking.BookingStatuesId == 2).Select(x => new BookingViewModel
             {
                 BookingId = x.Id,
                 BookingDate = x.BookingDate,
@@ -315,56 +340,19 @@ namespace room_reservation.Domain {
                 RejectReason = x.RejectReason,
             }).ToListAsync();
         }
-        //public async Task<BookingViewModel> GetBookingOrder( BookingViewModel Booking )
-        //{
-        //    try
-        //    {
-        //        tblBookings tbl = await getBookingByguid(Booking.guid);
-        //        var user = await _userDomain.GetUserByEmail(Booking.Email);
-        //        var room = await _roomDomain.GetRoomByGuid(Booking.RoomGuid);
-
-        //        BookingViewModel Bookings = new BookingViewModel
-        //        {
-        //            BookingId = Booking.BookingId,
-        //            BookingDate = DateTime.Now,
-        //            BookingStart = Booking.BookingStart,
-        //            BookingEnd = Booking.BookingEnd,
-        //            BookingStatues = Booking.BookingStatues,
-        //            Duration = Booking.Duration,
-        //            Email = user.Email,
-        //            FullName = user.FullNameAR,
-        //            PhoneNumber = user.PhoneNumber,
-        //            guid = Booking.guid,
-        //            IsDeleted = false,
-        //            RoomId = room.Id,
-        //            BookingStatuesId = Booking.BookingStatuesId,
-        //            RoomAR = room.RoomAR,
-        //            BuildingNameAr = room.BuildingNameAr,
-        //            FloorNo = room.FloorNo,
-        //            RoomNo = room.RoomNo,
-        //            SeatCapacity = room.SeatCapacity,
-        //        };
-        //        return Bookings;
-        //    }
-        //    catch (Exception ex) {
-        //        throw new Exception("ex");
-        //    }
-        //}
-
-
-        public async Task <BookingViewModel> GetBookingByGuid(Guid bookingGuid)
+        public async Task<BookingViewModel> GetBookingByGuid(Guid id)
         {
-            var booking = await _context.tblBookings.FirstOrDefaultAsync(b => b.guid == bookingGuid && b.IsDeleted == false);
+            var booking = await _context.tblBookings.FirstOrDefaultAsync(b => b.guid == id && b.IsDeleted == false);
             BookingViewModel model = new BookingViewModel
             {
-                FullName=booking.FullName,
-                Email=booking.Email,        
-                PhoneNumber=booking.PhoneNumber,
+                FullName = booking.FullName,
+                Email = booking.Email,
+                PhoneNumber = booking.PhoneNumber,
                 guid = booking.guid,
                 BookingId = booking.Id,
                 BookingDate = booking.BookingDate,
-                BookingStart= booking.BookingStart,
-                BookingEnd= booking.BookingEnd,
+                BookingStart = booking.BookingStart,
+                BookingEnd = booking.BookingEnd,
                 BookingStatuesId = booking.BookingStatuesId,
             };
             return model;
@@ -391,7 +379,12 @@ namespace room_reservation.Domain {
                     PhoneNumber = bookinfo.PhoneNumber,
                     guid = bookinfo.guid,
                     IsDeleted = false,
-                    BookingStatuesId= bookinfo.BookingStatuesId,    
+                    BookingStatuesId = bookinfo.BookingStatuesId,
+                    RoomAR = bookinfo.Room.RoomType.RoomTypeAR,
+                    RoomNo = bookinfo.Room.RoomNo,
+                    SeatCapacity = bookinfo.Room.SeatCapacity,
+                    RoomId=bookinfo.RoomId,
+
                 };
                 return 1;
             }
@@ -400,57 +393,9 @@ namespace room_reservation.Domain {
                 // تسجيل الخطأ أو معالجته هنا
                 return 0;
             }
+
         }
-
-
-        //public async Task<int> getBookingOrder(BookingViewModel Booking)
-        //{
-        //    try
-        //    {
-        //        // جلب الحجز بناءً على guid
-        //        tblBookings tbl = await getBookingByguid(Booking.guid);
-        //        if (tbl == null)
-        //        {
-        //            throw new Exception("Booking not found");
-        //        }
-
-            //        // جلب المستخدم بناءً على البريد الإلكتروني
-            //        var user = await _userDomain.GetUserByEmail(Booking.Email);
-            //        if (user == null)
-            //        {
-            //            throw new Exception("User not found");
-            //        }
-
-            //        // جلب الغرفة بناءً على RoomGuid
-            //        var room = await _roomDomain.GetRoomByGuid(Booking.RoomGuid);
-            //        if (room == null)
-            //        {
-            //            throw new Exception("Room not found");
-            //        }
-
-            //        // إعداد ViewModel بناءً على البيانات المستردة
-            //        
-            //            RoomId = room.Id,
-            //            BookingStatuesId = Booking.BookingStatuesId,
-            //            RoomAR = room.RoomAR,
-            //            BuildingNameAr = room.BuildingNameAr,
-            //            FloorNo = room.FloorNo,
-            //            RoomNo = room.RoomNo,
-            //            SeatCapacity = room.SeatCapacity,
-            //        };
-
-            //        return 1;
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        // تسجيل الخطأ أو معالجته هنا
-            //        return 0;
-            //    }
-            //}
-
     }
-
-
 }
 
 

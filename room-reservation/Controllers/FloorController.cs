@@ -93,7 +93,7 @@ namespace room_reservation.Controllers
             ViewBag.buildingsName = new SelectList(await _BuildingDomain.GetAllBuilding() ,"BuildingId","BuildingNameAr");
             //  SelectList from the buildingsName
             ViewBag.buildingsNo = new SelectList(await _BuildingDomain.GetAllBuilding() ,"BuildingId","BuildingNo");
-            return View(_FloorDomain.GetFloorByGuid(id));
+            return View(await _FloorDomain.GetFloorByGuid(id));
         }
         
         [HttpPost]

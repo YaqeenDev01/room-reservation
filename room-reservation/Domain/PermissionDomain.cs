@@ -71,7 +71,8 @@ namespace room_reservation.Domain
                 {
                     guid = permission.guid,
                     Email = permission.Email,
-                    RoleName = permission.Role.RoleNameEN
+                    RoleName = permission.Role.RoleNameEN,
+                    BuildingId=permission.BuildingId,
 
 
 
