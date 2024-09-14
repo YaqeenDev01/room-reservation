@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using room_reservation.Domain;
 using room_reservation.Models;
 using room_reservation.ViewModel;
+using System.Security.Claims;
 namespace room_reservation.Controllers
 {
     public class FloorController : Controller
@@ -52,7 +53,7 @@ namespace room_reservation.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddFloor(FloorViewModel floor, int BuildingId)
         {
-    
+            floor.Email =User.FindFirst(ClaimTypes.Email).Value;
             ViewBag.buildingsName = new SelectList(await _BuildingDomain.GetAllBuilding(), "BuildingId", "BuildingNameAr");
             ViewBag.buildingsNo = new SelectList(await _BuildingDomain.GetAllBuilding(), "BuildingId", "BuildingNo");
             try
@@ -125,7 +126,7 @@ namespace room_reservation.Controllers
                 }
                 else
                 {
-                    return Json(new { success = false, message = "Model state is invalid" });
+                    return Json(new { success = false, message = "لابد من إدخال بيانات الطابق" });
                 }
             }
             catch (Exception ex)
