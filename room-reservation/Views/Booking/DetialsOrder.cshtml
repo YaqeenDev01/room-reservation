@@ -1,0 +1,140 @@
+﻿
+@* 
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    }
+
+@model room_reservation.ViewModel.BookingViewModel
+
+<div class="block-header border-bottom px-4 py-4">
+    <h5 class="m-0">عرض بيانات طلب الحجز</h5>
+</div>
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        
+        <form id="bookingForm" method="post">
+            <input hidden asp-for="guid" />
+            <div class="row">
+@*                 <input type="hidden" asp-for="guid" />
+ *@                <!-- Displaying Booking Details -->
+                <div class="col-md-6">
+                    <div class="mb-4">
+                        <label class="mb-1">  اسم مقدم الطلب</label>
+                        <p class="form-control-plaintext">@Model.FullName</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-4">
+                        <label class="mb-1"> البريد الالكتروني </label>
+                        <p class="form-control-plaintext">@Model.Email</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-4">
+                        <label class="mb-1">رقم الهاتف  </label>
+                        <p class="form-control-plaintext">@Model.PhoneNumber</p>
+                    </div>
+                </div>
+              @*   <div class="col-md-6">
+                    <div class="mb-4">
+                        <label class="mb-1">أسم المبنى</label>
+                        <p class="form-control-plaintext">@Model.BuildingNameAr</p>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="mb-4">
+                        <label class="control-label">رقم الطابق</label>
+                        <p class="form-control-plaintext">@Model.FloorNo</p>
+                    </div>
+                </div> *@
+
+                <div class="col-md-6">
+                    <div class="mb-4">
+                        <label class="control-label">رقم القاعة</label>
+                        <p class="form-control-plaintext">@Model.RoomNo</p>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="mb-4">
+                        <label class="control-label">تاريخ الحجز</label>
+                        <p class="form-control-plaintext">@Model.BookingDate.ToString("yyyy-MM-dd")</p>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="mb-4">
+                        <label class="control-label">الاستيعاب</label>
+                        <p class="form-control-plaintext">@Model.SeatCapacity</p>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="mb-4">
+                        <label class="control-label">بداية الحجز</label>
+                        <p class="form-control-plaintext">@Model.BookingStart.ToString("HH:mm")</p>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="mb-4">
+                        <label class="control-label">نهاية الحجز</label>
+                        <p class="form-control-plaintext">@Model.BookingEnd.ToString("HH:mm")</p>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="mb-4">
+                        <label class="control-label">حالة الحجز</label>
+                        <p class="form-control-plaintext">@Model.BookingStatues</p>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="mb-4">
+                        <label class="control-label">نوع القاعة</label>
+                        <p class="form-control-plaintext">@Model.RoomAR</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-end">
+                <button type="submit" class="btn btn-success px-5" title="قبول">قبول</button>
+                <button type="button" class="btn btn-danger px-5" title="رفض" data-bs-toggle="modal" data-bs-target="#rejectModal">رفض</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Reject Modal -->
+<div class="modal fade" id="rejectModal" tabindex="-1" aria-labelledby="rejectModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="rejectModalLabel">سبب الرفض</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Form for Rejecting the Booking -->
+                <form asp-action="RejectBooking" method="post">
+                    <input type="hidden" asp-for="BookingId" />
+                    <div class="mb-3">
+                        <label for="RejectionReason" class="form-label">السبب</label>
+                        <textarea asp-for="RejectReason" class="form-control" rows="3"></textarea>
+                    </div>
+                    <div class="d-flex justify-content-end">
+                        <button type="submit" class="btn btn-danger">رفض الحجز</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+}
+ 

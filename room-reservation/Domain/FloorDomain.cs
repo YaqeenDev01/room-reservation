@@ -7,10 +7,11 @@ namespace room_reservation.Domain
     public class FloorDomain
     {
         private readonly KFUSpaceContext _context;
-
-        public FloorDomain(KFUSpaceContext context)
+        private readonly UserDomain _userDomain;
+        public FloorDomain(KFUSpaceContext context,UserDomain userDomain)
         {
             _context = context;
+            _userDomain = userDomain;
         }
 
         public async Task<IEnumerable<FloorViewModel>> GetAllFloors()
@@ -18,7 +19,7 @@ namespace room_reservation.Domain
             return await _context.tblFloors.Where(floor => !floor.IsDeleted).Include(f => f.Building) 
                 .Select(f => new FloorViewModel
             {
-                Id = f.Id,
+                FloorId = f.Id,
                 FloorNo = f.FloorNo,
                 Guid = f.Guid,
                 BuildingId = f.BuildingId,
@@ -42,7 +43,7 @@ namespace room_reservation.Domain
                         // Check if FloorNo and building ID exists or not in db 
                         var floorExists = _context.tblFloors
                             .Any(fn => fn.FloorNo == floor.FloorNo && fn.BuildingId == floor.BuildingId && fn.IsDeleted==false);
-                        
+                        var user= await _userDomain.GetUserByEmail(floor.Email);
                         if (floorExists)
                         {
                             //if it duplicates exists 
@@ -57,6 +58,14 @@ namespace room_reservation.Domain
                         floorInfo.IsDeleted = false;
                         _context.tblFloors.Add(floorInfo);
                         await _context.SaveChangesAsync();
+                        var floorLog = new FloorsLog();
+                        floorLog.FloorId = floorInfo.Id;
+                        floorLog.OperationType = "إضافة طابق";
+                        floorLog.OperationDate=DateTime.Now;
+                        floorLog.GrantdBy = user.Email;
+                        floorLog.AdditionalDetails="";
+                        _context.FloorsLog.Add(floorLog);
+                        await _context.SaveChangesAsync();
                         return 1;
 
 
@@ -69,15 +78,15 @@ namespace room_reservation.Domain
 
                     
                 }
-                public FloorViewModel GetFloorByGuid(Guid id)
+                public async Task<FloorViewModel> GetFloorByGuid(Guid id)
                 {
                     try
                     {
-                        var floor = _context.tblFloors
+                        var floor =await _context.tblFloors
                             .Where(x => x.Guid == id)
                             .Select(f => new FloorViewModel
                             {
-                                //Id = f.Id,
+                                FloorId = f.Id,
                                 FloorNo = f.FloorNo,
                                 Guid = f.Guid,
                                 BuildingId = f.BuildingId,
@@ -85,7 +94,7 @@ namespace room_reservation.Domain
                                 BuildingNo = f.Building.BuildingNo,
                                 //Rooms = f.Rooms // not used 
                             })
-                            .FirstOrDefault();
+                            .FirstOrDefaultAsync();
                        
                         return floor;
                     }
@@ -129,7 +138,7 @@ namespace room_reservation.Domain
                     .Where(x => x.Building.Id == id && x.IsDeleted == false)
                     .Select(f => new FloorViewModel
                     {
-                        Id = f.Id,
+                        FloorId = f.Id,
                         FloorNo = f.FloorNo,
                         Guid = f.Guid,
                         BuildingId = f.BuildingId,
@@ -162,7 +171,8 @@ namespace room_reservation.Domain
                         // Check if FloorNo and building ID exists or not in db 
                         var floorExists = _context.tblFloors
                             .Any(fn => fn.FloorNo == floor.FloorNo && fn.BuildingId == floor.BuildingId);
-                        
+                            //     var user= await _userDomain.GetUserByEmail(floor.Email);
+
                         if (floorExists)
                         {
                             //if it doesnt exist
@@ -175,6 +185,14 @@ namespace room_reservation.Domain
 
                         _context.tblFloors.Update(floorInfo);
                        await _context.SaveChangesAsync();
+                       // var floorLog = new FloorsLog();
+                       // floorLog.FloorId = floorInfo.Id;
+                       // floorLog.OperationType = "تعديل طابق";
+                       // floorLog.OperationDate=DateTime.Now;
+                       // floorLog.GrantdBy = user.Email;
+                       // floorLog.AdditionalDetails="";
+                       // _context.FloorsLog.Add(floorLog);
+                       // await _context.SaveChangesAsync();
                         return 1;
                         
                     }
@@ -186,14 +204,24 @@ namespace room_reservation.Domain
                 }
                 public async Task DeleteFloor(Guid id)
                 {
+                    //var user= await _userDomain.GetUserByEmail(floor.Email);
+
                     tblFloors floor = GetFloorById(id);                        // is deleted will delete the record in web 
                         floor.IsDeleted = true;
                         // remove will delete the record from Db
                        // _context.tblFloors.Remove(floorInfo);
                         await _context.SaveChangesAsync();
-                    
-
-                   
+                        // var floorLog = new FloorsLog();
+                        // floorLog.FloorId = floorInfo.Id;
+                        // floorLog.OperationType = "تعديل طابق";
+                        // floorLog.OperationDate=DateTime.Now;
+                        // floorLog.GrantdBy = user.Email;
+                        // floorLog.AdditionalDetails="";
+                        // _context.FloorsLog.Add(floorLog);
+                        // await _context.SaveChangesAsync();
+                        //
+                        //
+                        //
                 }
     }
 }

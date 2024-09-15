@@ -18,10 +18,7 @@ namespace room_reservation.Controllers
         {
             return View();
         }
-        public IActionResult Orders() {
-
-            return View();
-        }
+       
         public IActionResult Users()
         {
             return View();

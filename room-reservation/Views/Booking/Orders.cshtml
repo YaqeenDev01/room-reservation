@@ -1,9 +1,8 @@
 ﻿@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-   
-*@
-@{
-}
+   *@
+
+
 @model IEnumerable<room_reservation.ViewModel.BookingViewModel>;
 @{
 
@@ -39,19 +38,36 @@
                         <td>@x.FullName</td>
                         <td>@x.Email</td>
                         <td>@x.RoomNo </td>
-                        <td>@x.BookingDate </td> 
+                        <td>@x.BookingDate.ToString("yyyy-MM-dd")</td>
 
                         <td>
-                            <a asp-action=" DetialsOrder " asp-route-id="@x.guid" class="btn btn-primary "> عرض </a>
-                          
+                            <a asp-action="Orderinfo" asp-route-id="@x.guid" class="btn btn-sm btn-primary">عرض</a>
+
                         </td>
                      </tr> 
-                   }
+                } 
             </tbody>
         </table>
     </div>
 </div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        function search() {
+            const searchInput = document.getElementById('quickSearch').value.toLowerCase(); // Use 'quickSearch' instead of 'search'
+            const rows = document.querySelectorAll('tbody tr'); // Use the correct selector for the table rows
 
+            rows.forEach(row => {
+                const rowText = row.textContent.toLowerCase(); // Get the text content of the entire row
+
+                if (rowText.includes(searchInput)) {
+                    row.style.display = ''; // Show rows that match the search
+                } else {
+                    row.style.display = 'none'; // Hide others
+                }
+            });
+        }
 
 
    
