@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using room_reservation.Domain;
 using room_reservation.Models;
 using room_reservation.ViewModel;
+using System.Security.Claims;
 
 //Each table has its own domain except for those that don't have pages. For examples, users or roles that will be added manually.
 namespace room_reservation.Domain
@@ -25,6 +26,7 @@ namespace room_reservation.Domain
             return await _context.tblPermissions.Where(permission => !permission.IsDeleted).Include(x => x.Role).Include(y => y.Building).Select(z => new PermissionViewModel
             {
                 Id = z.Id,
+                Guid = z.guid,
                 Email = z.Email,
                 RoleId = z.RoleId,
                 RoleName = z.Role.RoleNameAR,
@@ -32,16 +34,15 @@ namespace room_reservation.Domain
                 BuildingNum = z.Building.BuildingNo == null ? 0 : z.Building.BuildingNo,
             }).ToListAsync();
 
-
-
         }
 
-        public async Task<PermissionViewModel> GetPermissionById(int Id)
+        public async Task<PermissionViewModel> GetPermissionByGuid(Guid guid)
         {
-            return await _context.tblPermissions.Where(x => x.Id == Id).Select(
+            return await _context.tblPermissions.Where(x => x.guid == guid).Select(
                 x => new PermissionViewModel
                 {
                     Id = x.Id,
+                    Guid = x.guid,
                     Email = x.Email,
                     RoleId = x.RoleId,
                     BuildingId = x.BuildingId,
@@ -69,7 +70,7 @@ namespace room_reservation.Domain
             return await _context.tblPermissions.Where(x => x.Email == email).Include(r => r.Role).Select(
                 permission => new PermissionViewModel
                 {
-                    guid = permission.guid,
+                    Guid = permission.guid,
                     Email = permission.Email,
                     RoleName = permission.Role.RoleNameEN,
                     BuildingId=permission.BuildingId,
@@ -81,6 +82,7 @@ namespace room_reservation.Domain
         }
         [HttpPost]
         public async Task<int> AddPermission(PermissionViewModel permission)
+
         {
 
             try
@@ -98,6 +100,7 @@ namespace room_reservation.Domain
                     IsDeleted = false
                 };
 
+
                 _context.Add(permissionInfo);
                 await _context.SaveChangesAsync();
                 return 1;
@@ -108,14 +111,26 @@ namespace room_reservation.Domain
             }
 
         }
+
+        public async Task<bool> AddPermissionLog(PermissionsLog permissionLog)
+        {
+            try
+            {
+                _context.AddAsync(permissionLog);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch { 
+                return false;
+            }
+        }
         public async Task<bool> UpdatePermission(PermissionViewModel permissionViewModel)
         {
             try
             {
                 var permission = await _context.tblPermissions
-                    .FirstOrDefaultAsync(x => x.guid == permissionViewModel.guid);
+                    .FirstOrDefaultAsync(x => x.guid == permissionViewModel.Guid);
 
-              
                 permission.Email = permissionViewModel.Email;
                 permission.RoleId = permissionViewModel.RoleId;
                 permission.BuildingId = permissionViewModel.BuildingId == 0 ? (int?)null : permissionViewModel.BuildingId;
@@ -130,11 +145,21 @@ namespace room_reservation.Domain
                 return false;
             }
         }
-    public async Task DeletePermission(int id)
+        public async Task<tblPermissions> DeletePermission(Guid guid)
         {
-           var permission = _context.tblPermissions.Where(x => x.Id == id).SingleOrDefault();
-           permission.IsDeleted = true;
-           await _context.SaveChangesAsync();  
+            try
+            {   
+               var permission = await  _context.tblPermissions.SingleOrDefaultAsync(x => x.guid == guid);
+               permission.IsDeleted = true;
+               await _context.SaveChangesAsync();
+               return permission;
+
+            }
+            catch
+            {
+                return null;
+            }
+             
             
         }
 
