@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using room_reservation.Domain;
 using room_reservation.Models;
@@ -6,8 +7,10 @@ using room_reservation.ViewModel;
 using System.Linq.Expressions;
 
 
-namespace room_reservation.Controllers
+namespace room_reservation.Areas.Admin.Controllers
 {
+    [Area("Admin")]
+    [Authorize(Roles = "Admin, Site Admin")]
     public class LecturesController : Controller
     {
         private readonly lecturesDomain _lecturesDomain;
@@ -130,4 +133,3 @@ namespace room_reservation.Controllers
         }
     }
 }
-        

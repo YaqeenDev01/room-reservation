@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using room_reservation.Domain;
@@ -6,6 +7,8 @@ using room_reservation.ViewModel;
 using System.Security.Claims;
 namespace room_reservation.Controllers
 {
+    
+    [Authorize(Roles = "Admin, SiteAdmin")]
     public class FloorController : Controller
     {
         private readonly FloorDomain _FloorDomain;
@@ -21,7 +24,7 @@ namespace room_reservation.Controllers
 
         }
         //return all floors in the view
-        public async Task<IActionResult> Index(String searchString)
+        public async Task<IActionResult> Index(string searchString)
         {
             var floors = await _FloorDomain.GetAllFloors();
             //activate quick search based on the building name 

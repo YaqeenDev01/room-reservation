@@ -81,7 +81,7 @@ namespace room_reservation.Domain
 
         }
         [HttpPost]
-        public async Task<int> AddPermission(PermissionViewModel permission)
+        public async Task<int> AddPermission(PermissionViewModel permission, string createdBy, int permissionId)
 
         {
 
@@ -103,6 +103,17 @@ namespace room_reservation.Domain
 
                 _context.Add(permissionInfo);
                 await _context.SaveChangesAsync();
+                
+                var permissionLog = new PermissionsLog();
+
+
+                permissionLog.PermissionType = permissionInfo.RoleId.ToString();
+                permissionLog.GrantedBy = createdBy;
+                permissionLog.GrantedTo = permissionInfo.Email;
+                permissionLog.PermissionId = permissionId;
+                permissionLog.OperationType = "إضافة صلاحية";
+                await AddPermissionLog(permissionLog);
+                //permissionLog.AdditionalDetails = permissionViewModel.AdditionalDetails;
                 return 1;
             }
             catch (Exception ex)
@@ -116,6 +127,7 @@ namespace room_reservation.Domain
         {
             try
             {
+                permissionLog.DateTime = DateTime.Now;
                 _context.AddAsync(permissionLog);
                 await _context.SaveChangesAsync();
                 return true;
