@@ -27,6 +27,7 @@
     <link rel="stylesheet" href="~/Assets/lib/sweetalert2/sweetalert2.min.css">
     <script src="~/Assets/lib/sweetalert2/sweetalert2.all.min.js"></script>
     <script src="~/Assets/lib/sweetalert2/sweetalert2.min.js"></script>
+   
     <!---->
     <script src="~/Assets/js/jquery-3.4.1.min.js"></script>
 
@@ -113,13 +114,42 @@
                                 </svg>
                                 <span>إدارة</span>
                             </a>
+                           @*  <ul>
+                                @if (User.FindFirst(ClaimTypes.Role).Value == "Admin")
+                                {
+                                    <li> <a href="@Url.Action("Index", "User", new { area = "Admin" })" class="active"><span>المستخدمين</span></a></li>
+                                    <li> <a href="@Url.Action("Index", "Permission", new { area = "Admin" })" class="active"><span>الصلاحيات</span></a></li>
+                                    <li> <a href="@Url.Action("Index", "Building", new { area = "Admin" })" class="active"><span> المباني</span></a></li>
+                                    <li> <a href="@Url.Action("Index", "Room", new { area = "Admin" })" class="active"><span>القاعات</span></a></li>
+                                    <li> <a href="@Url.Action("Index", "Lectures", new { area = "Admin" })" class="active"><span>المحاضرات</span></a></li>
+                                    <li> <a href="@Url.Action("Index", "Floor", new { area = " Admin" })" class="active"><span>الطوابق</span></a></li>
+                                }
+                                else if (User.FindFirst(ClaimTypes.Role).Value == "Site Admin")
+                                {
+                                    
+                                    <li> <a href="@Url.Action("Index", "Building", new { area = "Site Admin" })" class="active"><span> المباني</span></a></li>
+                                    <li> <a href="@Url.Action("Index", "Room", new { area = "Site Admin" })" class="active"><span>القاعات</span></a></li>
+                                    <li> <a href="@Url.Action("Index", "Lectures", new { area = "Site Admin" })" class="active"><span>المحاضرات</span></a></li>
+                                    <li> <a href="@Url.Action("Index", "Floor", new { area = "Site Admin" })" class="active"><span>الطوابق</span></a></li>
+                                }
+                                else
+                                {
+               
+                                    <li> <a href="@Url.Action("Index", "Building")" class="active"><span> المباني</span></a></li>
+                                    <li> <a href="@Url.Action("Index", "Room")" class="active"><span>القاعات</span></a></li>
+                                    <li> <a href="@Url.Action("Index", "Lectures")" class="active"><span>المحاضرات</span></a></li>
+                                    <li> <a href="@Url.Action("Index", "Floor")" class="active"><span>الطوابق</span></a></li>
+                                }
+
+
+                            </ul> *@
                             <ul>
                                 @if (User.FindFirst(ClaimTypes.Role).Value == "Admin")
                                 {
                                     <li> <a href="@Url.Action("Index", "User")" class="active"><span>المستخدمين</span></a></li>
-                                    <li> <a href="@Url.Action("Index", "Permission")" class="active"><span>الصلاحيات</span></a></li>
+                                    <li> <a href="@Url.Action("Index", "Permission" , new { area = "Admin" })" class="active"><span>الصلاحيات</span></a></li>
                                 }
-                               <li> <a href="@Url.Action("Index", "Building")" class="active"><span> المباني</span></a></li>
+                                <li> <a href="@Url.Action("Index", "Building")" class="active"><span> المباني</span></a></li>
                                 <li> <a href="@Url.Action("Index", "Room")" class="active"><span>القاعات</span></a></li>
                                 <li> <a href="@Url.Action("Index", "Lectures")" class="active"><span>المحاضرات</span></a></li>
                                 <li> <a href="@Url.Action("Index", "Floor")" class="active"><span>الطوابق</span></a></li>
@@ -131,7 +161,7 @@
                 </div>
             }
             <div class="btm_link">
-                <button class="btn" asp-controller="User" asp-action="Logout">
+                <a class="btn" asp-controller="User" asp-action="Logout">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <rect opacity="0.3" width="12" height="2" rx="1" transform="matrix(-1 0 0 1 15.5 11)"
                                 fill="currentColor"></rect>
@@ -143,7 +173,7 @@
                                 fill="currentColor"></path>
                             </svg>
                            <span>تسجيل الخروج</span>
-                        </button>
+                        </a>
                     </div>
                     </nav> 
                 
@@ -200,19 +230,13 @@
                         <ul class="dropdown-menu account_dd br-stand border-1 border-gray-300 p-4 shadow" aria-labelledby="account">
                             <li>
                                 <div class="d-flex flex-column">
-                                    <h6 class="mb-0">عبد الرحمن ال عبد اللطيف</h6>
-                                    <small class="text-muted m-0">aaaalatif@kfu.edu.sa</small>
+                                    <h6 class="mb-0">@User.FindFirst(ClaimTypes.GivenName).Value.ToString()</h6>
+                                    <small class="text-muted m-0">@User.FindFirst(ClaimTypes.Email).Value.ToString()</small>
                                 </div>
                             </li>
                             <li>
                                 <hr class="dropdown-divider w-100">
                             </li>
-                            <li><a class="dropdown-item" href="#">الملف الشخصي</a></li>
-                            <li><a class="dropdown-item" href="#">English Language</a></li>
-                            <li>
-                                <hr class="dropdown-divider w-100">
-                            </li>
-                            <li><a class="dropdown-item" href="#" >تسجيل الخروج</a></li>
                         </ul>
                     </li>
                 </ul>

@@ -13,7 +13,7 @@ namespace room_reservation.ViewModel
         [Required(ErrorMessage = "هذا الحقل مطلوب")]
         [EmailAddress(ErrorMessage = "البريد الإلكتروني المدخل غير صحيح")]
         public string Email { get; set; }
-        public Guid guid { get; set; } 
+        public Guid Guid { get; set; }
 
         public tblRoles Role { get; set; }
         [Required(ErrorMessage ="هذا الحقل مطلوب")]
@@ -25,7 +25,8 @@ namespace room_reservation.ViewModel
         
         public string BuildingName { get; set; }
         public int BuildingNum { get; set; }
-        public bool isDeleted { get; set; }
+
+        public string AdditionalDetails { get; set; }
 
         public IEnumerable<SelectListItem> Roles { get; set; }
         public IEnumerable<SelectListItem> Buildings { get; set; }

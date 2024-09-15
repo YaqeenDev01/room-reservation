@@ -7,10 +7,13 @@ using room_reservation.Models;
 using room_reservation.ViewModel;
 using System;
 using System.Linq;
+using System.Runtime.ConstrainedExecution;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace room_reservation.Controllers
 {
+    [Area("Admin")]
     public class PermissionController : Controller
     {
         private readonly PermissionDomain _PermissionDomain;
@@ -66,16 +69,21 @@ namespace room_reservation.Controllers
                         permissionViewModel.BuildingId = null;
                     }
 
+                   
                     int check = await _PermissionDomain.AddPermission(permissionViewModel);
+
+                    
                     if (check == 1)
                     {
                         var permissionLog = new PermissionsLog();
-                        permissionLog.Id = 0;
+                        permissionLog.PermissionId = Int32.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
                         permissionLog.OperationType = "إضافة صلاحية";
                         permissionLog.DateTime = DateTime.Now;
-                        permissionLog.PermissionType = "";
-                        permissionLog.GrantedBy = "";
+                        permissionLog.PermissionType = User.FindFirst(ClaimTypes.Role).Value;
+                        permissionLog.GrantedBy = User.FindFirst(ClaimTypes.Email).Value;
                         permissionLog.GrantedTo = permissionViewModel.Email;
+                        permissionLog.AdditionalDetails = permissionViewModel.AdditionalDetails;
+                        _PermissionDomain.AddPermissionLog(permissionLog);
                         return Json(new { success = true, message = "أُضِيفت الصلاحية بنجاح" });
                     }
                     else
@@ -105,7 +113,7 @@ namespace room_reservation.Controllers
             var user = await _UserDomain.GetUserByEmail(email);
             if (user != null)
             {
-                return Json(new { success = true, userName = user.FullNameAR });
+                return Json(new { success = true, userName = user.FullNameAR, phoneNumber = user.PhoneNumber });
             }
             else
             {
@@ -113,25 +121,52 @@ namespace room_reservation.Controllers
             }
         }
         [Authorize(Roles = "Admin")]
+        [HttpGet]
+        public async Task<IActionResult> EditPermission(Guid guid)
+        {
+            ViewBag.Roles = new SelectList(await _RoleDomain.GetAllRoles(), "Id", "RoleName");
+            ViewBag.Building = new SelectList(await _BuildingDomain.GetAllBuilding(), "BuildingId", "BuildingNameAr");
+            var permission = await _PermissionDomain.GetPermissionByGuid(guid);
+            if (permission == null)
+            {
+                return NotFound();
+            }
+
+            var permissionViewModel = new PermissionViewModel
+            {
+                Id = permission.Id,
+                Email = permission.Email,
+                RoleId = permission.RoleId,
+                BuildingId = permission.BuildingId,
+                Guid = guid,
+
+            };
+
+            return View(permissionViewModel);
+        }
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> EditPermission(PermissionViewModel permissionViewModel)
         {
-            if(ModelState.IsValid)
-    {
+            ViewBag.Roles = new SelectList(await _RoleDomain.GetAllRoles(), "Id", "RoleName");
+            ViewBag.Building = new SelectList(await _BuildingDomain.GetAllBuilding(), "BuildingId", "BuildingNameAr");
+
+            if (ModelState.IsValid)
+            {
                 try
                 {
-
-                    
                     var result = await _PermissionDomain.UpdatePermission(permissionViewModel);
                     if (result)
                     {
                         var permissionLog = new PermissionsLog();
-                        permissionLog.Id = 0;
+                        permissionLog.PermissionId = Int32.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
                         permissionLog.OperationType = "تعديل صلاحية";
                         permissionLog.DateTime = DateTime.Now;
-                        permissionLog.PermissionType = "";
-                        permissionLog.GrantedBy = "";
+                        permissionLog.PermissionType = User.FindFirst(ClaimTypes.Role).Value; ;
+                        permissionLog.GrantedBy = User.FindFirst(ClaimTypes.Email).Value; ;
                         permissionLog.GrantedTo = permissionViewModel.Email;
+                        permissionLog.AdditionalDetails = permissionViewModel.AdditionalDetails;
+                        _PermissionDomain.AddPermissionLog(permissionLog);
                         return Json(new { success = true, message = "عُدِّلت الصلاحية بنجاح" });
                     }
                     else
@@ -144,47 +179,34 @@ namespace room_reservation.Controllers
                     return Json(new { success = false, message = ex.Message });
                 }
             }
+  
 
             return Json(new { success = false, message = "بيانات غير صالحة" });
         }
-        [Authorize(Roles = "Admin")]
-        [HttpGet]
-        public async Task<IActionResult> EditPermission(int Id)
-        {
 
-
-            var permission = await _PermissionDomain.GetPermissionById(Id);
-            var roles = await _RoleDomain.GetAllRoles();
-            var buildings = await _BuildingDomain.GetAllBuilding();
-
-            var permissionViewModel = new PermissionViewModel
-            {
-                Id = permission.Id,
-                Email = permission.Email,
-                RoleId = permission.RoleId,
-                BuildingId = permission.BuildingId,
-
-                Roles = roles.Select(x => new SelectListItem
-                {
-                    Value = x.Id.ToString(),
-                    Text = x.RoleName
-                }).ToList(),
-                Buildings = buildings.Select(x => new SelectListItem
-                {
-                    Value = x.BuildingId.ToString(),
-                    Text = x.BuildingNameAr
-                }).ToList()
-            };
-
-            return View(permissionViewModel);
-        }
+ 
 
         [Authorize(Roles = "Admin")]
         [HttpPost]
-        public async Task<IActionResult> DeletePermission(int id)
+        public async Task<IActionResult> DeletePermission(Guid guid)
         {
-            await _PermissionDomain.DeletePermission(id);
-            return Json(new { success = true });
+            var check = await _PermissionDomain.DeletePermission(guid);
+            if (check != null)
+            {
+                var permissionLog = new PermissionsLog();
+                permissionLog.PermissionId = Int32.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+                permissionLog.OperationType = "حذف صلاحية";
+                permissionLog.DateTime = DateTime.Now;
+                permissionLog.PermissionType = User.FindFirst(ClaimTypes.Role).Value; ;
+                permissionLog.GrantedBy = User.FindFirst(ClaimTypes.Email).Value; ;
+                permissionLog.GrantedTo = check.Email;
+                _PermissionDomain.AddPermissionLog(permissionLog);
+                return Json(new { success = true, message = "حُذِفت الصلاحية" });
+            }
+            else
+            {
+                return Json(new { success = false, message = "لم تُحذَف الصلاحية" });
+            }
         }
 
 

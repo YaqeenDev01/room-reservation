@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using room_reservation.Domain;
 using room_reservation.Models;
@@ -59,7 +60,7 @@ namespace room_reservation.Controllers
                 return Json(new { success = false, message = ex.Message });
             }
         }
-
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> EditBuilding(Guid id)
         {
