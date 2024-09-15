@@ -11,7 +11,7 @@ namespace room_reservation.Models
         public string PermissionType { get; set; }
         public DateTime DateTime { get; set; }
         public string OperationType { get; set; }
-        public string? AdditionalDetails { get; set; }
+        public string AdditionalDetails { get; set; }
 
 
     }

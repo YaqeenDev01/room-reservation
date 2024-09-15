@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 namespace room_reservation.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "Admin")]
     public class PermissionController : Controller
     {
         private readonly PermissionDomain _PermissionDomain;
@@ -69,21 +70,14 @@ namespace room_reservation.Controllers
                         permissionViewModel.BuildingId = null;
                     }
 
+                    
                    
-                    int check = await _PermissionDomain.AddPermission(permissionViewModel);
+                    int check = await _PermissionDomain.AddPermission(permissionViewModel, User.FindFirst(ClaimTypes.Email).Value, Int32.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value));
 
                     
                     if (check == 1)
                     {
-                        var permissionLog = new PermissionsLog();
-                        permissionLog.PermissionId = Int32.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-                        permissionLog.OperationType = "إضافة صلاحية";
-                        permissionLog.DateTime = DateTime.Now;
-                        permissionLog.PermissionType = User.FindFirst(ClaimTypes.Role).Value;
-                        permissionLog.GrantedBy = User.FindFirst(ClaimTypes.Email).Value;
-                        permissionLog.GrantedTo = permissionViewModel.Email;
-                        permissionLog.AdditionalDetails = permissionViewModel.AdditionalDetails;
-                        _PermissionDomain.AddPermissionLog(permissionLog);
+                        
                         return Json(new { success = true, message = "أُضِيفت الصلاحية بنجاح" });
                     }
                     else

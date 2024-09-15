@@ -114,42 +114,14 @@
                                 </svg>
                                 <span>إدارة</span>
                             </a>
-                           @*  <ul>
-                                @if (User.FindFirst(ClaimTypes.Role).Value == "Admin")
-                                {
-                                    <li> <a href="@Url.Action("Index", "User", new { area = "Admin" })" class="active"><span>المستخدمين</span></a></li>
-                                    <li> <a href="@Url.Action("Index", "Permission", new { area = "Admin" })" class="active"><span>الصلاحيات</span></a></li>
-                                    <li> <a href="@Url.Action("Index", "Building", new { area = "Admin" })" class="active"><span> المباني</span></a></li>
-                                    <li> <a href="@Url.Action("Index", "Room", new { area = "Admin" })" class="active"><span>القاعات</span></a></li>
-                                    <li> <a href="@Url.Action("Index", "Lectures", new { area = "Admin" })" class="active"><span>المحاضرات</span></a></li>
-                                    <li> <a href="@Url.Action("Index", "Floor", new { area = " Admin" })" class="active"><span>الطوابق</span></a></li>
-                                }
-                                else if (User.FindFirst(ClaimTypes.Role).Value == "Site Admin")
-                                {
-                                    
-                                    <li> <a href="@Url.Action("Index", "Building", new { area = "Site Admin" })" class="active"><span> المباني</span></a></li>
-                                    <li> <a href="@Url.Action("Index", "Room", new { area = "Site Admin" })" class="active"><span>القاعات</span></a></li>
-                                    <li> <a href="@Url.Action("Index", "Lectures", new { area = "Site Admin" })" class="active"><span>المحاضرات</span></a></li>
-                                    <li> <a href="@Url.Action("Index", "Floor", new { area = "Site Admin" })" class="active"><span>الطوابق</span></a></li>
-                                }
-                                else
-                                {
-               
-                                    <li> <a href="@Url.Action("Index", "Building")" class="active"><span> المباني</span></a></li>
-                                    <li> <a href="@Url.Action("Index", "Room")" class="active"><span>القاعات</span></a></li>
-                                    <li> <a href="@Url.Action("Index", "Lectures")" class="active"><span>المحاضرات</span></a></li>
-                                    <li> <a href="@Url.Action("Index", "Floor")" class="active"><span>الطوابق</span></a></li>
-                                }
-
-
-                            </ul> *@
+        
                             <ul>
                                 @if (User.FindFirst(ClaimTypes.Role).Value == "Admin")
                                 {
                                     <li> <a href="@Url.Action("Index", "User")" class="active"><span>المستخدمين</span></a></li>
-                                    <li> <a href="@Url.Action("Index", "Permission" , new { area = "Admin" })" class="active"><span>الصلاحيات</span></a></li>
+                                    <li> <a  asp-action ="Index" asp-controller ="Permission" asp-area ="Admin"  class="active"><span>الصلاحيات</span></a></li>
                                 }
-                                <li> <a href="@Url.Action("Index", "Building")" class="active"><span> المباني</span></a></li>
+                                <li> <a asp-action="Index" asp-controller="Building" asp-area=" " class="active"><span> المباني</span></a></li>
                                 <li> <a href="@Url.Action("Index", "Room")" class="active"><span>القاعات</span></a></li>
                                 <li> <a href="@Url.Action("Index", "Lectures")" class="active"><span>المحاضرات</span></a></li>
                                 <li> <a href="@Url.Action("Index", "Floor")" class="active"><span>الطوابق</span></a></li>
@@ -275,7 +247,7 @@
 
     <!-- customization -->
     <script src="~/Assets/js/app.js"></script>
-
+    <script src="~/assets/lib/quicksearch/jquery.quicksearch.js"></script>
 </body>
 
 </html>

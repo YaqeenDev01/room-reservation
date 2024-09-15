@@ -30,9 +30,9 @@ namespace room_reservation.Domain
         }
  
         
-        public IEnumerable<tblBuildings>GetAllBuilding()
+        public async Task <IEnumerable<tblBuildings>>GetAllBuilding()
         {
-            return  _context.tblBuildings;
+            return  await _context.tblBuildings.ToListAsync();
         }
         
                 public async Task <int> addFloor(FloorViewModel floor)
