@@ -192,17 +192,17 @@
                                 <path d="M6 20.05v-.05a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v.05" />
                             </svg>
                         </a>
-                        <ul class="dropdown-menu account_dd br-stand border-1 border-gray-300 p-4 shadow" aria-labelledby="account">
-                            <li>
-                                <div class="d-flex flex-column">
-                                    <h6 class="mb-0">@User.FindFirst(ClaimTypes.GivenName).Value.ToString()</h6>
-                                    <small class="text-muted m-0">@User.FindFirst(ClaimTypes.Email).Value.ToString()</small>
-                                </div>
-                            </li>
-                            <li>
-                                <hr class="dropdown-divider w-100">
-                            </li>
-                        </ul>
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <ul class="dropdown-menu account_dd br-stand border-1 border-gray-300 p-4 shadow" aria-labelledby="account">
+                                <li>
+                                    <div class="d-flex flex-column">
+                                        <h6 class="mb-0">@User.FindFirst(ClaimTypes.GivenName)?.Value</h6>
+                                        <small class="text-muted m-0">@User.FindFirst(ClaimTypes.Email)?.Value</small>
+                                    </div>
+                                </li>
+                            </ul>
+                        }
                     </li>
                 </ul>
             </header><!-- End Header Navbar -->

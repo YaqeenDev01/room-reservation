@@ -82,13 +82,10 @@ app.UseEndpoints(endpoints =>
         name: "Admin",
         pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
 
-    endpoints.MapControllerRoute(
-        name: "Site Admin",
-        pattern: "{area:exists}/{controller=Home}/{actions=Index}/{id?}");
 
     endpoints.MapControllerRoute(
         name: "default",
-        pattern: "{controller=Home}/{action=Index}/{id?}");
+        pattern: "{controller=User}/{action=Login}/{id?}");
 
     endpoints.MapRazorPages();
 });
