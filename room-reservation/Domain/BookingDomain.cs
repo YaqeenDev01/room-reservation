@@ -95,8 +95,9 @@ namespace room_reservation.Domain
                 Bookings.BookingDate = DateTime.Now;
                 Bookings.BookingStart = Booking.BookingStart;
                 Bookings.BookingEnd = Booking.BookingEnd;
+
                 Bookings.BookingStatues = Booking.BookingStatues;
-         
+
                 //Bookings.RejectReason = booking.RejectReason;
                 // to calculate the duration first substract the end time from the start then convert it it to decimal
                 var BookingDuration = Booking.BookingEnd - Booking.BookingStart;
@@ -104,10 +105,25 @@ namespace room_reservation.Domain
                 Bookings.Email = user.Email;
                 Bookings.FullName = user.FullNameAR;
                 Bookings.PhoneNumber = user.PhoneNumber;
-               
+
                 Bookings.guid = Guid.NewGuid();
                 Bookings.IsDeleted = false;
                 Bookings.RoomId = room.Id;
+
+                Bookings.BookingStatuesId = Booking.BookingStatues.Id;
+         
+                //Bookings.RejectReason = booking.RejectReason;
+                // to calculate the duration first substract the end time from the start then convert it it to decimal
+                //var BookingDuration = Booking.BookingEnd - Booking.BookingStart;
+                //Bookings.Duration = Convert.ToDecimal(BookingDuration.TotalHours);
+                //Bookings.Email = user.Email;
+                //Bookings.FullName = user.FullNameAR;
+                //Bookings.PhoneNumber = user.PhoneNumber;
+               
+                //Bookings.guid = Guid.NewGuid();
+                //Bookings.IsDeleted = false;
+                //Bookings.RoomId = room.Id;
+
                 if (user.CollegeName == Booking.BuildingNameAr)
                 {
                     Bookings.BookingStatuesId = 1;
@@ -179,8 +195,12 @@ namespace room_reservation.Domain
                 RoomNo = BookingId.Room.RoomNo,
                 IsDeleted = BookingId.IsDeleted,
                 RoomId = BookingId.RoomId,
-                guid = Guid.NewGuid(),
-             };
+                guid = BookingId.guid,
+
+            };
+
+           
+
             return models;
         }
 
@@ -347,8 +367,10 @@ namespace room_reservation.Domain
             }).ToListAsync();
         }
         public async Task<BookingViewModel> GetBookingByGuid(Guid id)
+
+             
         {
-            var booking = await _context.tblBookings.FirstOrDefaultAsync(b => b.guid == id && b.IsDeleted == false);
+            var booking = await _context.tblBookings.Include(bs => bs.BookingStatues).Include(rt => rt.Room.RoomType).FirstOrDefaultAsync(b => b.guid == id && b.IsDeleted == false);
             BookingViewModel model = new BookingViewModel
             {
                 FullName = booking.FullName,
@@ -359,7 +381,20 @@ namespace room_reservation.Domain
                 BookingDate = booking.BookingDate,
                 BookingStart = booking.BookingStart,
                 BookingEnd = booking.BookingEnd,
-                BookingStatuesId = booking.BookingStatuesId,
+                BookingStatuesId = booking.BookingStatues.Id,
+
+ 
+                BookingStatusAR = booking.BookingStatues.StatuesAR,
+                RoomTypeId = booking.Room.RoomTypeId,
+                RoomAR = booking.Room.RoomType.RoomTypeAR,
+               
+               
+                SeatCapacity = booking.Room.SeatCapacity,
+                RoomNo = booking.Room.RoomNo,
+                IsDeleted = booking.IsDeleted,
+                RoomId = booking.RoomId,
+             
+
             };
             return model;
         }

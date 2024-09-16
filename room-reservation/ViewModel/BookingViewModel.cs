@@ -37,14 +37,18 @@ namespace room_reservation.ViewModel
         [DisplayName("وقت انتهاء الحجز")]
         public TimeSpan BookingEnd { get; set; }
 
+        public tblRooms Room { get; set; }
+
         public int RoomId { get; set; }
         public bool IsDeleted { get; set; }
 
         public tblBookingStatues BookingStatues { get; set; }
         public int BookingStatuesId { get; set; }
+        public string BookingStatusAR { get; set; }
 
         
         //adding room and room type  details for the booking details view to show them 
+        public int RoomTypeId { get; set; }
         public string RoomAR { get; set; }
         public int RoomNo { get; set; }
         public string BuildingNameAr { get; set; }
