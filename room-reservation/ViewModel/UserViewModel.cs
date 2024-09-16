@@ -34,10 +34,24 @@ namespace room_reservation.ViewModel
         [Required(ErrorMessage ="هذا الحقل مطلوب")]
         [DisplayName("الجنس")]
         public string GenderAR { get; set; }
+        
         [DisplayName("Gender")]
         public string GenderEN { get; set; }
 
-
+        
+        [DisplayName("أسم الكلية")]
+        public string? CollegeName { get; set; }
+        
+        [DisplayName("رمز الكلية")]
+        public string? CollegeCode { get; set; }
+        
+        [Required(ErrorMessage ="هذا الحقل مطلوب")]
+        [DisplayName("أسم القسم")]
+        public string DepartmentName { get; set; }
+        
+        [Required(ErrorMessage ="هذا الحقل مطلوب")]
+        [DisplayName("رمز القسم")]
+        public string DepartmentCode { get; set;}
 
 
     }

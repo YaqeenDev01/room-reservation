@@ -223,7 +223,7 @@ namespace room_reservation.Controllers
                     }
                     else
                     {
-                        return RedirectToAction("Index", "Home");
+                        return RedirectToAction("Index", "Home",new {area=" "});
                     }
                 }
             }
