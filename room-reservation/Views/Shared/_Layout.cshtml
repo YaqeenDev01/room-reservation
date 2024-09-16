@@ -27,6 +27,7 @@
     <link rel="stylesheet" href="~/Assets/lib/sweetalert2/sweetalert2.min.css">
     <script src="~/Assets/lib/sweetalert2/sweetalert2.all.min.js"></script>
     <script src="~/Assets/lib/sweetalert2/sweetalert2.min.js"></script>
+   
     <!---->
     <script src="~/Assets/js/jquery-3.4.1.min.js"></script>
 
@@ -79,26 +80,27 @@
                             </a>
 
                                      </li>
-                        <li>
-                            <!-- <a href="~\Views\Home\Orders.cshtml" class="active">-->
-                            <a href="@Url.Action("Orders", "Home")" class="active">
+                    <li>
+                        <!-- <a href="~\Views\Home\Orders.cshtml" class="active">-->
+                        <a href="@Url.Action("Orders", "Home")" class="active">
 
-                                <svg width="40" height="40" viewBox="0 0 24 24" fill="none"
-                                xmlns="http://www.w3.org/2000/svg">
-                                    <path
+                            <svg width="40" height="40" viewBox="0 0 24 24" fill="none"
+                                 xmlns="http://www.w3.org/2000/svg">
+                                <path
                                     d="M21 10H13V11C13 11.6 12.6 12 12 12C11.4 12 11 11.6 11 11V10H3C2.4 10 2 10.4 2 11V13H22V11C22 10.4 21.6 10 21 10Z"
                                     fill="currentColor"></path>
-                                    <path opacity="0.3"
-                                    d="M12 12C11.4 12 11 11.6 11 11V3C11 2.4 11.4 2 12 2C12.6 2 13 2.4 13 3V11C13 11.6 12.6 12 12 12Z"
-                                    fill="currentColor"></path>
-                                    <path opacity="0.3"
-                                    d="M18.1 21H5.9C5.4 21 4.9 20.6 4.8 20.1L3 13H21L19.2 20.1C19.1 20.6 18.6 21 18.1 21ZM13 18V15C13 14.4 12.6 14 12 14C11.4 14 11 14.4 11 15V18C11 18.6 11.4 19 12 19C12.6 19 13 18.6 13 18ZM17 18V15C17 14.4 16.6 14 16 14C15.4 14 15 14.4 15 15V18C15 18.6 15.4 19 16 19C16.6 19 17 18.6 17 18ZM9 18V15C9 14.4 8.6 14 8 14C7.4 14 7 14.4 7 15V18C7 18.6 7.4 19 8 19C8.6 19 9 18.6 9 18Z"
-                                    fill="currentColor"></path>
-                                </svg>
-                                <span>الطلبات</span>
-                            </a>
-                        </li>
-                        <li class="sub_menu">
+                                <path opacity="0.3"
+                                      d="M12 12C11.4 12 11 11.6 11 11V3C11 2.4 11.4 2 12 2C12.6 2 13 2.4 13 3V11C13 11.6 12.6 12 12 12Z"
+                                      fill="currentColor"></path>
+                                <path opacity="0.3"
+                                      d="M18.1 21H5.9C5.4 21 4.9 20.6 4.8 20.1L3 13H21L19.2 20.1C19.1 20.6 18.6 21 18.1 21ZM13 18V15C13 14.4 12.6 14 12 14C11.4 14 11 14.4 11 15V18C11 18.6 11.4 19 12 19C12.6 19 13 18.6 13 18ZM17 18V15C17 14.4 16.6 14 16 14C15.4 14 15 14.4 15 15V18C15 18.6 15.4 19 16 19C16.6 19 17 18.6 17 18ZM9 18V15C9 14.4 8.6 14 8 14C7.4 14 7 14.4 7 15V18C7 18.6 7.4 19 8 19C8.6 19 9 18.6 9 18Z"
+                                      fill="currentColor"></path>
+                            </svg>
+                            <span>الطلبات</span>
+                        </a>
+                    </li>
+                    
+                    @* <li class="sub_menu">
                             <a href="JavaScript:void(0)">
                                 <svg width="40" height="40" viewBox="0 0 24 24" fill="none">
                                     <path opacity="0.2" fill-rule="evenodd" clip-rule="evenodd"
@@ -113,25 +115,27 @@
                                 </svg>
                                 <span>إدارة</span>
                             </a>
+
                             <ul>
                                 @if (User.FindFirst(ClaimTypes.Role).Value == "Admin")
                                 {
-                                    <li> <a href="@Url.Action("Index", "User")" class="active"><span>المستخدمين</span></a></li>
-                                    <li> <a href="@Url.Action("Index", "Permission")" class="active"><span>الصلاحيات</span></a></li>
+                                <li> <a href="@Url.Action("Index", "User")" class="active"><span>المستخدمين</span></a></li>
+                                <li> <a  asp-action ="Index" asp-controller ="Permission" asp-area ="Admin"  class="active"><span>الصلاحيات</span></a></li>
                                 }
-                               <li> <a href="@Url.Action("Index", "Building")" class="active"><span> المباني</span></a></li>
+                                <li> <a asp-action="Index" asp-controller="Building" asp-area=" " class="active"><span> المباني</span></a></li>
                                 <li> <a href="@Url.Action("Index", "Room")" class="active"><span>القاعات</span></a></li>
                                 <li> <a href="@Url.Action("Index", "Lectures")" class="active"><span>المحاضرات</span></a></li>
                                 <li> <a href="@Url.Action("Index", "Floor")" class="active"><span>الطوابق</span></a></li>
 
                             </ul>
-                        </li>
+                        </li>*@
                     </ul>
+                   
 
                 </div>
             }
             <div class="btm_link">
-                <button class="btn" asp-controller="User" asp-action="Logout">
+                <a class="btn" asp-controller="User" asp-action="Logout">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <rect opacity="0.3" width="12" height="2" rx="1" transform="matrix(-1 0 0 1 15.5 11)"
                                 fill="currentColor"></rect>
@@ -143,7 +147,7 @@
                                 fill="currentColor"></path>
                             </svg>
                            <span>تسجيل الخروج</span>
-                        </button>
+                        </a>
                     </div>
                     </nav> 
                 
@@ -197,23 +201,17 @@
                                 <path d="M6 20.05v-.05a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v.05" />
                             </svg>
                         </a>
-                        <ul class="dropdown-menu account_dd br-stand border-1 border-gray-300 p-4 shadow" aria-labelledby="account">
-                            <li>
-                                <div class="d-flex flex-column">
-                                    <h6 class="mb-0">عبد الرحمن ال عبد اللطيف</h6>
-                                    <small class="text-muted m-0">aaaalatif@kfu.edu.sa</small>
-                                </div>
-                            </li>
-                            <li>
-                                <hr class="dropdown-divider w-100">
-                            </li>
-                            <li><a class="dropdown-item" href="#">الملف الشخصي</a></li>
-                            <li><a class="dropdown-item" href="#">English Language</a></li>
-                            <li>
-                                <hr class="dropdown-divider w-100">
-                            </li>
-                            <li><a class="dropdown-item" href="#" >تسجيل الخروج</a></li>
-                        </ul>
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <ul class="dropdown-menu account_dd br-stand border-1 border-gray-300 p-4 shadow" aria-labelledby="account">
+                                <li>
+                                    <div class="d-flex flex-column">
+                                        <h6 class="mb-0">@User.FindFirst(ClaimTypes.GivenName)?.Value</h6>
+                                        <small class="text-muted m-0">@User.FindFirst(ClaimTypes.Email)?.Value</small>
+                                    </div>
+                                </li>
+                            </ul>
+                        }
                     </li>
                 </ul>
             </header><!-- End Header Navbar -->
@@ -251,7 +249,7 @@
 
     <!-- customization -->
     <script src="~/Assets/js/app.js"></script>
-
+    <script src="~/assets/lib/quicksearch/jquery.quicksearch.js"></script>
 </body>
 
 </html>

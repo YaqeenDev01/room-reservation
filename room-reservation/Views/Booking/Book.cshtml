@@ -15,14 +15,8 @@
                 <input type="text" class="form-control table__quick_search"
                        placeholder="البحث السريع ...">
             </div>
-            <button type="button" class="btn btn-primary" id="btnRedirect">
-                حجز قاعة
-            </button>
-            <script>
-                document.getElementById('btnRedirect').onclick = function () {
-                    window.location.href = '@Url.Action("Add", "Booking")'; // Replace with your controller action URL
-                };
-            </script>
+            <a asp-action="Index" asp-controller="Booking" class="btn btn-primary"> حجز قاعة</a>
+
         </div>
     </div>
 

@@ -8,10 +8,12 @@ namespace room_reservation.Domain
     {
         private readonly KFUSpaceContext _context;
         private readonly UserDomain _userDomain;
+   
         public FloorDomain(KFUSpaceContext context,UserDomain userDomain)
         {
             _context = context;
             _userDomain = userDomain;
+ 
         }
 
         public async Task<IEnumerable<FloorViewModel>> GetAllFloors()
@@ -30,9 +32,9 @@ namespace room_reservation.Domain
         }
  
         
-        public IEnumerable<tblBuildings>GetAllBuilding()
+        public async Task <IEnumerable<tblBuildings>>GetAllBuilding()
         {
-            return  _context.tblBuildings;
+            return  await _context.tblBuildings.ToListAsync();
         }
         
                 public async Task <int> addFloor(FloorViewModel floor)
@@ -164,15 +166,15 @@ namespace room_reservation.Domain
                    return floorId;
                 }
 
-                public async Task<int>  editFloor(FloorViewModel floor)
+                public async Task<int> editFloor(FloorViewModel floor)
                 {
                     try
                     {
                         // Check if FloorNo and building ID exists or not in db 
                         var floorExists = _context.tblFloors
-                            .Any(fn => fn.FloorNo == floor.FloorNo && fn.BuildingId == floor.BuildingId);
-                            //     var user= await _userDomain.GetUserByEmail(floor.Email);
-
+                            .Any(fn => fn.FloorNo == floor.FloorNo && fn.BuildingId == floor.BuildingId); 
+                        var user= await _userDomain.GetUserByEmail(floor.Email);
+                       
                         if (floorExists)
                         {
                             //if it doesnt exist
@@ -185,14 +187,16 @@ namespace room_reservation.Domain
 
                         _context.tblFloors.Update(floorInfo);
                        await _context.SaveChangesAsync();
-                       // var floorLog = new FloorsLog();
-                       // floorLog.FloorId = floorInfo.Id;
-                       // floorLog.OperationType = "تعديل طابق";
-                       // floorLog.OperationDate=DateTime.Now;
-                       // floorLog.GrantdBy = user.Email;
-                       // floorLog.AdditionalDetails="";
-                       // _context.FloorsLog.Add(floorLog);
-                       // await _context.SaveChangesAsync();
+                       
+                       
+                       var floorLog = new FloorsLog();
+                       floorLog.FloorId = floorInfo.Id;
+                       floorLog.OperationType = "تعديل طابق";
+                       floorLog.OperationDate=DateTime.Now;
+                       floorLog.GrantdBy = user.Email;
+                       floorLog.AdditionalDetails="";
+                       _context.FloorsLog.Add(floorLog);
+                       await _context.SaveChangesAsync();
                         return 1;
                         
                     }
@@ -204,13 +208,16 @@ namespace room_reservation.Domain
                 }
                 public async Task DeleteFloor(Guid id)
                 {
-                    //var user= await _userDomain.GetUserByEmail(floor.Email);
+                
 
-                    tblFloors floor = GetFloorById(id);                        // is deleted will delete the record in web 
+                        tblFloors floor = GetFloorById(id);                        // is deleted will delete the record in web 
                         floor.IsDeleted = true;
                         // remove will delete the record from Db
                        // _context.tblFloors.Remove(floorInfo);
                         await _context.SaveChangesAsync();
+                        // var floorViewModel = new FloorViewModel();
+                        // var floorInfo = GetFloorById(floor.Guid);
+                        // var user= await _userDomain.GetUserByEmail(floorViewModel.Email);
                         // var floorLog = new FloorsLog();
                         // floorLog.FloorId = floorInfo.Id;
                         // floorLog.OperationType = "تعديل طابق";
@@ -219,7 +226,7 @@ namespace room_reservation.Domain
                         // floorLog.AdditionalDetails="";
                         // _context.FloorsLog.Add(floorLog);
                         // await _context.SaveChangesAsync();
-                        //
+                        
                         //
                         //
                 }

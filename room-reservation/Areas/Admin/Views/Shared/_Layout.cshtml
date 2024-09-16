@@ -1,12 +1,12 @@
 ﻿@using System.Security.Claims;
 <!DOCTYPE html>
-<html lang="ar" dir="rtl" data-theme="light">
+<html lang="en" dir="rtl" data-theme="light">
 
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة التحكم  بالنظام</title>
+    <title>@(ViewData["Title"] ?? "مساحة كفو")</title>
 
     <!-- Favico -->
     <link rel="apple-touch-icon" sizes="180x180" href="~/assets/imgs/favicon/apple-touch-icon.png">
@@ -17,14 +17,31 @@
     <meta name="msapplication-TileColor" content="#ffffff">
     <meta name="theme-color" content="#ffffff">
 
+
     <link rel="stylesheet" href="~/Assets/css/bootstrap.rtl.min.css">
     <link rel="stylesheet" href="~/Assets/css/bootstrap-icons.min.css">
     <link rel="stylesheet" href="~/Assets/css/root.css">
+
+
+    <!--sweet alert-->
+    <link rel="stylesheet" href="~/Assets/lib/sweetalert2/sweetalert2.min.css">
+    <script src="~/Assets/lib/sweetalert2/sweetalert2.all.min.js"></script>
+    <script src="~/Assets/lib/sweetalert2/sweetalert2.min.js"></script>
+
+    <!---->
+    <script src="~/Assets/js/jquery-3.4.1.min.js"></script>
+
+    <!--sweet alert-->
+    <link rel="stylesheet" href="~/Assets/lib/sweetalert2/sweetalert2.min.css">
+    <script src="~/Assets/lib/sweetalert2/sweetalert2.all.min.js"></script>
+    <script src="~/Assets/lib/sweetalert2/sweetalert2.min.js"></script>
     <!---->
     <!--------- CSS Liberaries ---------->
     <!-- Data Table -->
-    <!-- <link rel="stylesheet" href="Assets/lib/DataTable/css/select.dataTables.min.css" /> -->
-    <!-- <link rel="stylesheet" href="Assets/lib/DataTable/css/datatables_customization.css" /> -->
+    <link rel="stylesheet" href="~/Assets/lib/DataTable/css/select.dataTables.min.css" />
+    <link rel="stylesheet" href="~/Assets/lib/DataTable/css/datatables_customization.css" />
+
+
     <!-- customization -->
     <link rel="stylesheet" href="~/Assets/css/app_rtl.css">
 
@@ -93,20 +110,28 @@
                                 </svg>
                                 <span>إدارة</span>
                             </a>
+
                             <ul>
                                 @if (User.FindFirst(ClaimTypes.Role).Value == "Admin")
                                 {
-                                    <li> <a href="@Url.Action("Index", "User")" class="active"><span>المستخدمين</span></a></li>
-                                    <li> <a href="@Url.Action("Index", "Permission")" class="active"><span>الصلاحيات</span></a></li>
+                                    <li> <a asp-action="Index" asp-controller="User" asp-area="Admin" class="active"><span> المستخدمين</span></a></li>
+                                    <li> <a asp-action="Index" asp-controller="Permission" asp-area="Admin" class="active"><span>الصلاحيات</span></a></li>
+                                    <li> <a asp-action="Index" asp-controller="Building" asp-area= "Admin" class="active"><span> المباني</span></a></li>
+                                  
                                 }
-                                <li> <a href="@Url.Action("Index", "Building")" class="active"><span> المباني</span></a></li>
-                                <li> <a href="@Url.Action("Index", "Room")" class="active"><span>القاعات</span></a></li>
-                                <li> <a href="@Url.Action("Index", "Lectures")" class="active"><span>المحاضرات</span></a></li>
-                                <li> <a href="@Url.Action("Index", "Floor")" class="active"><span>الطوابق</span></a></li>
+                                @if (User.FindFirst(ClaimTypes.Role).Value == "Admin" || User.FindFirst(ClaimTypes.Role).Value == "SiteAdmin")
+                                {
+                                    <li> <a asp-action="Index" asp-controller="Floor" asp-area="Admin" class="active"><span>الطوابق</span></a></li>
+                                    <li> <a asp-action="Index" asp-controller="Room" asp-area="Admin" class="active"><span>القاعات</span></a></li>
+                                    <li> <a asp-action="Index" asp-controller="Lectures" asp-area="Admin" class="active"><span>المحاضرات</span></a></li>
+                                }
+                              
+                             
 
                             </ul>
                         </li>
                     </ul>
+
                 </div>
             }
             <div class="btm_link">
@@ -173,23 +198,17 @@
                                 <path d="M6 20.05v-.05a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v.05" />
                             </svg>
                         </a>
-                        <ul class="dropdown-menu account_dd br-stand border-1 border-gray-300 p-4 shadow" aria-labelledby="account">
-                            <li>
-                                <div class="d-flex flex-column">
-                                    <h6 class="mb-0">عبد الرحمن ال عبد اللطيف</h6>
-                                    <small class="text-muted m-0">aaaalatif@kfu.edu.sa</small>
-                                </div>
-                            </li>
-                            <li>
-                                <hr class="dropdown-divider w-100">
-                            </li>
-                            <li><a class="dropdown-item" href="#">الملف الشخصي</a></li>
-                            <li><a class="dropdown-item" href="#">English Language</a></li>
-                            <li>
-                                <hr class="dropdown-divider w-100">
-                            </li>
-                            <li><a class="dropdown-item" href="#">تسجيل الخروج</a></li>
-                        </ul>
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <ul class="dropdown-menu account_dd br-stand border-1 border-gray-300 p-4 shadow" aria-labelledby="account">
+                                <li>
+                                    <div class="d-flex flex-column">
+                                        <h6 class="mb-0">@User.FindFirst(ClaimTypes.GivenName)?.Value</h6>
+                                        <small class="text-muted m-0">@User.FindFirst(ClaimTypes.Email)?.Value</small>
+                                    </div>
+                                </li>
+                            </ul>
+                        }
                     </li>
                 </ul>
             </header><!-- End Header Navbar -->
@@ -220,11 +239,8 @@
 
     <!--------- JS Liberaries ---------->
     <script src="~/Assets/lib/DataTable/js/dataTables.min.js"></script>
-    <script src="~/Assets//lib/DataTable/js/dataTables.select.min.js"></script>
+    <script src="~/Assets/lib/DataTable/js/dataTables.select.min.js"></script>
 
-
-    <!-- Sweet Alert library -->
-    <script src="~/lib/sweetalert/sweetalert.min.js"></script>
 
 
     <!-- Render the Scripts section -->
@@ -232,7 +248,7 @@
 
     <!-- customization -->
     <script src="~/Assets/js/app.js"></script>
-
+    <script src="~/assets/lib/quicksearch/jquery.quicksearch.js"></script>
 </body>
 
 </html>

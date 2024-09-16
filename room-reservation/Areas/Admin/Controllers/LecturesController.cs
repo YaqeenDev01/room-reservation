@@ -7,9 +7,10 @@ using room_reservation.ViewModel;
 using System.Linq.Expressions;
 
 
-namespace room_reservation.Controllers
+namespace room_reservation.Areas.Admin.Controllers
 {
-    [Area("Site Admin")]
+    [Area("Admin")]
+    [Authorize(Roles = "Admin, Site Admin")]
     public class LecturesController : Controller
     {
         private readonly lecturesDomain _lecturesDomain;
@@ -28,13 +29,12 @@ namespace room_reservation.Controllers
         }
 
         // GET: /Lecture/Add
-        [Authorize(Roles = "Site Admin")]
         [HttpGet]
         public async Task<IActionResult> AddLecture()
         {
             return View();
         }
-        [Authorize(Roles = "Site Admin")]
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddLecture(LecturesViewModel lectures)
@@ -45,46 +45,52 @@ namespace room_reservation.Controllers
 
                 if (exists)
                 {
-                    return Json(new { success = false, message = "وقت المحاضرة محجوز مسبقا" });
+                    return Json(new { success = false, message = "The lecture time slot is already booked." });
                 }
 
                 try
                 {
-                    var check = await _lecturesDomain.Addlecture(lectures);
-                    if (check == 1)
-                    {
-                        return Json(new { success = true, message = "أُضيفت المحاضرة بنجاح" });
-                    }
-                    else {
-                        return Json(new { success = false, message = "لم تضاف المحاضرة" });
-
-                    }
-
+                    await _lecturesDomain.Addlecture(lectures);
+                    return Json(new { success = true, message = "Lecture added successfully." });
                 }
                 catch (Exception ex)
                 {
                     return Json(new { success = false, message = ex.Message });
                 }
             }
-            else
-            {
-                var errors = ModelState.ToDictionary(
-                      kvp => kvp.Key,
-                      kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).ToArray()
-                  );
-
-                return Json(new { success = false, errors });
-            }
+            return Json(new { success = false, message = "Invalid data." });
         }
+        // POST: /Lecture/Add
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> AddLecture(LecturesViewModel lectures)
+        //{
+        //    try
+        //    {
 
-        [Authorize(Roles = "Site Admin")]
+        //        if (ModelState.IsValid)
+        //        {
+        //            await _lecturesDomain.Addlecture(lectures);
+        //            return Json(new { success = true, message = "Added successfully" });
+        //        }
+        //        else
+        //        {
+        //            return Json(new { success = true, message = "Invalid Data" });
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return Json(new { success = false, message = ex.Message });
+        //    }
+        //}
+
         [HttpGet]
 
         public async Task<IActionResult> EditLecture(int Id)
         {
             return View(_lecturesDomain.getlecturesById(Id));
         }
-        [Authorize(Roles = "Site Admin")]
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditLecture(LecturesViewModel lectures)
@@ -95,7 +101,7 @@ namespace room_reservation.Controllers
 
                 if (exists)
                 {
-                    return Json(new { success = false, message = "وقت المحاضرة محجوز مسبقاً" });
+                    return Json(new { success = false, message = "The lecture time slot is already booked." });
                 }
 
                 try
@@ -103,11 +109,11 @@ namespace room_reservation.Controllers
                     var result = await _lecturesDomain.EditLecture(lectures);
                     if (result == 1)
                     {
-                        return Json(new { success = true, message = "عُدلت المحاضرة" });
+                        return Json(new { success = true, message = "Lecture updated successfully." });
                     }
                     else
                     {
-                        return Json(new { success = false, message = "لم يتم التعديل" });
+                        return Json(new { success = false, message = "Update failed." });
                     }
                 }
                 catch (Exception ex)
@@ -115,9 +121,9 @@ namespace room_reservation.Controllers
                     return Json(new { success = false, message = ex.Message });
                 }
             }
-            return Json(new { success = false, message = "فشلت العملية" });
+            return Json(new { success = false, message = "Invalid data." });
         }
-        [Authorize(Roles = "Site Admin")]
+
         [HttpPost]
         public async Task<IActionResult> DeleteLecture(int id)
         {
@@ -127,4 +133,3 @@ namespace room_reservation.Controllers
         }
     }
 }
-        

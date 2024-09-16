@@ -24,8 +24,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
                 options.AccessDeniedPath = "/Home/Error";
                 options.LoginPath = "/User/Login";
                 options.ExpireTimeSpan = TimeSpan.FromDays(1);
-                //options.LoginPath = "/accounts/ErrorNotLoggedIn";
-                //options.LogoutPath = "account/logout";
+                
             });
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddAuthorization(options =>
@@ -85,7 +84,7 @@ app.UseEndpoints(endpoints =>
 
     endpoints.MapControllerRoute(
         name: "default",
-        pattern: "{controller=Home}/{action=Index}/{id?}");
+        pattern: "{controller=User}/{action=Login}/{id?}");
 
     endpoints.MapRazorPages();
 });

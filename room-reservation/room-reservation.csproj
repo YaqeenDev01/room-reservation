@@ -31,9 +31,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Areas\FacultyMember\" />
-    <Folder Include="Areas\Student\" />
-    <Folder Include="Areas\SiteAdmin\" />
+    <Content Update="Areas\Admin\Views\Shared\_Layout.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>

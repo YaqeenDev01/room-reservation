@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using room_reservation.Domain;
@@ -6,6 +7,8 @@ using room_reservation.ViewModel;
 using System.Security.Claims;
 namespace room_reservation.Controllers
 {
+    [Area("Admin")]
+    [Authorize(Roles = "Admin, SiteAdmin")]
     public class FloorController : Controller
     {
         private readonly FloorDomain _FloorDomain;
@@ -14,24 +17,21 @@ namespace room_reservation.Controllers
 
         public FloorController(FloorDomain FloorDomain, BuildingDomain BuildingDomain)
         {
-           
             _FloorDomain = FloorDomain;
             _BuildingDomain = BuildingDomain;
-
-
         }
         //return all floors in the view
-        public async Task<IActionResult> Index(String searchString)
+        public async Task<IActionResult> Index(string searchString)
         {
             var floors = await _FloorDomain.GetAllFloors();
             //activate quick search based on the building name 
-            if (!String.IsNullOrEmpty(searchString))
-                
-            {
-                floors = floors
-                    .Where(f => f.BuildingNameAr.Contains(searchString))
-                    .ToList();
-            }
+            // if (!String.IsNullOrEmpty(searchString))
+            //     
+            // {
+            //     floors = floors
+            //         .Where(f => f.BuildingNameAr.Contains(searchString))
+            //         .ToList();
+            // }
 
             return View(floors);
         }
@@ -100,6 +100,7 @@ namespace room_reservation.Controllers
         [HttpPost]
         public async Task<IActionResult> EditFloor(FloorViewModel floor)
         {
+          floor.Email =User.FindFirst(ClaimTypes.Email).Value;
             //SelectList from the buildingsName
             ViewBag.buildingsName = new SelectList(await _BuildingDomain.GetAllBuilding() ,"BuildingId","BuildingNameAr");
             
@@ -143,6 +144,8 @@ namespace room_reservation.Controllers
         }
         public async Task<IActionResult> Delete(Guid id)
         {
+          //  var floor=await _FloorDomain.GetFloorByGuid(id);
+          //  floor.Email =User.FindFirst(ClaimTypes.Email).Value;
             await _FloorDomain.DeleteFloor(id);
             return Json(new { success = true });
         }

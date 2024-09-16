@@ -1,156 +1,4 @@
-﻿@* @model IEnumerable<room_reservation.ViewModel.PermissionViewModel>;
-
-<div class="block mb-4">
-    <div class="block-header border-bottom px-4 py-3">
-        <h5 class="m-0">إدارة الصلاحيات</h5>
-        <div class="d-flex gap-2">
-            <div class="form-group">
-                <input id="search" type="text" class="form-control table__quick_search"
-                       placeholder="البحث السريع ...">
-            </div>
-         
-            <a class="btn btn-primary" href="@Url.Action("AddPermission", "Permission")">إضافة صلاحية</a>
-            <!-- Add Section Modal -->
-            <div class="modal fade" id="add_section" tabindex="-1"
-                 aria-labelledby="add_sectionLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="add_sectionLabel">إضافة طلب</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-
-                            <div class="form-group">
-                                <label for="">اسم المستخدم</label>
-                                <input type="text" name="" id="" class="form-control">
-                            </div>
-                            <div class="form-group">
-                                <label for="">البريد الإلكتروني</label>
-                                <input type="text" name="" id="" class="form-control">
-                            </div>
-
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary"
-                                    data-bs-dismiss="modal">
-                                إلغاء
-                            </button>
-                            <button type="button" class="btn btn-primary">حفظ</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="block-body">
-        <table class="table table-hover js-dataTable">
-            <thead>
-                <tr>
-                    <th>البريد الإلكتروني</th>
-                    <th>المبنى</th>
-                    <th>رقم المبنى</th>
-                    <th>الصلاحية</th>
-                    <th class=""></th>
-                </tr>
-            </thead>
-            <tbody>
-                @{
-                    foreach (var data in Model)
-                    {
-
-                        <tr>
-                            <td>
-                                @data.Email
-
-                            </td>
-                            <td>
-                                @data.BuildingName
-                            </td>
-                            <td>
-                                @(data.BuildingNum == 0 ? "غير محدد" : data.BuildingNum.ToString())
-                            </td>
-                            <td>
-                                @data.RoleName
-
-                            </td>
-
-                            <td>
-                                <a asp-action="EditPermission" asp-route-id="@data.Id" class="btn btn-success">تعديل</a>
-                                <!--<a asp-action="DeletePermission"  asp-route-id="@data.Id" class="btn btn-danger">حذف</a>-->
-                                <a onclick="confirmDelete(@data.Id)" data-id="@data.Id" class="btn btn-danger delete-btn">حذف</a>
-
-                                
-                            </td>
-                        </tr>
-                    }
-                }
-
-            </tbody>
-        </table>
-    </div>
-</div>
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
-<script>
-    $(document).ready(function () {
-        $('.delete-btn').click(function (event) {
-            event.preventDefault(); 
-
-            var id = $(this).data('id');
-
-            Swal.fire({
-                title: 'هل أنت متأكد؟',
-                text: "",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'نعم، احذف!',
-                cancelButtonText: 'إلغاء'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        url: '@Url.Action("DeletePermission")',
-                        type: 'POST',
-                        data: { id: id },
-                        success: function (response) {
-                            if (response.success) {
-                                Swal.fire(
-                                    'نجحت العملية!',
-                                    'حُذِفت الصلاحية.',
-                                    'success'
-                                ).then(() => {
-                                    window.location.reload();
-                                });
-                            } else {
-                                Swal.fire(
-                                    'فشلت العملية!',
-                                    'لم تُحذف الصلاحية.',
-                                    'error'
-                                );
-                            }
-                        },
-                        error: function () {
-                            Swal.fire(
-                                'خطأ!',
-                                'حدث خطأ غير متوقع.',
-                                'error'
-                            );
-                        }
-                    });
-                }
-            });
-        });
-    });
-
-</script>
-
-
- *@
-
+﻿
 @model IEnumerable<room_reservation.ViewModel.PermissionViewModel>
 
 <div class="block mb-4">
@@ -185,6 +33,7 @@
                 </tr>
             </thead>
             <tbody id="table-body">
+               
                 @{
                     foreach (var data in Model)
                     {
@@ -194,8 +43,8 @@
                             <td>@(data.BuildingNum == 0 ? "غير محدد" : data.BuildingNum.ToString())</td>
                             <td>@data.RoleName</td>
                             <td>
-                                <a asp-action="EditPermission" asp-route-id="@data.Id" class="btn btn-success">تعديل</a>
-                                <a onclick="confirmDelete(@data.Id)" data-id="@data.Id" class="btn btn-danger delete-btn">حذف</a>
+                                <a asp-area="Admin" asp-controller="Permission" asp-action="EditPermission" asp-route-guid="@data.Guid" class="btn btn-success">تعديل</a>
+                                <a onclick="confirmDelete('guid-value')" data-id="guid-value" class="btn btn-danger delete-btn">حذف</a>
                             </td>
                         </tr>
                     }
@@ -205,62 +54,56 @@
     </div>
 </div>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        function search() {
-            const searchInput = document.getElementById('search').value.toLowerCase();
-            const rows = document.querySelectorAll('#table-body tr');
+ @section Scripts{
+    <script>
+        $(document).ready(function () {
+            function search() {
+                var searchInput = $('#search').val().toLowerCase();
+                $('#table-body tr').each(function () {
+                    var emailCell = $(this).find('td').first().text().toLowerCase();
+                    if (emailCell.indexOf(searchInput) > -1) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+                });
+            }
 
-            rows.forEach(row => {
-                const emailCell = row.querySelector('td').textContent.toLowerCase();
-
-                if (emailCell.includes(searchInput)) {
-                    row.style.display = ''; //rows that includes what is searched for will be shown 
-                } else {
-                    row.style.display = 'none'; //others will be hidden
-                }
-            });
-        }
-
-        // Add an event listener to the search bar
-        document.getElementById('search').addEventListener('input', search);
+            $('#search').on('input', search);
 
 
-        // Delete confirmation 
-        document.querySelectorAll('.delete-btn').forEach(button => {
-            button.addEventListener('click', function (event) {
+        // Delete confirmation
+            $('.delete-btn').on('click', function (event) {
                 event.preventDefault();
 
-                const id = this.getAttribute('data-id');
+                var id = $(this).data('id');
 
-                Swal.fire({
-                    title: 'هل أنت متأكد؟',
+                swal({
+                    title: "هل أنت متأكد؟",
                     text: "",
-                    icon: 'warning',
+                    type: "warning",
                     showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'نعم، احذف!',
-                    cancelButtonText: 'إلغاء'
-                }).then((result) => {
-                    if (result.isConfirmed) {
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "نعم، احذف!",
+                    cancelButtonText: "إلغاء"
+                }, function (isConfirm) {
+                    if (isConfirm) {
                         $.ajax({
                             url: '@Url.Action("DeletePermission")',
                             type: 'POST',
-                            data: { id: id },
+                            data: { guid: id },
                             success: function (response) {
                                 if (response.success) {
-                                    Swal.fire(
+                                    swal(
                                         'نجحت العملية!',
                                         'حُذِفت الصلاحية.',
                                         'success'
                                     ).then(() => {
-                                        window.location.reload();
+                                        location.reload();
                                     });
                                 } else {
-                                    Swal.fire(
+                                    swal(
                                         'فشلت العملية!',
                                         'لم تُحذف الصلاحية.',
                                         'error'
@@ -268,7 +111,7 @@
                                 }
                             },
                             error: function () {
-                                Swal.fire(
+                                swal(
                                     'خطأ!',
                                     'حدث خطأ غير متوقع.',
                                     'error'
@@ -279,5 +122,5 @@
                 });
             });
         });
-    });
 </script>
+}

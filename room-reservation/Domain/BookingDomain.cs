@@ -15,6 +15,7 @@ namespace room_reservation.Domain
         private readonly UserDomain _userDomain;
         private readonly RoomDomain _roomDomain;
         private readonly PermissionDomain _permissionDomain;
+        private readonly BuildingDomain _buildingDomain;
 
         public BookingDomain(KFUSpaceContext context, UserDomain userDomain, RoomDomain roomDomain, PermissionDomain permissionDomain)
         {
@@ -22,6 +23,7 @@ namespace room_reservation.Domain
             _userDomain = userDomain;
             _roomDomain = roomDomain;
             _permissionDomain = permissionDomain;
+            _buildingDomain = _buildingDomain;
         }
         [Authorize]
         public async Task<IEnumerable<BookingViewModel>> GetAllBooking()
@@ -40,14 +42,12 @@ namespace room_reservation.Domain
                 FullName = x.FullName,
                 Email = x.Email,
                 Duration = x.Duration,
-                RejectReason = x.RejectReason,
-
-
-                // FloorNo = x.Rooms.Floor.FloorNo,
-                // BuildingNameAr = x.Rooms.Floor.Building.BuildingNameAr,
-                // SeatCapacity=x.Rooms.SeatCapacity,
-
-
+                RejectReason = x.RejectReason, 
+                FloorNo = x.Room.Floor.FloorNo,
+                BuildingNameAr = x.Room.Floor.Building.BuildingNameAr, 
+                SeatCapacity=x.Room.SeatCapacity,
+                
+                
                 //Bookings.BookingStatues = booking.BookingStatues
                 //Bookings.RejectReason = booking.RejectReason;
                 //Bookings.Duration = booking.Duration;
@@ -58,7 +58,7 @@ namespace room_reservation.Domain
 
             }).ToListAsync();
         }
-
+        
         // public async Task<IEnumerable<LecturesViewModel>> getAlllectures()
         // {
         //
@@ -89,52 +89,55 @@ namespace room_reservation.Domain
                 // to get user info through claims  
                 var user = await _userDomain.GetUserByEmail(Booking.Email);
                 var room = await _roomDomain.GetRoomByGuid(Booking.RoomGuid);
+                var building = await _buildingDomain.getBuildingByguid(Booking.BuildingGuid);
 
                 tblBookings Bookings = new tblBookings();
                 Bookings.Id = Booking.BookingId;
                 Bookings.BookingDate = DateTime.Now;
                 Bookings.BookingStart = Booking.BookingStart;
                 Bookings.BookingEnd = Booking.BookingEnd;
-
                 Bookings.BookingStatues = Booking.BookingStatues;
 
                 //Bookings.RejectReason = booking.RejectReason;
-                // to calculate the duration first substract the end time from the start then convert it it to decimal
+                // to calculate the duration first substract the end time from the start then convert  it to decimal
                 var BookingDuration = Booking.BookingEnd - Booking.BookingStart;
                 Bookings.Duration = Convert.ToDecimal(BookingDuration.TotalHours);
                 Bookings.Email = user.Email;
                 Bookings.FullName = user.FullNameAR;
                 Bookings.PhoneNumber = user.PhoneNumber;
+                Bookings.UserBuildingAR = user.DepartmentName;
 
                 Bookings.guid = Guid.NewGuid();
                 Bookings.IsDeleted = false;
                 Bookings.RoomId = room.Id;
-
-                Bookings.BookingStatuesId = Booking.BookingStatues.Id;
-         
-                //Bookings.RejectReason = booking.RejectReason;
-                // to calculate the duration first substract the end time from the start then convert it it to decimal
-                //var BookingDuration = Booking.BookingEnd - Booking.BookingStart;
-                //Bookings.Duration = Convert.ToDecimal(BookingDuration.TotalHours);
-                //Bookings.Email = user.Email;
-                //Bookings.FullName = user.FullNameAR;
-                //Bookings.PhoneNumber = user.PhoneNumber;
-               
-                //Bookings.guid = Guid.NewGuid();
-                //Bookings.IsDeleted = false;
-                //Bookings.RoomId = room.Id;
-
-                if (user.CollegeName == Booking.BuildingNameAr)
+                //if (user.CollegeCode == Booking.BuildingNameAr) this solution works but it is better to use numbers
+                
+                // if the user is from the same uni or  building or from the  department of Information Techonolgy they can book directly 
+                if((user.CollegeCode == building.Code)||(user.DepartmentCode==building.Code)||(user.DepartmentCode=="01"))
                 {
                     Bookings.BookingStatuesId = 1;
                 }
-                else
+                else // else their booking statues is processing / waiting  
                 {
                     Bookings.BookingStatuesId = 2;
                 }
 
-                _context.tblBookings.Add(Bookings);
-                await _context.SaveChangesAsync();
+              //   _context.tblBookings.Add(Bookings);
+              //  await _context.SaveChangesAsync();
+              //  var bookingLog = new BookingsLog();
+              //  bookingLog.BookingId = Booking.BookingId;
+              //  bookingLog.BookedBy = user.Email;
+              //  bookingLog.GrantedBy =" ";
+              //  bookingLog.BookingStatus = Booking.BookingStatuesId;
+              //  bookingLog.OperationDate=DateTime.Now;
+              //  bookingLog.AdditionalDetails = "";
+              // _context.BookingsLog.Add(bookingLog);
+              // await _context.SaveChangesAsync();
+               
+           
+               
+               
+               
                 return 1;
             }
             catch (Exception ex)
@@ -175,7 +178,7 @@ namespace room_reservation.Domain
 
         public BookingViewModel getBookingByid(Guid id)
         {
-            var BookingId = _context.tblBookings.Include(bs => bs.BookingStatues).Include(r => r.Room).Include(b => b.Room.Floor.Building).Include(f=>f.Room.Floor).Include(rt => rt.Room.RoomType).FirstOrDefault(x => x.guid == id);
+            var BookingId = _context.tblBookings.FirstOrDefault(x => x.guid == id);
             BookingViewModel models = new BookingViewModel
             {
 
@@ -183,24 +186,16 @@ namespace room_reservation.Domain
                 BookingDate = BookingId.BookingDate,
                 BookingStart = BookingId.BookingStart,
                 BookingEnd = BookingId.BookingEnd,
-                
-              
-                BookingStatuesId = BookingId.BookingStatues.Id,
-                BookingStatusAR = BookingId.BookingStatues.StatuesAR,
-                RoomTypeId = BookingId.Room.RoomTypeId,
-                RoomAR = BookingId.Room.RoomType.RoomTypeAR,
-                BuildingNameAr = BookingId.Room.Floor.Building.BuildingNameAr,
-                FloorNo = BookingId.Room.Floor.FloorNo,
-                SeatCapacity = BookingId.Room.SeatCapacity,
-                RoomNo = BookingId.Room.RoomNo,
+                //Bookings.BookingStatues = booking.BookingStatues;
+                //Bookings.RejectReason = booking.RejectReason;
+                //Bookings.Duration = booking.Duration;
+                //Bookings.Email = booking.Email;
+                //Bookings.FullName = booking.FullName;
+                //Bookings.PhoneNumber = booking.PhoneNumber;
                 IsDeleted = BookingId.IsDeleted,
                 RoomId = BookingId.RoomId,
-                guid = BookingId.guid,
-
+                guid = Guid.NewGuid(),
             };
-
-           
-
             return models;
         }
 
@@ -242,33 +237,37 @@ namespace room_reservation.Domain
         {
             try
             {
+                // Retrieve the booking record from the database using the GUID
                 tblBookings bookings = getBookingByGuid(booking.guid);
 
                 if (bookings == null)
                 {
+                    // Return null or handle the case where the booking is not found
                     return null;
                 }
 
+                // Map the tblBookings entity to BookingViewModel
                 BookingViewModel bookingViewModel = new BookingViewModel
                 {
                     BookingId = bookings.Id,
                     BookingDate = bookings.BookingDate,
                     BookingStart = bookings.BookingStart,
                     BookingEnd = bookings.BookingEnd,
-                    BookingStatues = booking.BookingStatues,
-                    guid = booking.guid,
-                    RoomAR = bookings.Room.RoomType.RoomTypeAR,
-                    BuildingNameAr = bookings.Room.Floor.Building.BuildingNameAr,
-                    FloorNo = bookings.Room.Floor.FloorNo,
-                    SeatCapacity = bookings.Room.SeatCapacity,
-                    RoomNo = bookings.Room.RoomNo,
-
+                    //BookingStatues = booking.BookingStatues,
+                    //RejectReason = booking.RejectReason,
+                    //Duration = booking.Duration,
+                    //Email = booking.Email,
+                    //FullName = booking.FullName,
+                    //PhoneNumber = booking.PhoneNumber
                 };
 
+                // Return the booking details as a BookingViewModel
                 return bookingViewModel;
             }
             catch (Exception ex)
             {
+                // Log or handle the error as needed
+                // For simplicity, just rethrow or return null
                 throw new ApplicationException("An error occurred while retrieving the booking details.", ex);
             }
 
@@ -367,10 +366,8 @@ namespace room_reservation.Domain
             }).ToListAsync();
         }
         public async Task<BookingViewModel> GetBookingByGuid(Guid id)
-
-             
         {
-            var booking = await _context.tblBookings.Include(bs => bs.BookingStatues).Include(rt => rt.Room.RoomType).FirstOrDefaultAsync(b => b.guid == id && b.IsDeleted == false);
+            var booking = await _context.tblBookings.FirstOrDefaultAsync(b => b.guid == id && b.IsDeleted == false);
             BookingViewModel model = new BookingViewModel
             {
                 FullName = booking.FullName,
@@ -381,20 +378,7 @@ namespace room_reservation.Domain
                 BookingDate = booking.BookingDate,
                 BookingStart = booking.BookingStart,
                 BookingEnd = booking.BookingEnd,
-                BookingStatuesId = booking.BookingStatues.Id,
-
- 
-                BookingStatusAR = booking.BookingStatues.StatuesAR,
-                RoomTypeId = booking.Room.RoomTypeId,
-                RoomAR = booking.Room.RoomType.RoomTypeAR,
-               
-               
-                SeatCapacity = booking.Room.SeatCapacity,
-                RoomNo = booking.Room.RoomNo,
-                IsDeleted = booking.IsDeleted,
-                RoomId = booking.RoomId,
-             
-
+                BookingStatuesId = booking.BookingStatuesId,
             };
             return model;
         }

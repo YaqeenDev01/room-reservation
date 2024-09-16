@@ -55,6 +55,7 @@ namespace room_reservation.ViewModel
         public int FloorNo { get; set; }
         public int SeatCapacity { get; set; }
         public Guid RoomGuid { get; set; }
+        public Guid BuildingGuid { get; set; }
 
 
 

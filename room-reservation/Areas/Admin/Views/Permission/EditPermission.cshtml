@@ -7,91 +7,97 @@
     <div class="block-body py-5">
         <div class="row justify-content-center">
             <div class="col-md-8">
-                <form asp-action="EditPermission" method="post" id="permissionForm">
-                    <input hidden asp-for="guid" />
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <form asp-action="EditPermission" id="permissionForm" method="post">
+                    <input hidden asp-for="Guid" />
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-4">
                                 <label asp-for="Email" class="mb-1">البريد الإلكتروني</label>
-                                <input readonly asp-for="Email" type="email" placeholder="name@email.com"
-                                       class="form-control text-start" />
+                                <input readonly asp-for="Email" type="email" id="emailInput" placeholder="name@email.com" class="form-control text-start" />
                                 <span asp-validation-for="Email" class="text-danger"></span>
                             </div>
+                            <div class="mb-4">
+                                <label>معلومات مالك الصلاحية</label>
+                                <input readonly id="userNameInput" type="text" class="form-control" placeholder="اسم المستخدم" />
+                            </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-4">
-                                <label asp-for="RoleId" class="mb-1">الصلاحية</label>
-                                <select asp-for="RoleId" class="form-control" asp-items="Model.Roles"></select>
+                                <label asp-for="RoleId" class="control-label cb-1">الصلاحية</label>
+                                <select asp-for="RoleId" class="form-control" asp-items="@ViewBag.Roles"></select>
                                 <span asp-validation-for="RoleId" class="text-danger"></span>
                             </div>
+                            <div class="mb-4">
+                                <label asp-for="BuildingId" class="mb-1">المبنى</label>
+                                <select asp-for="BuildingId" class="form-control" asp-items="@ViewBag.Building">
+                                    <option value="0">غير محدد</option>
+                                </select>
+                            </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-4">
-                                <label asp-for="BuildingId" class="mb-1">المبنى</label>
-                                <select asp-for="BuildingId" class="form-control" asp-items="Model.Buildings">
-                                    <option value="0">غير محدد</option>
-                                </select>
-                                <span asp-validation-for="BuildingId" class="text-danger"></span>
+                                <label asp-for="AdditionalDetails" class="mb-1">معلومات إضافية</label>
+                                <input asp-for="AdditionalDetails" type="text" placeholder="سبب تعديل الصلاحية" class="form-control text-start" />
                             </div>
                         </div>
-                    <div class="d-flex justify-content-end">
-                        <button type="submit" class="btn btn-primary px-5" title="تعديل">تعديل</button>
-                    </div>
-                        <button id="testAlert">Test SweetAlert</button>
-
-                        <script>
-                            $(document).ready(function () {
-                                $('#testAlert').on('click', function () {
-                                    Swal.fire({
-                                        title: 'Test Alert!',
-                                        text: 'If you see this, SweetAlert is working.',
-                                        icon: 'success'
-                                    });
-                                });
-                            });
-                        </script>
+                        <div class="d-flex justify-content-start">
+                            <button type="submit" class="btn btn-primary px-5" title="حفظ">حفظ</button>
+                        </div>
                     </div>
                 </form>
-            
-                <script>
-                    $(document).ready(function () {
-                        $('#permissionForm').submit(function (event) {
-                            event.preventDefault(); // Prevent the default form submission
 
-                            $.ajax({
-                                url: '@Url.Action("EditPermission")', // URL to the controller action
-                                type: 'POST',
-                                data: $(this).serialize(), 
-                                success: function (response) {
-                                    console.log(response)
-                                    if (response.success) {
+                @section Scripts {
+                    <script>
+                        $(document).ready(function () {
+                            var email = $('#emailInput').val();
+
+                            if (email) {
+                                $.ajax({
+                                    url: '@Url.Action("DisplayUserName")',
+                                    type: 'POST',
+                                    data: { email: email },
+                                    success: function (response) {
+                                        $('#userNameInput').val(response.userName).css('color', 'black');
+                                    }
+                                });
+                            }
+
+                            $('#permissionForm').submit(function (event) {
+                                event.preventDefault(); // Prevent the default form submission
+
+                                $.ajax({
+                                    url: '@Url.Action("EditPermission")', // URL to the controller action
+                                    type: 'POST',
+                                    data: $(this).serialize(),
+                                    success: function (response) {
+                                        if (response.success) {
+                                            Swal.fire({
+                                                title: '!نجحت العملية',
+                                                text: response.message,
+                                                icon: 'success'
+                                            }).then(() => {
+                                                window.location.href = '@Url.Action("Index")';
+                                            });
+                                        } else {
+                                            Swal.fire({
+                                                title: '!فشلت العملية',
+                                                text: response.message,
+                                                icon: 'error'
+                                            });
+                                        }
+                                    },
+                                    error: function () {
                                         Swal.fire({
-                                            title: '!نجحت العملية',
-                                            text: 'عُدِّلَت البيانات بنجاح',
-                                            icon: 'success'
-                                        }).then(() => {
-                                            window.location.href = '@Url.Action("Index")';
-                                        });
-                                    } else {
-                                        Swal.fire({
-                                            title: '!فشلت العملية',
-                                            text: 'لم تُعدَّل المعلومات',
+                                            title: 'خطأ!',
+                                            text: 'حدث خطأ غير متوقع',
                                             icon: 'error'
                                         });
                                     }
-                                },
-                                error: function () {
-                                    Swal.fire({
-                                        title: 'خطأ!',
-                                        text: 'حدث خطأ غير متوقع',
-                                        icon: 'error'
-                                    });
-                                }
+                                });
                             });
                         });
-                    });
-                </script>
+                    </script>
+                }
             </div>
         </div>
     </div>
