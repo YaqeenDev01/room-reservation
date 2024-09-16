@@ -181,5 +181,15 @@ namespace room_reservation.Domain
 
 
         }
+        
+       
+        public async Task<tblBuildings> GetBuildingById(int buildingId)
+        {
+            return await _context.tblBuildings.FindAsync(buildingId);
+
+        }
+
+ 
     }
-}
+    }
+
