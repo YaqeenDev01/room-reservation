@@ -39,10 +39,11 @@ namespace room_reservation.ViewModel
 
         public int RoomId { get; set; }
         public bool IsDeleted { get; set; }
-
+        
+        public string UserBuildingAR { get; set; }
         public tblBookingStatues BookingStatues { get; set; }
         public int BookingStatuesId { get; set; }
-
+  
         
         //adding room and room type  details for the booking details view to show them 
         public string RoomAR { get; set; }
