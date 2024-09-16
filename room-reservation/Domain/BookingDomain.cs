@@ -178,7 +178,7 @@ namespace room_reservation.Domain
 
         public BookingViewModel getBookingByid(Guid id)
         {
-            var BookingId = _context.tblBookings.FirstOrDefault(x => x.guid == id);
+            var BookingId = _context.tblBookings.Include(bs => bs.BookingStatues).Include(r => r.Room).Include(b => b.Room.Floor.Building).Include(f => f.Room.Floor).Include(rt => rt.Room.RoomType).FirstOrDefault(x => x.guid == id);
             BookingViewModel models = new BookingViewModel
             {
 
@@ -186,18 +186,24 @@ namespace room_reservation.Domain
                 BookingDate = BookingId.BookingDate,
                 BookingStart = BookingId.BookingStart,
                 BookingEnd = BookingId.BookingEnd,
-                //Bookings.BookingStatues = booking.BookingStatues;
-                //Bookings.RejectReason = booking.RejectReason;
-                //Bookings.Duration = booking.Duration;
-                //Bookings.Email = booking.Email;
-                //Bookings.FullName = booking.FullName;
-                //Bookings.PhoneNumber = booking.PhoneNumber;
+
+
+                BookingStatuesId = BookingId.BookingStatues.Id,
+                BookingStatusAR = BookingId.BookingStatues.StatuesAR,
+                RoomTypeId = BookingId.Room.RoomTypeId,
+                RoomAR = BookingId.Room.RoomType.RoomTypeAR,
+                BuildingNameAr = BookingId.Room.Floor.Building.BuildingNameAr,
+                FloorNo = BookingId.Room.Floor.FloorNo,
+                SeatCapacity = BookingId.Room.SeatCapacity,
+                RoomNo = BookingId.Room.RoomNo,
                 IsDeleted = BookingId.IsDeleted,
                 RoomId = BookingId.RoomId,
                 guid = Guid.NewGuid(),
             };
             return models;
         }
+
+
 
         public async Task CancelBooking(Guid id)
         {
@@ -237,41 +243,38 @@ namespace room_reservation.Domain
         {
             try
             {
-                // Retrieve the booking record from the database using the GUID
                 tblBookings bookings = getBookingByGuid(booking.guid);
 
                 if (bookings == null)
                 {
-                    // Return null or handle the case where the booking is not found
                     return null;
                 }
 
-                // Map the tblBookings entity to BookingViewModel
                 BookingViewModel bookingViewModel = new BookingViewModel
                 {
                     BookingId = bookings.Id,
                     BookingDate = bookings.BookingDate,
                     BookingStart = bookings.BookingStart,
                     BookingEnd = bookings.BookingEnd,
-                    //BookingStatues = booking.BookingStatues,
-                    //RejectReason = booking.RejectReason,
-                    //Duration = booking.Duration,
-                    //Email = booking.Email,
-                    //FullName = booking.FullName,
-                    //PhoneNumber = booking.PhoneNumber
+                    BookingStatues = booking.BookingStatues,
+                    guid = booking.guid,
+                    RoomAR = bookings.Room.RoomType.RoomTypeAR,
+                    BuildingNameAr = bookings.Room.Floor.Building.BuildingNameAr,
+                    FloorNo = bookings.Room.Floor.FloorNo,
+                    SeatCapacity = bookings.Room.SeatCapacity,
+                    RoomNo = bookings.Room.RoomNo,
+
                 };
 
-                // Return the booking details as a BookingViewModel
                 return bookingViewModel;
             }
             catch (Exception ex)
             {
-                // Log or handle the error as needed
-                // For simplicity, just rethrow or return null
                 throw new ApplicationException("An error occurred while retrieving the booking details.", ex);
             }
 
         }
+
         public async Task<bool> ApproveBooking(Guid id)
         {
             var booking = await _context.tblBookings.FirstOrDefaultAsync(b => b.guid == id);
@@ -367,7 +370,8 @@ namespace room_reservation.Domain
         }
         public async Task<BookingViewModel> GetBookingByGuid(Guid id)
         {
-            var booking = await _context.tblBookings.FirstOrDefaultAsync(b => b.guid == id && b.IsDeleted == false);
+          
+            var booking = await _context.tblBookings.Include(bs => bs.BookingStatues).Include(r => r.Room).Include(rt => rt.Room.RoomType).FirstOrDefaultAsync(b => b.guid == id && b.IsDeleted == false);
             BookingViewModel model = new BookingViewModel
             {
                 FullName = booking.FullName,
@@ -378,7 +382,16 @@ namespace room_reservation.Domain
                 BookingDate = booking.BookingDate,
                 BookingStart = booking.BookingStart,
                 BookingEnd = booking.BookingEnd,
-                BookingStatuesId = booking.BookingStatuesId,
+                
+                BookingStatuesId = booking.BookingStatues.Id,
+                BookingStatusAR = booking.BookingStatues.StatuesAR,
+                RoomTypeId = booking.Room.RoomTypeId,
+                RoomAR = booking.Room.RoomType.RoomTypeAR,
+           
+                SeatCapacity = booking.Room.SeatCapacity,
+                RoomNo = booking.Room.RoomNo,
+                
+                RoomId = booking.RoomId,
             };
             return model;
         }

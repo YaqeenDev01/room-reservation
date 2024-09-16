@@ -1,64 +1,82 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using room_reservation.Domain;
-using room_reservation.Models;
 using room_reservation.ViewModel;
-using System.Linq.Expressions;
-
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace room_reservation.Areas.Admin.Controllers
 {
+    [Area("Admin")]
+    [Authorize(Roles = "SiteAdmin")]
     public class LecturesController : Controller
     {
-        private readonly lecturesDomain _lecturesDomain;
+        private readonly LecturesDomain _lecturesDomain;
 
-        public LecturesController(lecturesDomain lecturesDomain)
+        public LecturesController(LecturesDomain lecturesDomain)
         {
             _lecturesDomain = lecturesDomain;
         }
 
-
         // GET: /Lecture/
         public async Task<IActionResult> Index()
         {
-            var Lectures = await _lecturesDomain.getAlllectures();
-            return View(Lectures);
+            var lectures = await _lecturesDomain.GetAllLectures();
+            return View(lectures);
         }
 
         // GET: /Lecture/Add
-        [Authorize(Roles = "Site Admin")]
         [HttpGet]
-        public async Task<IActionResult> AddLecture()
+        public IActionResult AddLecture()
         {
             return View();
         }
-        [Authorize(Roles = "Site Admin")]
+
+        // POST: /Lecture/Add
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddLecture(LecturesViewModel lectures)
         {
             if (ModelState.IsValid)
             {
-                bool exists = _lecturesDomain.IsLectureExists(lectures.BuildingNo, lectures.RoomNo, lectures.LectureDate, lectures.StartLectureTime, lectures.EndLectureTime);
+                bool exists = _lecturesDomain.IsLectureExists(
+                    lectures.BuildingNo,
+                    lectures.RoomNo,
+                    lectures.LectureDate,
+                    lectures.StartLectureTime,
+                    lectures.EndLectureTime);
 
                 if (exists)
                 {
-                    return Json(new { success = false, message = "وقت المحاضرة محجوز مسبقا" });
+                    return Json(new { success = false, message = "وقت المحاضرة محجوز مسبقاً" });
+                }
+
+                bool isOverlapping = await _lecturesDomain.IsLectureOverlapping(
+                    lectures.BuildingNo,
+                    lectures.RoomNo,
+                    lectures.LectureDate,
+                    lectures.StartLectureTime,
+                    lectures.EndLectureTime,
+                    lectures.Semester
+                );
+
+                if (isOverlapping)
+                {
+                    return Json(new { success = false, message = "وقت المحاضرة يتعارض مع محاضرة أخرى في نفس الفصل" });
                 }
 
                 try
                 {
-                    var check = await _lecturesDomain.Addlecture(lectures);
-                    if (check == 1)
+                    var result = await _lecturesDomain.AddLecture(lectures);
+                    if (result == 1)
                     {
                         return Json(new { success = true, message = "أُضيفت المحاضرة بنجاح" });
                     }
-                    else {
+                    else
+                    {
                         return Json(new { success = false, message = "لم تضاف المحاضرة" });
-
                     }
-
                 }
                 catch (Exception ex)
                 {
@@ -68,33 +86,57 @@ namespace room_reservation.Areas.Admin.Controllers
             else
             {
                 var errors = ModelState.ToDictionary(
-                      kvp => kvp.Key,
-                      kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).ToArray()
-                  );
+                    kvp => kvp.Key,
+                    kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).ToArray()
+                );
 
                 return Json(new { success = false, errors });
             }
         }
 
-        [Authorize(Roles = "Site Admin")]
+        // GET: /Lecture/Edit
         [HttpGet]
-
-        public async Task<IActionResult> EditLecture(int Id)
+        public async Task<IActionResult> EditLecture(int id)
         {
-            return View(_lecturesDomain.getlecturesById(Id));
+            var lecture = await _lecturesDomain.GetLectureById(id);
+            if (lecture == null)
+            {
+                return NotFound();
+            }
+            return View(lecture);
         }
-        [Authorize(Roles = "Site Admin")]
+
+        // POST: /Lecture/Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditLecture(LecturesViewModel lectures)
         {
             if (ModelState.IsValid)
             {
-                bool exists = _lecturesDomain.IsLectureExists(lectures.BuildingNo, lectures.RoomNo, lectures.LectureDate, lectures.StartLectureTime, lectures.EndLectureTime);
+                bool exists = _lecturesDomain.IsLectureExists(
+                    lectures.BuildingNo,
+                    lectures.RoomNo,
+                    lectures.LectureDate,
+                    lectures.StartLectureTime,
+                    lectures.EndLectureTime);
 
                 if (exists)
                 {
                     return Json(new { success = false, message = "وقت المحاضرة محجوز مسبقاً" });
+                }
+
+                bool isOverlapping = await _lecturesDomain.IsLectureOverlapping(
+                    lectures.BuildingNo,
+                    lectures.RoomNo,
+                    lectures.LectureDate,
+                    lectures.StartLectureTime,
+                    lectures.EndLectureTime,
+                    lectures.Semester
+                );
+
+                if (isOverlapping)
+                {
+                    return Json(new { success = false, message = "وقت المحاضرة يتعارض مع محاضرة أخرى في نفس الفصل" });
                 }
 
                 try
@@ -116,13 +158,14 @@ namespace room_reservation.Areas.Admin.Controllers
             }
             return Json(new { success = false, message = "فشلت العملية" });
         }
-        [Authorize(Roles = "Site Admin")]
+
+        // POST: /Lecture/Delete
         [HttpPost]
         public async Task<IActionResult> DeleteLecture(int id)
         {
-
             await _lecturesDomain.DeleteLecture(id);
             return Json(new { success = true });
         }
     }
 }
+

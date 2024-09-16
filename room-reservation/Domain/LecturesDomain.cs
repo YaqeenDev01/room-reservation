@@ -1,22 +1,25 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using room_reservation.Models;
 using room_reservation.ViewModel;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace room_reservation.Domain
 {
-    public class lecturesDomain
+    public class LecturesDomain
     {
         private readonly KFUSpaceContext _context;
 
-        public lecturesDomain(KFUSpaceContext context)
+        public LecturesDomain(KFUSpaceContext context)
         {
             _context = context;
         }
-        //return list of data 
-        public async Task<IEnumerable<LecturesViewModel>> getAlllectures()
-        {
 
+        // Return list of lectures
+        public async Task<IEnumerable<LecturesViewModel>> GetAllLectures()
+        {
             return await _context.tblLectures.Select(x => new LecturesViewModel
             {
                 Id = x.Id,
@@ -27,12 +30,10 @@ namespace room_reservation.Domain
                 EndLectureTime = x.EndLectureTime,
                 LectureDurations = x.LectureDurations,
                 Semester = x.Semester
-
-
             }).ToListAsync();
-
-
         }
+
+        // Check if a lecture exists with the same parameters
         public bool IsLectureExists(string buildingNo, string roomNo, DateTime lectureDate, TimeSpan startLectureTime, TimeSpan endLectureTime)
         {
             return _context.tblLectures.Any(l => l.BuildingNo == buildingNo
@@ -42,19 +43,33 @@ namespace room_reservation.Domain
                                                 && l.EndLectureTime == endLectureTime);
         }
 
-
-        public List<tblLectures> getlectures()
+        // Check if a lecture overlaps with existing lectures
+        public async Task<bool> IsLectureOverlapping(string buildingNo, string roomNo, DateTime lectureDate, TimeSpan startLectureTime, TimeSpan endLectureTime, string semester)
         {
-            return _context.tblLectures.ToList();
-
+            return await _context.tblLectures.AnyAsync(l =>
+                l.BuildingNo == buildingNo &&
+                l.RoomNo == roomNo &&
+                l.LectureDate == lectureDate &&
+                l.Semester == semester &&
+                (l.StartLectureTime < endLectureTime && l.EndLectureTime > startLectureTime));
         }
 
-
-
-        public LecturesViewModel getlecturesById(int id)
+        // Get a list of all lectures
+        public List<tblLectures> GetLectures()
         {
-            var lecture = _context.tblLectures.SingleOrDefault(X => X.Id == id);
-            LecturesViewModel lecturesViewModel = new LecturesViewModel
+            return _context.tblLectures.ToList();
+        }
+
+        // Get lecture by ID
+        public async Task<LecturesViewModel> GetLectureById(int id)
+        {
+            var lecture = await _context.tblLectures.FindAsync(id);
+            if (lecture == null)
+            {
+                return null;
+            }
+
+            return new LecturesViewModel
             {
                 Id = lecture.Id,
                 BuildingNo = lecture.BuildingNo,
@@ -65,71 +80,88 @@ namespace room_reservation.Domain
                 LectureDurations = lecture.LectureDurations,
                 Semester = lecture.Semester
             };
-            return lecturesViewModel;
         }
-        public async Task<int> Addlecture(LecturesViewModel lectures)
+
+        // Add a new lecture
+        public async Task<int> AddLecture(LecturesViewModel lectures)
         {
             try
             {
-                tblLectures lectureinfo = new tblLectures();
-                lectureinfo.Id = lectures.Id;
-                lectureinfo.BuildingNo = lectures.BuildingNo;
-                lectureinfo.RoomNo = lectures.RoomNo;
-                lectureinfo.StartLectureTime = lectures.StartLectureTime;
-                lectureinfo.EndLectureTime = lectures.EndLectureTime;
-                lectureinfo.LectureDate = lectures.LectureDate;
-                lectureinfo.LectureDurations = lectures.LectureDurations;
-                lectureinfo.Semester = lectures.Semester;
+                var lectureInfo = new tblLectures
+                {
+                    BuildingNo = lectures.BuildingNo,
+                    RoomNo = lectures.RoomNo,
+                    StartLectureTime = lectures.StartLectureTime,
+                    EndLectureTime = lectures.EndLectureTime,
+                    LectureDate = lectures.LectureDate,
+                    LectureDurations = lectures.LectureDurations,
+                    Semester = lectures.Semester
+                };
 
-                _context.tblLectures.Add(lectureinfo);
+                _context.tblLectures.Add(lectureInfo);
                 await _context.SaveChangesAsync();
-                return 1; //successfully added
+                return 1; // Successfully added
             }
             catch (Exception ex)
             {
-                
-                return 0;
+                // Log the exception (ex) here if necessary
+                return 0; // Failed to add
             }
         }
 
-
+        // Edit an existing lecture
         public async Task<int> EditLecture(LecturesViewModel lectures)
         {
             try
             {
+                var lectureInfo = await _context.tblLectures.FindAsync(lectures.Id);
+                if (lectureInfo == null)
+                {
+                    return 0; // Lecture not found
+                }
 
-                tblLectures lectureinfo = new tblLectures();
-                lectureinfo.Id = lectures.Id;
-                lectureinfo.BuildingNo = lectures.BuildingNo;
-                lectureinfo.RoomNo = lectures.RoomNo;
-                lectureinfo.StartLectureTime = lectures.StartLectureTime;
-                lectureinfo.EndLectureTime = lectures.EndLectureTime;
-                lectureinfo.LectureDate = lectures.LectureDate;
-                lectureinfo.LectureDurations = lectures.LectureDurations;
-                lectureinfo.Semester = lectures.Semester;
+                lectureInfo.BuildingNo = lectures.BuildingNo;
+                lectureInfo.RoomNo = lectures.RoomNo;
+                lectureInfo.StartLectureTime = lectures.StartLectureTime;
+                lectureInfo.EndLectureTime = lectures.EndLectureTime;
+                lectureInfo.LectureDate = lectures.LectureDate;
+                lectureInfo.LectureDurations = lectures.LectureDurations;
+                lectureInfo.Semester = lectures.Semester;
 
-
-                _context.tblLectures.Update(lectureinfo);
-
+                _context.tblLectures.Update(lectureInfo);
                 await _context.SaveChangesAsync();
-                return 1; //successfully added
+                return 1; // Successfully updated
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                return 0; //updated failed
+                // Log the exception (ex) here if necessary
+                return 0; // Failed to update
             }
         }
-       
-        public async Task DeleteLecture(int id)
+
+        // Delete a lecture
+
+
+                    // Delete a lecture
+      public async Task<int> DeleteLecture(int id)
         {
-            var lecture = _context.tblLectures.Where(x => x.Id == id).SingleOrDefault();
-            _context.tblLectures.Remove(lecture);
-            await _context.SaveChangesAsync();
+            try
+            {
+                var lecture = await _context.tblLectures.FindAsync(id);
+                if (lecture == null)
+                {
+                    return 0; // Lecture not found
+                }
 
+                _context.tblLectures.Remove(lecture);
+                await _context.SaveChangesAsync();
+                return 1; // Successfully deleted
+            }
+            catch (Exception ex)
+            {
+                // Log the exception (ex) here if necessary
+                return 0; // Failed to delete
+            }
         }
-
     }
-  
-
 }
-
