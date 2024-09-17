@@ -6,9 +6,9 @@ using room_reservation.Models;
 using room_reservation.ViewModel;
 using System.Security.Claims;
 
-namespace room_reservation.Controllers
+namespace room_reservation.Areas.Admin.Controllers
 {
-    //[Area("Admin")]
+    [Area("Admin")]
 
     public class BuildingController : Controller
     {
@@ -18,6 +18,7 @@ namespace room_reservation.Controllers
         {
             _BuildingDomain = buildingDomain;
         }
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index()
         {
             var buildings = await _BuildingDomain.GetAllBuilding();
@@ -71,7 +72,7 @@ namespace room_reservation.Controllers
         public async Task<IActionResult> EditBuilding(Guid id)
         {
 
-            return View(  await _BuildingDomain.getBuildingByguid(id));
+            return View(await _BuildingDomain.getBuildingByguid(id));
         }
 
         [Authorize(Roles = "Admin")]
@@ -110,14 +111,14 @@ namespace room_reservation.Controllers
                 return Json(new { success = false, message = ex.Message });
             }
         }
-        [Authorize(Roles = "Admin")] 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delet(Guid id)
 
         {
 
             await _BuildingDomain.DeleteBuilding(id);
-               return Json(new { success = true });
-       
+            return Json(new { success = true });
+
         }
     }
 

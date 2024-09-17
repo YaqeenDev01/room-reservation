@@ -25,6 +25,7 @@ namespace room_reservation.ViewModel
 
         [Required(ErrorMessage = "هذا الحقل مطلوب")]
         [DisplayName("وقت بدء المحاضرة")]
+
         public TimeSpan StartLectureTime { get; set; }
         [Required(ErrorMessage = "هذا الحقل مطلوب")]
         [DisplayName("وقت انتهاء المحاضرة")]

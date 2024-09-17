@@ -141,8 +141,11 @@ namespace room_reservation.Domain
                 UserId = userData.Id,
                 FullNameEN = userData.FullNameEN,
                 GenderEN = userData.GenderEN,
-                GenderAR = userData.GenderAR
-                
+                GenderAR = userData.GenderAR,
+                CollegeCode = userData.CollegeCode,
+                CollegeName = userData.CollegeName,
+                DepartmentName = userData.DepartmentName,
+                DepartmentCode =userData.DepartmentCode,
             };
         }
 

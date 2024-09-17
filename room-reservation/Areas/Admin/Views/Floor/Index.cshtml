@@ -1,9 +1,6 @@
 @model IEnumerable<FloorViewModel>;
 
-
 @{
-
-    
         ViewData["Title"] = "إدارة الطوابق";
 }
 
@@ -13,18 +10,13 @@
         <div class="d-flex gap-2"  >
             <div class="form-group">
                @*  <form asp-action="Index" asp-controller="Floor"> *@
-                <input name="searchString" type="text" class="form-control table__quick_search"
-                       placeholder="البحث السريع ...">
+                    <input name="searchString" type="text" class="form-control table__quick_search"
+                           placeholder="البحث السريع ...">
               @*   </form> *@
             </div>
-            <button type="button" class="btn btn-primary" id="btnRedirect">
-                إضافة طابق
-            </button>
-            <script>
-                document.getElementById('btnRedirect').onclick = function () {
-                    window.location.href = '@Url.Action("AddFloor", "Floor")'; 
-                };
-            </script>
+
+            <a asp-action="AddFloor" asp-controller="Floor" class="btn btn-primary"> إضافة طابق</a>
+         
         </div>
     </div>
     <div class="block-body">
@@ -57,7 +49,6 @@
                             </td>
                             <td>
                                 <a asp-action="EditFloor" asp-route-id="@x.Guid" class="btn btn-sm btn-success">تعديل</a>
-                          <!--<a asp-action="Delete" asp-route-id="@x.Guid" class="btn btn-sm btn-danger">حذف</a>-->
                                 <a  onclick="confirmDelete(@x.Guid)" data-id="@x.Guid" class="btn btn-sm btn-danger delete-btn">حذف</a>
                             </td>
                         </tr>

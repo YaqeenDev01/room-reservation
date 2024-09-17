@@ -1,135 +1,197 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
- @model room_reservation.ViewModel.BookingViewModel
+﻿@model room_reservation.ViewModel.BookingViewModel
 
-<div class="block mb-4">
-<div class="block-header border-bottom px-4 py-4">
-    <h5 class="m-0">عرض بيانات طلب الحجز</h5>
-</div>
-<div class="row justify-content-center">
-    <div class="col-md-8">
-        <form id="bookingForm" method="post">
-            <div class="row">
-                   <input type="hidden" asp-for="guid" />
-                          <!-- Displaying Booking Details -->
-                <div class="col-md-6">
-                    <div class="mb-4">
-                        <label >  اسم مقدم الطلب</label>
-                        <p class="form-control-plaintext">@Model.FullName</p>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="mb-4">
-                        <label class="mb-1"> البريد الالكتروني </label>
-                        <p class="form-control-plaintext">@Model.Email</p>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="mb-4">
-                        <label class="mb-1">رقم الهاتف  </label>
-                        <p class="form-control-plaintext">@Model.PhoneNumber</p>
-                    </div>
-                </div>
-                @*   <div class="col-md-6">
-                <div class="mb-4">
-                <label class="mb-1">أسم المبنى</label>
-                <p class="form-control-plaintext">@Model.BuildingNameAr</p>
-                </div>
-                </div>
-
-                <div class="col-md-6">
-                <div class="mb-4">
-                <label class="control-label">رقم الطابق</label>
-                <p class="form-control-plaintext">@Model.FloorNo</p>
-                </div>
-                </div> *@
-
-                <div class="col-md-6">
-                    <div class="mb-4">
-                        <label class="control-label">رقم القاعة</label>
-                        <p class="form-control-plaintext">@Model.RoomNo</p>
-                    </div>
-                </div>
-
-                <div class="col-md-6">
-                    <div class="mb-4">
-                        <label class="control-label">تاريخ الحجز</label>
-                        <p class="form-control-plaintext">@Model.BookingDate </p>
-                    </div>
-                </div>
-
-                <div class="col-md-6">
-                    <div class="mb-4">
-                        <label class="control-label">الاستيعاب</label>
-                        <p class="form-control-plaintext">@Model.SeatCapacity</p>
-                    </div>
-                </div>
-
-                <div class="col-md-6">
-                    <div class="mb-4">
-                        <label class="control-label">بداية الحجز</label>
-                        <p class="form-control-plaintext">@Model.BookingStart </p>
-                    </div>
-                </div>
-
-                <div class="col-md-6">
-                    <div class="mb-4">
-                        <label class="control-label">نهاية الحجز</label>
-                        <p class="form-control-plaintext">@Model.BookingEnd </p>
-                    </div>
-                </div>
-
-                <div class="col-md-6">
-                    <div class="mb-4">
-                            <label class="control-label"><strong>حالة الحجز</strong></label>
-                        <p class="form-control-plaintext">@Model.BookingStatues</p>
-                    </div>
-                </div>
-
-                <div class="col-md-6">
-                    <div class="mb-4">
-                            <label class="control-label"><strong>نوع القاعة</strong></label>
-                        <p class="form-control-plaintext">@Model.RoomAR</p>
-                    </div>
-                </div>
+<div class="container mt-5">
+    <div class="card border-light shadow-sm">
+        <div class="card-body">
+            <div class="card-title mb-4">
+                <h5 class="m-0">عرض بيانات طلب الحجز</h5>
             </div>
+            <form id="bookingForm" method="post">
+                <input type="hidden" asp-for="guid" />
 
-            <div class="d-flex justify-content-end">
-                    <div class="d-flex justify-content-end">
-                        <button type="button" class="btn btn-success px-5" id="approveBooking" title="قبول">قبول</button>
-                        <button type="button" class="btn btn-danger px-5" id="rejectBooking" title="رفض" data-bs-toggle="modal" data-bs-target="#rejectModal">رفض</button>
+                <div class="row">
+                    <!-- Define a color class for card borders -->
+                    <style>
+                        .field-card {
+                            border: 1px solid #e0e0e0; /* Light grey border */
+                            border-radius: 3px;
+                            background-color: #f8f9fa; /* Light background color */
+                            padding: 0.5rem; /* Padding inside the card */
+                            margin-bottom: 0.5rem; /* Margin between cards */
+                            display: flex; /* Flex display for alignment */
+                            align-items: center; /* Center items vertically */
+                            height: 2.5rem; /* Fixed height for uniformity */
+                        }
+
+                        .field-label {
+                            font-size: 0.75rem; /* Smaller font size for labels */
+                            margin-right: 0.5rem; /* Space between label and value */
+                            flex-shrink: 0; /* Prevent label from shrinking */
+                        }
+
+                        .field-value {
+                            font-size: 0.75rem; /* Smaller font size for values */
+                            margin: 0; /* Remove margin for values */
+                            flex-grow: 1; /* Allow value to grow and take available space */
+                            overflow: hidden; /* Hide overflow text */
+                            text-overflow: ellipsis; /* Ellipsis for overflow text */
+                        }
+
+                        .btn-custom {
+                            border-radius: 0.25rem; /* Small border radius */
+                            font-size: 1rem; /* Slightly larger font size */
+                            padding: 0.5rem 1rem; /* Adjusted padding for larger buttons */
+                            border: none; /* Remove default border */
+                            color: #ffffff; /* Text color */
+                            margin-left: 0.5rem; /* Add space between buttons */
+                            margin-right: 0.5rem; /* Add space between buttons */
+                        }
+
+                        .btn-approve {
+                            background-color: #28a745; /* Green color for approve */
+                        }
+
+                            .btn-approve:hover {
+                                background-color: #218838; /* Darker green for hover */
+                            }
+
+                        .btn-reject {
+                            background-color: #dc3545; /* Red color for reject */
+                        }
+
+                            .btn-reject:hover {
+                                background-color: #c82333; /* Darker red for hover */
+                            }
+
+                        .modal-header {
+                            border-bottom: 1px solid #e0e0e0; /* Light grey border for modal header */
+                        }
+
+                        .card-title {
+                            border-bottom: 1px solid #e0e0e0; /* Light grey border for title section */
+                            padding-bottom: 0.5rem; /* Padding below title */
+                            margin-bottom: 1rem; /* Space below title section */
+                        }
+                    </style>
+
+                    <!-- Applicant Name -->
+                    <div class="col-md-6 mb-2">
+                        <div class="field-card">
+                            <label class="field-label">اسم مقدم الطلب:</label>
+                            <p class="field-value">@Model.FullName</p>
+                        </div>
                     </div>
 
-            </div>
-        </form>
+                    <!-- Email -->
+                    <div class="col-md-6 mb-2">
+                        <div class="field-card">
+                            <label class="field-label">البريد الالكتروني:</label>
+                            <p class="field-value">@Model.Email</p>
+                        </div>
+                    </div>
+
+                    <!-- Phone Number -->
+                    <div class="col-md-6 mb-2">
+                        <div class="field-card">
+                            <label class="field-label">رقم الهاتف:</label>
+                            <p class="field-value">@Model.PhoneNumber</p>
+                        </div>
+                    </div>
+
+                    <!-- Room Number -->
+                    <div class="col-md-6 mb-2">
+                        <div class="field-card">
+                            <label class="field-label">رقم القاعة:</label>
+                            <p class="field-value">@Model.RoomNo</p>
+                        </div>
+                    </div>
+
+                    <!-- Booking Date -->
+                    <div class="col-md-6 mb-2">
+                        <div class="field-card">
+                            <label class="field-label">تاريخ الحجز:</label>
+                            <p class="field-value">@Model.BookingDate</p>
+                        </div>
+                    </div>
+
+                    <!-- Seat Capacity -->
+                    <div class="col-md-6 mb-2">
+                        <div class="field-card">
+                            <label class="field-label">الاستيعاب:</label>
+                            <p class="field-value">@Model.SeatCapacity</p>
+                        </div>
+                    </div>
+
+                    <!-- Booking Start -->
+                    <div class="col-md-6 mb-2">
+                        <div class="field-card">
+                            <label class="field-label">بداية الحجز:</label>
+                            <p class="field-value">@Model.BookingStart</p>
+                        </div>
+                    </div>
+
+                    <!-- Booking End -->
+                    <div class="col-md-6 mb-2">
+                        <div class="field-card">
+                            <label class="field-label">نهاية الحجز:</label>
+                            <p class="field-value">@Model.BookingEnd</p>
+                        </div>
+                    </div>
+
+                    <!-- Booking Status -->
+                    <div class="col-md-6 mb-2">
+                        <div class="field-card">
+                            <label class="field-label">حالة الحجز:</label>
+                            <p class="field-value">@Model.BookingStatusAR</p>
+                        </div>
+                    </div>
+
+                    <!-- Room Type -->
+                    <div class="col-md-6 mb-2">
+                        <div class="field-card">
+                            <label class="field-label">نوع القاعة:</label>
+                            <p class="field-value">@Model.RoomAR</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end mt-4">
+                    <button type="button" class="btn btn-approve btn-custom" id="approveBooking" title="قبول">قبول</button>
+                    <button type="button" class="btn btn-reject btn-custom" id="rejectBooking" title="رفض" data-bs-toggle="modal" data-bs-target="#rejectModal">رفض</button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
-    <!-- Reject Modal -->
-    <div class="modal fade" id="rejectModal" tabindex="-1" aria-labelledby="rejectModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="rejectModalLabel">سبب الرفض</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <!-- Form for Rejecting the Booking -->
+<!-- Reject Modal -->
+<div class="modal fade" id="rejectModal" tabindex="-1" aria-labelledby="rejectModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="rejectModalLabel">سبب الرفض</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Form for Rejecting the Booking -->
+                <form asp-action="RejectBooking" method="post">
+                    <input type="hidden" asp-for="BookingId" />
                     <div class="mb-3">
                         <label for="RejectionReason" class="form-label">السبب</label>
-                        <textarea id="rejectionReason" class="form-control" rows="3"></textarea>
+                        <textarea asp-for="RejectReason" class="form-control" rows="3"></textarea>
                     </div>
                     <div class="d-flex justify-content-end">
+                        <button type="submit" class="btn btn-danger">رفض الحجز</button>
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
-                        <button type="button" class="btn btn-danger" id="submitReject">رفض</button>
                     </div>
-                </div>
+                </form>
             </div>
         </div>
     </div>
+</div>
+
+
+
 
 
 @section Scripts {

@@ -1,107 +1,146 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using room_reservation.Domain;
-using room_reservation.Models;
 using room_reservation.ViewModel;
-using System.Linq.Expressions;
-
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace room_reservation.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize(Roles = "Admin, Site Admin")]
+    [Authorize(Roles = "SiteAdmin")]
     public class LecturesController : Controller
     {
-        private readonly lecturesDomain _lecturesDomain;
+        private readonly LecturesDomain _lecturesDomain;
 
-        public LecturesController(lecturesDomain lecturesDomain)
+        public LecturesController(LecturesDomain lecturesDomain)
         {
             _lecturesDomain = lecturesDomain;
         }
 
-
         // GET: /Lecture/
         public async Task<IActionResult> Index()
         {
-            var Lectures = await _lecturesDomain.getAlllectures();
-            return View(Lectures);
+            var lectures = await _lecturesDomain.GetAllLectures();
+            return View(lectures);
         }
 
         // GET: /Lecture/Add
         [HttpGet]
-        public async Task<IActionResult> AddLecture()
+        public IActionResult AddLecture()
         {
             return View();
         }
 
+        // POST: /Lecture/Add
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddLecture(LecturesViewModel lectures)
         {
             if (ModelState.IsValid)
             {
-                bool exists = _lecturesDomain.IsLectureExists(lectures.BuildingNo, lectures.RoomNo, lectures.LectureDate, lectures.StartLectureTime, lectures.EndLectureTime);
+                bool exists = _lecturesDomain.IsLectureExists(
+                    lectures.BuildingNo,
+                    lectures.RoomNo,
+                    lectures.LectureDate,
+                    lectures.StartLectureTime,
+                    lectures.EndLectureTime,
+                    lectures.Semester
+                    );
 
                 if (exists)
                 {
-                    return Json(new { success = false, message = "The lecture time slot is already booked." });
+                    return Json(new { success = false, message = "وقت المحاضرة محجوز مسبقاً" });
+                }
+
+                bool isOverlapping = await _lecturesDomain.IsLectureOverlapping(
+                    lectures.BuildingNo,
+                    lectures.RoomNo,
+                    lectures.LectureDate,
+                    lectures.StartLectureTime,
+                    lectures.EndLectureTime,
+                    lectures.Semester
+                );
+
+                if (isOverlapping)
+                {
+                    return Json(new { success = false, message = "وقت المحاضرة يتعارض مع محاضرة أخرى في نفس الفصل" });
                 }
 
                 try
                 {
-                    await _lecturesDomain.Addlecture(lectures);
-                    return Json(new { success = true, message = "Lecture added successfully." });
+                    var result = await _lecturesDomain.AddLecture(lectures);
+                    if (result == 1)
+                    {
+                        return Json(new { success = true, message = "أُضيفت المحاضرة بنجاح" });
+                    }
+                    else
+                    {
+                        return Json(new { success = false, message = "لم تضاف المحاضرة" });
+                    }
                 }
                 catch (Exception ex)
                 {
                     return Json(new { success = false, message = ex.Message });
                 }
             }
-            return Json(new { success = false, message = "Invalid data." });
+            else
+            {
+                var errors = ModelState.ToDictionary(
+                    kvp => kvp.Key,
+                    kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).ToArray()
+                );
+
+                return Json(new { success = false, errors });
+            }
         }
-        // POST: /Lecture/Add
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> AddLecture(LecturesViewModel lectures)
-        //{
-        //    try
-        //    {
 
-        //        if (ModelState.IsValid)
-        //        {
-        //            await _lecturesDomain.Addlecture(lectures);
-        //            return Json(new { success = true, message = "Added successfully" });
-        //        }
-        //        else
-        //        {
-        //            return Json(new { success = true, message = "Invalid Data" });
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return Json(new { success = false, message = ex.Message });
-        //    }
-        //}
-
+        // GET: /Lecture/Edit
         [HttpGet]
-
-        public async Task<IActionResult> EditLecture(int Id)
+        public async Task<IActionResult> EditLecture(int id)
         {
-            return View(_lecturesDomain.getlecturesById(Id));
+            var lecture = await _lecturesDomain.GetLectureById(id);
+            if (lecture == null)
+            {
+                return NotFound();
+            }
+            return View(lecture);
         }
 
+        // POST: /Lecture/Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditLecture(LecturesViewModel lectures)
         {
             if (ModelState.IsValid)
             {
-                bool exists = _lecturesDomain.IsLectureExists(lectures.BuildingNo, lectures.RoomNo, lectures.LectureDate, lectures.StartLectureTime, lectures.EndLectureTime);
+                bool exists = _lecturesDomain.IsLectureExists(
+                    lectures.BuildingNo,
+                    lectures.RoomNo,
+                    lectures.LectureDate,
+                    lectures.StartLectureTime,
+                    lectures.EndLectureTime,
+                    lectures.Semester
+                    );
 
                 if (exists)
                 {
-                    return Json(new { success = false, message = "The lecture time slot is already booked." });
+                    return Json(new { success = false, message = "وقت المحاضرة محجوز مسبقاً" });
+                }
+
+                bool isOverlapping = await _lecturesDomain.IsLectureOverlapping(
+                    lectures.BuildingNo,
+                    lectures.RoomNo,
+                    lectures.LectureDate,
+                    lectures.StartLectureTime,
+                    lectures.EndLectureTime,
+                    lectures.Semester
+                );
+
+                if (isOverlapping)
+                {
+                    return Json(new { success = false, message = "وقت المحاضرة يتعارض مع محاضرة أخرى في نفس الفصل" });
                 }
 
                 try
@@ -109,11 +148,11 @@ namespace room_reservation.Areas.Admin.Controllers
                     var result = await _lecturesDomain.EditLecture(lectures);
                     if (result == 1)
                     {
-                        return Json(new { success = true, message = "Lecture updated successfully." });
+                        return Json(new { success = true, message = "عُدلت المحاضرة" });
                     }
                     else
                     {
-                        return Json(new { success = false, message = "Update failed." });
+                        return Json(new { success = false, message = "لم يتم التعديل" });
                     }
                 }
                 catch (Exception ex)
@@ -121,15 +160,16 @@ namespace room_reservation.Areas.Admin.Controllers
                     return Json(new { success = false, message = ex.Message });
                 }
             }
-            return Json(new { success = false, message = "Invalid data." });
+            return Json(new { success = false, message = "فشلت العملية" });
         }
 
+        // POST: /Lecture/Delete
         [HttpPost]
         public async Task<IActionResult> DeleteLecture(int id)
         {
-
             await _lecturesDomain.DeleteLecture(id);
             return Json(new { success = true });
         }
     }
 }
+

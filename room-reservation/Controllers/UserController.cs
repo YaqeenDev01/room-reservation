@@ -205,7 +205,8 @@ namespace room_reservation.Controllers
                     new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
                     new Claim(ClaimTypes.Role, role),
                     new Claim(ClaimTypes.GivenName, user.FullNameAR),
-                    new Claim(ClaimTypes.Gender,user.GenderAR)
+                    new Claim(ClaimTypes.Gender,user.GenderAR),
+                 
                     
 
                 }, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -216,7 +217,14 @@ namespace room_reservation.Controllers
                         CookieAuthenticationDefaults.AuthenticationScheme,
                         principal);
 
-                    return RedirectToAction("Index", "Home");
+                    if (role == "Admin" || role == "SiteAdmin")
+                    {
+                        return RedirectToAction("Index", "Home", new { area = "Admin" });
+                    }
+                    else
+                    {
+                        return RedirectToAction("Index", "Home",new {area=" "});
+                    }
                 }
             }
             catch (Exception ex)
