@@ -46,6 +46,7 @@ namespace room_reservation.Domain
                 FloorNo = x.Room.Floor.FloorNo,
                 BuildingNameAr = x.Room.Floor.Building.BuildingNameAr, 
                 SeatCapacity=x.Room.SeatCapacity,
+                UserBuildingAR = x.UserBuildingAR,
                 
                 
                 //Bookings.BookingStatues = booking.BookingStatues
@@ -106,7 +107,6 @@ namespace room_reservation.Domain
                 Bookings.FullName = user.FullNameAR;
                 Bookings.PhoneNumber = user.PhoneNumber;
                 Bookings.UserBuildingAR = user.DepartmentName;
-
                 Bookings.guid = Guid.NewGuid();
                 Bookings.IsDeleted = false;
                 Bookings.RoomId = room.Id;
@@ -121,9 +121,8 @@ namespace room_reservation.Domain
                 {
                     Bookings.BookingStatuesId = 2;
                 }
-
-              //   _context.tblBookings.Add(Bookings);
-              //  await _context.SaveChangesAsync();
+              _context.tblBookings.Add(Bookings);
+              await _context.SaveChangesAsync();
               //  var bookingLog = new BookingsLog();
               //  bookingLog.BookingId = Booking.BookingId;
               //  bookingLog.BookedBy = user.Email;
@@ -133,9 +132,6 @@ namespace room_reservation.Domain
               //  bookingLog.AdditionalDetails = "";
               // _context.BookingsLog.Add(bookingLog);
               // await _context.SaveChangesAsync();
-               
-           
-               
                
                
                 return 1;
@@ -345,8 +341,52 @@ namespace room_reservation.Domain
         //        return 0;
         //    }
         //}
+        
+   public async Task<IEnumerable<BookingViewModel>> GetUserBookings(string userEmail)
+        {
+            var user = await _userDomain.GetUserByEmail(userEmail);
 
+            return await _context.tblBookings.Where(booking =>  !booking.IsDeleted && booking.Email ==user.Email ).Select(x => new BookingViewModel
+            {
+                BookingId = x.Id,
+                BookingDate = x.BookingDate,
+                BookingStart = x.BookingStart,
+                BookingEnd = x.BookingEnd,
+                guid = x.guid,
+                RoomId = x.RoomId,
+                RoomNo = x.Room.RoomNo,
+                BookingStatues = x.BookingStatues,
+                PhoneNumber = x.PhoneNumber,
+                FullName = x.FullName,
+                Email = x.Email,
+                Duration = x.Duration,
+                RejectReason = x.RejectReason,
+            }).ToListAsync();
+        }
+   
+   
+   
+        public async Task<IEnumerable<BookingViewModel>> GetBuildingBookings(string userEmail)
+        {
+            var permission = await _permissionDomain.GetPermissionByEmail(userEmail);
 
+            return await _context.tblBookings.Where(booking =>  !booking.IsDeleted && booking.Room.Floor.BuildingId==permission.BuildingId ).Select(x => new BookingViewModel
+            {
+                BookingId = x.Id,
+                BookingDate = x.BookingDate,
+                BookingStart = x.BookingStart,
+                BookingEnd = x.BookingEnd,
+                guid = x.guid,
+                RoomId = x.RoomId,
+                RoomNo = x.Room.RoomNo,
+                BookingStatues = x.BookingStatues,
+                PhoneNumber = x.PhoneNumber,
+                FullName = x.FullName,
+                Email = x.Email,
+                Duration = x.Duration,
+                RejectReason = x.RejectReason,
+            }).ToListAsync();
+        }
         public async Task<IEnumerable<BookingViewModel>> GetExtrnalBooking(string userEmail)
         {
             var permission = await _permissionDomain.GetPermissionByEmail(userEmail);

@@ -77,14 +77,30 @@ namespace room_reservation.Controllers
             return await _floorDomain.GetFloorByBuildingId(id);
 
         }
-
+        // All bookings shown to admin 
         // view the bookings page 
+        // public async Task<IActionResult> Book()
+        // {
+        //     var booking = await _BookingDomain.GetAllBooking();
+        //     return View(booking);
+        // }
+        
+        // All bookings of the same building shown to the site admin
         public async Task<IActionResult> Book()
         {
-            var booking = await _BookingDomain.GetAllBooking();
+            var userEmail = User.FindFirst(ClaimTypes.Email).Value;
+            var booking = await _BookingDomain.GetBuildingBookings(userEmail);
             return View(booking);
         }
         
+        // User bookings
+        // public async Task<IActionResult> Book()
+        // {
+        //     var userEmail = User.FindFirst(ClaimTypes.Email).Value;
+        //     var booking = await _BookingDomain.GetUserBookings(userEmail);
+        //     return View(booking);
+        // }
+
         [Authorize]
         [HttpGet]
         public async Task<IActionResult> Add(Guid id)
