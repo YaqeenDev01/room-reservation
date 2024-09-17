@@ -41,7 +41,7 @@
                         <td>@x.BookingDate.ToString("yyyy-MM-dd")</td>
 
                         <td>
-                            <a asp-action="Orderinfo" asp-route-id="@x.guid" class="btn btn-sm btn-primary">عرض</a>
+                            <a asp-action="OrderInfo" asp-route-id="@x.guid" class="btn btn-sm btn-primary">عرض</a>
 
                         </td>
                      </tr> 
@@ -67,7 +67,8 @@
                     row.style.display = 'none'; // Hide others
                 }
             });
-        }
+        }})
+</script>
 
 
    

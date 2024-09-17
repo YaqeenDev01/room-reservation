@@ -86,7 +86,7 @@ namespace room_reservation.Controllers
         // }
         
         // All bookings of the same building shown to the site admin
-        public async Task<IActionResult> Book()
+        public async Task<IActionResult> ViewBooking()
         {
             var userEmail = User.FindFirst(ClaimTypes.Email).Value;
             var booking = await _BookingDomain.GetBuildingBookings(userEmail);
@@ -103,14 +103,14 @@ namespace room_reservation.Controllers
 
         [Authorize]
         [HttpGet]
-        public async Task<IActionResult> Add(Guid id)
+        public async Task<IActionResult> AddBooking(Guid id)
         {
             return View(await _BookingDomain.getAllBookingByRoomGuid(id));
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public async Task<IActionResult> Add(BookingViewModel booking)
+        public async Task<IActionResult> AddBooking(BookingViewModel booking)
         {
                 booking.Email =User.FindFirst(ClaimTypes.Email).Value;
                 
@@ -151,12 +151,12 @@ namespace room_reservation.Controllers
                 
         }
         [HttpGet]
-        public IActionResult Details(Guid id) {
+        public IActionResult BookingDetails(Guid id) {
             return View(_BookingDomain.getBookingByid(id));
         }
 
         [HttpPost]
-        public IActionResult Details(BookingViewModel booking)
+        public IActionResult BookingDetails(BookingViewModel booking)
         {
             if (ModelState.IsValid)
             {
@@ -215,13 +215,13 @@ namespace room_reservation.Controllers
             return View(orders);
         }
         [HttpGet]
-        public async Task<IActionResult> Orderinfo(Guid id)
+        public async Task<IActionResult> OrderInfo(Guid id)
         {
 
              return View(await _BookingDomain.GetBookingByGuid(id));
         }
         [HttpPost]
-        public async Task<IActionResult> Orderinfo( BookingViewModel booking)
+        public async Task<IActionResult> OrderInfo( BookingViewModel booking)
         {
             if (ModelState.IsValid)
             {
