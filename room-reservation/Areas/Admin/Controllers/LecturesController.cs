@@ -45,7 +45,9 @@ namespace room_reservation.Areas.Admin.Controllers
                     lectures.RoomNo,
                     lectures.LectureDate,
                     lectures.StartLectureTime,
-                    lectures.EndLectureTime);
+                    lectures.EndLectureTime,
+                    lectures.Semester
+                    );
 
                 if (exists)
                 {
@@ -118,7 +120,9 @@ namespace room_reservation.Areas.Admin.Controllers
                     lectures.RoomNo,
                     lectures.LectureDate,
                     lectures.StartLectureTime,
-                    lectures.EndLectureTime);
+                    lectures.EndLectureTime,
+                    lectures.Semester
+                    );
 
                 if (exists)
                 {

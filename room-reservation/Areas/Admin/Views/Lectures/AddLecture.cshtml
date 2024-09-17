@@ -26,7 +26,12 @@
                         <!-- Semester -->
                         <div class="col-md-6 mb-4">
                             <label asp-for="Semester" class="control-label">الفصل الدراسي</label>
-                            <input asp-for="Semester" class="form-control" />
+                            <select asp-for="Semester" class="form-control">
+                                <option value="">اختر الفصل الدراسي</option>
+                                <option value="الفصل الدراسي الأول">الفصل الدراسي الأول</option>
+                                <option value="الفصل الدراسي الثاني">الفصل الدراسي الثاني</option>
+                                <option value="الفصل الدراسي الثالث">الفصل الدراسي الثالث</option>
+                            </select>
                             <span asp-validation-for="Semester" class="text-danger"></span>
                         </div>
 

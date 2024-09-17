@@ -34,11 +34,12 @@ namespace room_reservation.Domain
         }
 
         // Check if a lecture exists with the same parameters
-        public bool IsLectureExists(string buildingNo, string roomNo, DateTime lectureDate, TimeSpan startLectureTime, TimeSpan endLectureTime)
+        public bool IsLectureExists(string buildingNo, string roomNo, DateTime lectureDate, TimeSpan startLectureTime, TimeSpan endLectureTime , string semester)
         {
             return _context.tblLectures.Any(l => l.BuildingNo == buildingNo
                                                 && l.RoomNo == roomNo
                                                 && l.LectureDate == lectureDate
+                                                && l.Semester == semester
                                                 && l.StartLectureTime == startLectureTime
                                                 && l.EndLectureTime == endLectureTime);
         }
