@@ -10,7 +10,7 @@
                        placeholder="البحث السريع ...">
             </div>
 
-            <a class="btn btn-primary" href="@Url.Action("AddPermission", "Permission")">إضافة صلاحية</a>
+            <a class="btn btn-primary" asp-action="AddPermission">إضافة صلاحية</a>
             <!-- Add Section Modal -->
             <div class="modal fade" id="add_section" tabindex="-1"
                  aria-labelledby="add_sectionLabel" aria-hidden="true">
@@ -44,7 +44,7 @@
                             <td>@data.RoleName</td>
                             <td>
                                 <a asp-area="Admin" asp-controller="Permission" asp-action="EditPermission" asp-route-guid="@data.Guid" class="btn btn-success">تعديل</a>
-                                <a onclick="confirmDelete('guid-value')" data-id="guid-value" class="btn btn-danger delete-btn">حذف</a>
+                                <a data-id="@data.Guid" class="btn btn-danger delete-btn">حذف</a>
                             </td>
                         </tr>
                     }
@@ -53,74 +53,62 @@
         </table>
     </div>
 </div>
-
- @section Scripts{
+@section Scripts {
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
     <script>
-        $(document).ready(function () {
-            function search() {
-                var searchInput = $('#search').val().toLowerCase();
-                $('#table-body tr').each(function () {
-                    var emailCell = $(this).find('td').first().text().toLowerCase();
-                    if (emailCell.indexOf(searchInput) > -1) {
-                        $(this).show();
-                    } else {
-                        $(this).hide();
-                    }
-                });
-            }
+    $(document).ready(function () {
+       
+        $(document).on('click', '.delete-btn', function (event) {
+            event.preventDefault();  
 
-            $('#search').on('input', search);
+            const id = $(this).data('id');  
 
-
-        // Delete confirmation
-            $('.delete-btn').on('click', function (event) {
-                event.preventDefault();
-
-                var id = $(this).data('id');
-
-                swal({
-                    title: "هل أنت متأكد؟",
-                    text: "",
-                    type: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#3085d6",
-                    cancelButtonColor: "#d33",
-                    confirmButtonText: "نعم، احذف!",
-                    cancelButtonText: "إلغاء"
-                }, function (isConfirm) {
-                    if (isConfirm) {
-                        $.ajax({
-                            url: '@Url.Action("DeletePermission")',
-                            type: 'POST',
-                            data: { guid: id },
-                            success: function (response) {
-                                if (response.success) {
-                                    swal(
-                                        'نجحت العملية!',
-                                        'حُذِفت الصلاحية.',
-                                        'success'
-                                    ).then(() => {
-                                        location.reload();
-                                    });
-                                } else {
-                                    swal(
-                                        'فشلت العملية!',
-                                        'لم تُحذف الصلاحية.',
-                                        'error'
-                                    );
-                                }
-                            },
-                            error: function () {
-                                swal(
-                                    'خطأ!',
-                                    'حدث خطأ غير متوقع.',
+            Swal.fire({
+                title: 'هل أنت متأكد؟',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'نعم، احذف!',
+                cancelButtonText: 'إلغاء'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                   
+                    $.ajax({
+                        url: '@Url.Action("DeletePermission")',  
+                        type: 'POST',
+                        data: { guid: id }, 
+                        success: function (response) {
+                            if (response.success) {       
+                                Swal.fire(
+                                    'نجحت العملية!',
+                                    'حٌذِفت الصلاحية.',
+                                    'success'
+                                ).then(() => {
+                                    window.location.reload();  
+                                });
+                            } else {
+                                Swal.fire(
+                                    'فشلت العملية!',
+                                    'لم تُحذَف الصلاحية.',
                                     'error'
                                 );
                             }
-                        });
-                    }
-                });
+                        },
+                        error: function () {
+                            // Show error alert if the AJAX request itself fails
+                            Swal.fire(
+                                'خطأ!',
+                                'حدث خطأ غير متوقع.',
+                                'error'
+                            );
+                        }
+                    });
+                }
             });
         });
-</script>
-}
+    });
+
+    </script>
+    }

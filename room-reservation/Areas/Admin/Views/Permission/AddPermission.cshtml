@@ -17,7 +17,7 @@
                             </div>
                             <div class="mb-4">
                                 <label>معلومات مالك الصلاحية</label>
-                                <input readonly id="userNameInput" type="text" class="form-control" placeholder="اسم المستخدم" />
+                                <input readonly id="userNameInput" type="text" class="form-control" placeholder="الاسم الكامل، رقم الهاتف، القسم" />
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -31,13 +31,6 @@
                                 <select asp-for="BuildingId" class="form-control" asp-items="@ViewBag.Building">
                                     <option value="0">غير محدد</option>
                                 </select>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-4">
-                                <label asp-for="Email" class="mb-1">معلومات إضافية</label>
-                                <input asp-for="AdditionalDetails" type="text" placeholder="سبب إضافة الصلاحية"
-                                       class="form-control text-start" />
                             </div>
                         </div>
                         <div class="d-flex justify-content-start">
@@ -62,7 +55,13 @@
                                         data: { email: email },
                                         success: function (response) {
                                             if (response.success) {
-                                                var permissionInfo = response.userName + ' (' + response.phoneNumber + ')';
+                                                var permissionInfo = response.fullNameAR + '، ' + response.phoneNumber;
+                                                if (response.college) {
+                                                    permissionInfo += '، '+response.college;
+                                                }
+                                                if (response.department) {
+                                                    permissionInfo += '، ' + response.department;
+                                                }
                                                 $('#userNameInput').val(permissionInfo).css('color', 'black');
                                             } else {
                                                 $('#userNameInput').val('المستخدم غير موجود').css('color', 'red');

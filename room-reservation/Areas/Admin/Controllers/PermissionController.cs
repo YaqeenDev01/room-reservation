@@ -107,7 +107,7 @@ namespace room_reservation.Controllers
             var user = await _UserDomain.GetUserByEmail(email);
             if (user != null)
             {
-                return Json(new { success = true, userName = user.FullNameAR, phoneNumber = user.PhoneNumber });
+                return Json(new { success = true, fullNameAR = user.FullNameAR, phoneNumber = user.PhoneNumber, college = user.CollegeName, department = user.DepartmentName});
             }
             else
             {
@@ -149,18 +149,10 @@ namespace room_reservation.Controllers
             {
                 try
                 {
-                    var result = await _PermissionDomain.UpdatePermission(permissionViewModel);
+                    var result = await _PermissionDomain.UpdatePermission(permissionViewModel, User.FindFirst(ClaimTypes.Email).Value, Int32.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value));
                     if (result)
                     {
-                        var permissionLog = new PermissionsLog();
-                        permissionLog.PermissionId = Int32.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-                        permissionLog.OperationType = "تعديل صلاحية";
-                        permissionLog.DateTime = DateTime.Now;
-                        permissionLog.PermissionType = User.FindFirst(ClaimTypes.Role).Value; ;
-                        permissionLog.GrantedBy = User.FindFirst(ClaimTypes.Email).Value; ;
-                        permissionLog.GrantedTo = permissionViewModel.Email;
-                        permissionLog.AdditionalDetails = permissionViewModel.AdditionalDetails;
-                        _PermissionDomain.AddPermissionLog(permissionLog);
+                        
                         return Json(new { success = true, message = "عُدِّلت الصلاحية بنجاح" });
                     }
                     else
@@ -184,17 +176,10 @@ namespace room_reservation.Controllers
         [HttpPost]
         public async Task<IActionResult> DeletePermission(Guid guid)
         {
-            var check = await _PermissionDomain.DeletePermission(guid);
+            var check = await _PermissionDomain.DeletePermission(guid, User.FindFirst(ClaimTypes.Email).Value, Int32.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value));
             if (check != null)
             {
-                var permissionLog = new PermissionsLog();
-                permissionLog.PermissionId = Int32.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-                permissionLog.OperationType = "حذف صلاحية";
-                permissionLog.DateTime = DateTime.Now;
-                permissionLog.PermissionType = User.FindFirst(ClaimTypes.Role).Value; ;
-                permissionLog.GrantedBy = User.FindFirst(ClaimTypes.Email).Value; ;
-                permissionLog.GrantedTo = check.Email;
-                _PermissionDomain.AddPermissionLog(permissionLog);
+              
                 return Json(new { success = true, message = "حُذِفت الصلاحية" });
             }
             else

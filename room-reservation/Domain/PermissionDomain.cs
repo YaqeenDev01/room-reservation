@@ -105,9 +105,9 @@ namespace room_reservation.Domain
                 await _context.SaveChangesAsync();
                 
                 var permissionLog = new PermissionsLog();
+                var role = await _context.tblRoles.FirstOrDefaultAsync(r => r.Id== permission.RoleId);
 
-
-                permissionLog.PermissionType = permissionInfo.RoleId.ToString();
+                permissionLog.PermissionType = role.RoleNameAR;
                 permissionLog.GrantedBy = createdBy;
                 permissionLog.GrantedTo = permissionInfo.Email;
                 permissionLog.PermissionId = permissionId;
@@ -128,7 +128,7 @@ namespace room_reservation.Domain
             try
             {
                 permissionLog.DateTime = DateTime.Now;
-                _context.AddAsync(permissionLog);
+                _context.Add(permissionLog);
                 await _context.SaveChangesAsync();
                 return true;
             }
@@ -136,7 +136,7 @@ namespace room_reservation.Domain
                 return false;
             }
         }
-        public async Task<bool> UpdatePermission(PermissionViewModel permissionViewModel)
+        public async Task<bool> UpdatePermission(PermissionViewModel permissionViewModel, string createdBy, int permissionId)
         {
             try
             {
@@ -150,6 +150,17 @@ namespace room_reservation.Domain
                 _context.tblPermissions.Update(permission);
                 await _context.SaveChangesAsync();
 
+                var permissionLog = new PermissionsLog();
+
+                var role = await _context.tblRoles.FirstOrDefaultAsync(r => r.Id == permission.RoleId);
+
+                permissionLog.PermissionType = role.RoleNameAR;
+                permissionLog.GrantedBy = createdBy;
+                permissionLog.GrantedTo = permission.Email;
+                permissionLog.PermissionId = permissionId;
+                permissionLog.OperationType = "تعديل صلاحية";
+                await AddPermissionLog(permissionLog);
+
                 return true;
             }
             catch (Exception ex)
@@ -157,15 +168,26 @@ namespace room_reservation.Domain
                 return false;
             }
         }
-        public async Task<tblPermissions> DeletePermission(Guid guid)
+        public async Task<tblPermissions> DeletePermission(Guid guid, string createdBy, int permissionId)
         {
             try
             {   
                var permission = await  _context.tblPermissions.SingleOrDefaultAsync(x => x.guid == guid);
                permission.IsDeleted = true;
                await _context.SaveChangesAsync();
-               return permission;
+                var permissionLog = new PermissionsLog();
+                var role = await _context.tblRoles.FirstOrDefaultAsync(r => r.Id == permission.RoleId);
 
+                permissionLog.PermissionType = role.RoleNameAR;
+                permissionLog.GrantedBy = createdBy;
+                permissionLog.GrantedTo = permission.Email;
+                permissionLog.PermissionId = permissionId;
+                permissionLog.OperationType = "حذف صلاحية";
+                await AddPermissionLog(permissionLog);
+
+                return permission;
+
+               
             }
             catch
             {

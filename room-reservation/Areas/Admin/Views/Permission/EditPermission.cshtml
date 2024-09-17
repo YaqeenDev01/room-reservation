@@ -18,7 +18,7 @@
                             </div>
                             <div class="mb-4">
                                 <label>معلومات مالك الصلاحية</label>
-                                <input readonly id="userNameInput" type="text" class="form-control" placeholder="اسم المستخدم" />
+                                <input readonly id="userNameInput" type="text" class="form-control" placeholder="الاسم الكامل، رقم الهتاف، القسم" />
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -34,70 +34,85 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="mb-4">
-                                <label asp-for="AdditionalDetails" class="mb-1">معلومات إضافية</label>
-                                <input asp-for="AdditionalDetails" type="text" placeholder="سبب تعديل الصلاحية" class="form-control text-start" />
-                            </div>
-                        </div>
                         <div class="d-flex justify-content-start">
                             <button type="submit" class="btn btn-primary px-5" title="حفظ">حفظ</button>
                         </div>
                     </div>
                 </form>
-
-                @section Scripts {
-                    <script>
-                        $(document).ready(function () {
-                            var email = $('#emailInput').val();
-
-                            if (email) {
-                                $.ajax({
-                                    url: '@Url.Action("DisplayUserName")',
-                                    type: 'POST',
-                                    data: { email: email },
-                                    success: function (response) {
-                                        $('#userNameInput').val(response.userName).css('color', 'black');
-                                    }
-                                });
-                            }
-
-                            $('#permissionForm').submit(function (event) {
-                                event.preventDefault(); // Prevent the default form submission
-
-                                $.ajax({
-                                    url: '@Url.Action("EditPermission")', // URL to the controller action
-                                    type: 'POST',
-                                    data: $(this).serialize(),
-                                    success: function (response) {
-                                        if (response.success) {
-                                            Swal.fire({
-                                                title: '!نجحت العملية',
-                                                text: response.message,
-                                                icon: 'success'
-                                            }).then(() => {
-                                                window.location.href = '@Url.Action("Index")';
-                                            });
-                                        } else {
-                                            Swal.fire({
-                                                title: '!فشلت العملية',
-                                                text: response.message,
-                                                icon: 'error'
-                                            });
+@section Scripts {
+                <script>
+                    $(document).ready(function () {
+                        // Get the email from the input field as soon as the page loads
+                        var email = $('#emailInput').val();
+                        console.log(email);
+                        if (email) {
+                            // Trigger the AJAX request immediately to fetch the user info based on the email
+                            $.ajax({
+                                url: '@Url.Action("DisplayUserName")',
+                                type: 'POST',
+                                data: { email: email },
+                                success: function (response) {
+                                    if (response.success) {
+                                        var permissionInfo = response.fullNameAR + '، ' + response.phoneNumber;
+                                        if (response.college) {
+                                            permissionInfo += '، ' + response.college;
                                         }
-                                    },
-                                    error: function () {
+                                        if (response.department) {
+                                            permissionInfo += '، ' + response.department;
+                                        }
+                                        $('#userNameInput').val(permissionInfo).css('color', 'black');
+                                    } else {
+                                        $('#userNameInput').val('المستخدم غير موجود').css('color', 'red');
+                                    }
+                                },
+                                error: function () {
+                                    Swal.fire({
+                                        title: 'Error!',
+                                        text: 'An unexpected error occurred.',
+                                        icon: 'error'
+                                    });
+                                }
+                            });
+                        } else {
+                            $('#userNameInput').val('');  // If email is empty for some reason
+                        }
+
+                        // Form submission via AJAX
+                        $('#permissionForm').submit(function (event) {
+                            event.preventDefault(); // Prevent the default form submission
+
+                            $.ajax({
+                                url: '@Url.Action("EditPermission")', // URL to the controller action
+                                type: 'POST',
+                                data: $(this).serialize(),
+                                success: function (response) {
+                                    if (response.success) {
                                         Swal.fire({
-                                            title: 'خطأ!',
-                                            text: 'حدث خطأ غير متوقع',
+                                            title: '!نجحت العملية',
+                                            text: response.message,
+                                            icon: 'success'
+                                        }).then(() => {
+                                            window.location.href = '@Url.Action("Index")';
+                                        });
+                                    } else {
+                                        Swal.fire({
+                                            title: '!فشلت العملية',
+                                            text: response.message,
                                             icon: 'error'
                                         });
                                     }
-                                });
+                                },
+                                error: function () {
+                                    Swal.fire({
+                                        title: 'خطأ!',
+                                        text: 'حدث خطأ غير متوقع',
+                                        icon: 'error'
+                                    });
+                                }
                             });
                         });
-                    </script>
-                }
+                    });
+                </script> }
             </div>
         </div>
     </div>
