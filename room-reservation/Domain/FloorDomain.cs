@@ -160,11 +160,22 @@ namespace room_reservation.Domain
 
 
 
-        public tblFloors GetFloorById(Guid id)
+        public tblFloors GetFloorByGuid2(Guid id)
                 {
                     var floorId = _context.tblFloors.Include(b => b.Building).FirstOrDefault(x => x.Guid == id);
                    return floorId;
                 }
+        public tblFloors GetFloorById(Guid id)
+        {
+            var floorId = _context.tblFloors.Include(b => b.Building).FirstOrDefault(x => x.Guid == id);
+            return floorId;
+        }
+        public tblFloors GetFloorId(int id)
+        {
+            var floorId = _context.tblFloors.Include(b => b.Building).FirstOrDefault(x => x.Id == id);
+            return floorId;
+        }
+
 
                 public async Task<int> editFloor(FloorViewModel floor)
                 {
@@ -175,19 +186,18 @@ namespace room_reservation.Domain
                             .Any(fn => fn.FloorNo == floor.FloorNo && fn.BuildingId == floor.BuildingId); 
                         var user= await _userDomain.GetUserByEmail(floor.Email);
                        
+                     
+                        var floorInfo = GetFloorById(floor.Guid);
+                     //   floorInfo.Id = floor.FloorId;
+                        floorInfo.FloorNo = floor.FloorNo;
+                        floorInfo.BuildingId = floor.BuildingId;
                         if (floorExists)
                         {
                             //if it doesnt exist
                             return 0;
                         }
-                        var floorInfo = GetFloorById(floor.Guid);
-                        //floorInfo.Id = floor.Id;
-                        floorInfo.FloorNo = floor.FloorNo;
-                        floorInfo.BuildingId = floor.BuildingId;
-
                         _context.tblFloors.Update(floorInfo);
                        await _context.SaveChangesAsync();
-                       
                        
                        var floorLog = new FloorsLog();
                        floorLog.FloorId = floorInfo.Id;
@@ -202,30 +212,28 @@ namespace room_reservation.Domain
                     }
                     catch (Exception exception)
                     {
-                       // Console.WriteLine($"Error: {exception.Message}");
+                       //Console.WriteLine($"Error: {exception.Message}");
                         return 0;
                     }
                 }
-                public async Task DeleteFloor(Guid id)
+                public async Task DeleteFloor(Guid id, string Email)
                 {
                 
 
                         tblFloors floor = GetFloorById(id);                        // is deleted will delete the record in web 
                         floor.IsDeleted = true;
+                       // var user= await _userDomain.GetUserByEmail(Email);
                         // remove will delete the record from Db
                        // _context.tblFloors.Remove(floorInfo);
                         await _context.SaveChangesAsync();
-                        // var floorViewModel = new FloorViewModel();
-                        // var floorInfo = GetFloorById(floor.Guid);
-                        // var user= await _userDomain.GetUserByEmail(floorViewModel.Email);
-                        // var floorLog = new FloorsLog();
-                        // floorLog.FloorId = floorInfo.Id;
-                        // floorLog.OperationType = "تعديل طابق";
-                        // floorLog.OperationDate=DateTime.Now;
-                        // floorLog.GrantdBy = user.Email;
-                        // floorLog.AdditionalDetails="";
-                        // _context.FloorsLog.Add(floorLog);
-                        // await _context.SaveChangesAsync();
+                        var floorLog = new FloorsLog();
+                        floorLog.FloorId = floor.Id;
+                        floorLog.OperationType = "حذف طابق";
+                        floorLog.OperationDate=DateTime.Now;
+                        floorLog.GrantdBy = Email;
+                        floorLog.AdditionalDetails="";
+                        _context.FloorsLog.Add(floorLog);
+                        await _context.SaveChangesAsync();;
                         
                         //
                         //

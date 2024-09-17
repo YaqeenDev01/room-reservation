@@ -144,9 +144,9 @@ namespace room_reservation.Controllers
         }
         public async Task<IActionResult> Delete(Guid id)
         {
-          //  var floor=await _FloorDomain.GetFloorByGuid(id);
-          //  floor.Email =User.FindFirst(ClaimTypes.Email).Value;
-            await _FloorDomain.DeleteFloor(id);
+            // var floor=await _FloorDomain.GetFloorByGuid(id);
+            // floor.Email =User.FindFirst(ClaimTypes.Email).Value;
+            await _FloorDomain.DeleteFloor(id,User.FindFirst(ClaimTypes.Email).Value);
             return Json(new { success = true });
         }
         
