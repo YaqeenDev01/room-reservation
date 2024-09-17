@@ -114,13 +114,19 @@
                             <ul>
                                 @if (User.FindFirst(ClaimTypes.Role).Value == "Admin")
                                 {
-                                    <li> <a href="@Url.Action("Index", "User")" class="active"><span>المستخدمين</span></a></li>
+                                    <li> <a asp-action="Index" asp-controller="User" asp-area="Admin" class="active"><span> المستخدمين</span></a></li>
                                     <li> <a asp-action="Index" asp-controller="Permission" asp-area="Admin" class="active"><span>الصلاحيات</span></a></li>
+                                    <li> <a asp-action="Index" asp-controller="Building" asp-area= "Admin" class="active"><span> المباني</span></a></li>
+                                  
                                 }
-                                <li> <a asp-action="Index" asp-controller="Building" asp-area=" " class="active"><span> المباني</span></a></li>
-                                <li> <a href="@Url.Action("Index", "Room")" class="active"><span>القاعات</span></a></li>
-                                <li> <a href="@Url.Action("Index", "Lectures")" class="active"><span>المحاضرات</span></a></li>
-                                <li> <a href="@Url.Action("Index", "Floor")" class="active"><span>الطوابق</span></a></li>
+                                @if (User.FindFirst(ClaimTypes.Role).Value == "Admin" || User.FindFirst(ClaimTypes.Role).Value == "SiteAdmin")
+                                {
+                                    <li> <a asp-action="Index" asp-controller="Floor" asp-area="Admin" class="active"><span>الطوابق</span></a></li>
+                                    <li> <a asp-action="Index" asp-controller="Room" asp-area="Admin" class="active"><span>القاعات</span></a></li>
+                                    <li> <a asp-action="Index" asp-controller="Lectures" asp-area="Admin" class="active"><span>المحاضرات</span></a></li>
+                                }
+                              
+                             
 
                             </ul>
                         </li>
@@ -192,17 +198,17 @@
                                 <path d="M6 20.05v-.05a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v.05" />
                             </svg>
                         </a>
-                        <ul class="dropdown-menu account_dd br-stand border-1 border-gray-300 p-4 shadow" aria-labelledby="account">
-                            <li>
-                                <div class="d-flex flex-column">
-                                    <h6 class="mb-0">@User.FindFirst(ClaimTypes.GivenName).Value.ToString()</h6>
-                                    <small class="text-muted m-0">@User.FindFirst(ClaimTypes.Email).Value.ToString()</small>
-                                </div>
-                            </li>
-                            <li>
-                                <hr class="dropdown-divider w-100">
-                            </li>
-                        </ul>
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <ul class="dropdown-menu account_dd br-stand border-1 border-gray-300 p-4 shadow" aria-labelledby="account">
+                                <li>
+                                    <div class="d-flex flex-column">
+                                        <h6 class="mb-0">@User.FindFirst(ClaimTypes.GivenName)?.Value</h6>
+                                        <small class="text-muted m-0">@User.FindFirst(ClaimTypes.Email)?.Value</small>
+                                    </div>
+                                </li>
+                            </ul>
+                        }
                     </li>
                 </ul>
             </header><!-- End Header Navbar -->

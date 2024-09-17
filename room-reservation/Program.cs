@@ -47,7 +47,7 @@ builder.Services.AddScoped<UserDomain>();
 builder.Services.AddScoped<BuildingDomain>();
 builder.Services.AddScoped<RoleDomain>();
 builder.Services.AddScoped<RoomDomain>();
-builder.Services.AddScoped<lecturesDomain>();
+builder.Services.AddScoped<LecturesDomain>();
 builder.Services.AddScoped<RoomTypeDomain>();
 builder.Services.AddScoped<BookingDomain>();
 builder.Services.AddScoped<FloorDomain>();
@@ -83,12 +83,8 @@ app.UseEndpoints(endpoints =>
         pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
 
     endpoints.MapControllerRoute(
-        name: "Site Admin",
-        pattern: "{area:exists}/{controller=Home}/{actions=Index}/{id?}");
-
-    endpoints.MapControllerRoute(
         name: "default",
-        pattern: "{controller=Home}/{action=Index}/{id?}");
+        pattern: "{controller=User}/{action=Login}/{id?}");
 
     endpoints.MapRazorPages();
 });

@@ -26,7 +26,12 @@
                         <!-- Semester -->
                         <div class="col-md-6 mb-4">
                             <label asp-for="Semester" class="control-label">الفصل الدراسي</label>
-                            <input asp-for="Semester" class="form-control" />
+                            <select asp-for="Semester" class="form-control">
+                                <option value="">اختر الفصل الدراسي</option>
+                                <option value="الفصل الدراسي الأول">الفصل الدراسي الأول</option>
+                                <option value="الفصل الدراسي الثاني">الفصل الدراسي الثاني</option>
+                                <option value="الفصل الدراسي الثالث">الفصل الدراسي الثالث</option>
+                            </select>
                             <span asp-validation-for="Semester" class="text-danger"></span>
                         </div>
 
@@ -67,40 +72,53 @@
 
         <script>
             $(document).ready(function () {
-                $('#LectureForm').submit(function (event) {
-                    event.preventDefault(); // Prevent the default form submission
+        $('#LectureForm').submit(function (event) {
+            event.preventDefault();
 
-                    $.ajax({
-                        url: '@Url.Action("AddLecture")', // URL to the controller action
-                        type: 'POST',
-                        data: $(this).serialize(),
-                        success: function (response) {
-                            if (response.success) {
-                                Swal.fire({
-                                    title: '!نجحت العملية',
-                                    text: 'أُضِيفَت المحاضرة بنجاح',
-                                    icon: 'success'
-                                }).then(() => {
-                                    window.location.href = '@Url.Action("Index")'; // Redirect to Index page after success
-                                });
-                            } else {
-                                Swal.fire({
-                                    title: '!فشلت العملية',
-                                    text: 'لم تُضَاف المحاضرة',
-                                    icon: 'error'
-                                });
-                            }
-                        },
-                        error: function () {
+            $.ajax({
+                url: '@Url.Action("AddLecture")',
+                type: 'POST',
+                data: $(this).serialize(),
+                success: function (response) {
+                    if (response.success) {
+                        Swal.fire({
+                            title: 'نجحت العملية!',
+                            text: response.message,
+                            icon: 'success'
+                        }).then(() => {
+                            window.location.href = '@Url.Action("Index")';
+                        });
+                    } else {
+                        if (response.errors) {
+                            $('.text-danger').text('');
+
+                            $.each(response.errors, function (key, errorMessages) {
+                                var field = $('[name="' + key + '"]');
+                                var errorContainer = field.siblings('.text-danger');
+
+                                if (errorContainer.length) {
+                                    errorContainer.text(errorMessages.join(', '));
+                                }
+                            });
+                        } else {
                             Swal.fire({
-                                title: 'Error!',
-                                text: 'An unexpected error occurred.',
+                                title: 'فشلت العملية!',
+                                text: response.message,
                                 icon: 'error'
                             });
                         }
+                    }
+                },
+                error: function () {
+                    Swal.fire({
+                        title: 'خطأ!',
+                        text: 'حدث خطأ غير متوقع',
+                        icon: 'error'
                     });
-                });
+                }
             });
+        });
+    });
         </script>
 
 

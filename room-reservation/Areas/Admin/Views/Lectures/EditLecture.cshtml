@@ -79,7 +79,7 @@
                                     if (response.success) {
                                         Swal.fire({
                                             title: '!نجحت العملية',
-                                            text: 'عُدِّلَت البيانات بنجاح',
+                                            text: response.message,
                                             icon: 'success'
                                         }).then(() => {
                                             window.location.href = '@Url.Action("Index")';
@@ -87,7 +87,7 @@
                                     } else {
                                         Swal.fire({
                                             title: '!فشلت العملية',
-                                            text: 'لم تُعدَّل المعلومات',
+                                            text: response.message,
                                             icon: 'error'
                                         });
                                     }
@@ -95,7 +95,7 @@
                                 error: function () {
                                     Swal.fire({
                                         title: 'Error!',
-                                        text: 'An unexpected error occurred.',
+                                        text: response.message,
                                         icon: 'error'
                                     });
                                 }

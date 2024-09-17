@@ -1,110 +1,143 @@
-﻿
-@* 
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-    }
+﻿@model room_reservation.ViewModel.BookingViewModel
 
-@model room_reservation.ViewModel.BookingViewModel
-
-<div class="block-header border-bottom px-4 py-4">
-    <h5 class="m-0">عرض بيانات طلب الحجز</h5>
-</div>
-<div class="row justify-content-center">
-    <div class="col-md-8">
-        
-        <form id="bookingForm" method="post">
-            <input hidden asp-for="guid" />
-            <div class="row">
-@*                 <input type="hidden" asp-for="guid" />
- *@                <!-- Displaying Booking Details -->
-                <div class="col-md-6">
-                    <div class="mb-4">
-                        <label class="mb-1">  اسم مقدم الطلب</label>
-                        <p class="form-control-plaintext">@Model.FullName</p>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="mb-4">
-                        <label class="mb-1"> البريد الالكتروني </label>
-                        <p class="form-control-plaintext">@Model.Email</p>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="mb-4">
-                        <label class="mb-1">رقم الهاتف  </label>
-                        <p class="form-control-plaintext">@Model.PhoneNumber</p>
-                    </div>
-                </div>
-              @*   <div class="col-md-6">
-                    <div class="mb-4">
-                        <label class="mb-1">أسم المبنى</label>
-                        <p class="form-control-plaintext">@Model.BuildingNameAr</p>
-                    </div>
-                </div>
-
-                <div class="col-md-6">
-                    <div class="mb-4">
-                        <label class="control-label">رقم الطابق</label>
-                        <p class="form-control-plaintext">@Model.FloorNo</p>
-                    </div>
-                </div> *@
-
-                <div class="col-md-6">
-                    <div class="mb-4">
-                        <label class="control-label">رقم القاعة</label>
-                        <p class="form-control-plaintext">@Model.RoomNo</p>
-                    </div>
-                </div>
-
-                <div class="col-md-6">
-                    <div class="mb-4">
-                        <label class="control-label">تاريخ الحجز</label>
-                        <p class="form-control-plaintext">@Model.BookingDate.ToString("yyyy-MM-dd")</p>
-                    </div>
-                </div>
-
-                <div class="col-md-6">
-                    <div class="mb-4">
-                        <label class="control-label">الاستيعاب</label>
-                        <p class="form-control-plaintext">@Model.SeatCapacity</p>
-                    </div>
-                </div>
-
-                <div class="col-md-6">
-                    <div class="mb-4">
-                        <label class="control-label">بداية الحجز</label>
-                        <p class="form-control-plaintext">@Model.BookingStart.ToString("HH:mm")</p>
-                    </div>
-                </div>
-
-                <div class="col-md-6">
-                    <div class="mb-4">
-                        <label class="control-label">نهاية الحجز</label>
-                        <p class="form-control-plaintext">@Model.BookingEnd.ToString("HH:mm")</p>
-                    </div>
-                </div>
-
-                <div class="col-md-6">
-                    <div class="mb-4">
-                        <label class="control-label">حالة الحجز</label>
-                        <p class="form-control-plaintext">@Model.BookingStatues</p>
-                    </div>
-                </div>
-
-                <div class="col-md-6">
-                    <div class="mb-4">
-                        <label class="control-label">نوع القاعة</label>
-                        <p class="form-control-plaintext">@Model.RoomAR</p>
-                    </div>
-                </div>
+<div class="container mt-5">
+    <div class="card border-light shadow-sm">
+        <div class="card-body">
+            <!-- Title inside the card body -->
+            <div class="mb-4">
+                <h5 class="m-0">تفاصيل الحجز</h5>
             </div>
+            <form asp-action="Details" method="post">
+                <input type="hidden" asp-for="BookingId" />
 
-            <div class="d-flex justify-content-end">
-                <button type="submit" class="btn btn-success px-5" title="قبول">قبول</button>
-                <button type="button" class="btn btn-danger px-5" title="رفض" data-bs-toggle="modal" data-bs-target="#rejectModal">رفض</button>
-            </div>
-        </form>
+                <div class="row">
+                    <!-- Define a color class for card borders -->
+                    <style>
+                        .field-card {
+                            border: 1px solid #e0e0e0; /* Light grey border */
+                            border-radius: 3px;
+                            background-color: #f8f9fa; /* Light background color */
+                            padding: 0.5rem; /* Padding inside the card */
+                            margin-bottom: 0.5rem; /* Margin between cards */
+                            display: flex; /* Flex display for alignment */
+                            align-items: center; /* Center items vertically */
+                            height: 2.5rem; /* Fixed height for uniformity */
+                        }
+
+                        .field-label {
+                            font-size: 0.75rem; /* Smaller font size for labels */
+                            margin-right: 0.5rem; /* Space between label and value */
+                            flex-shrink: 0; /* Prevent label from shrinking */
+                        }
+
+                        .field-value {
+                            font-size: 0.75rem; /* Smaller font size for values */
+                            margin: 0; /* Remove margin for values */
+                            flex-grow: 1; /* Allow value to grow and take available space */
+                            overflow: hidden; /* Hide overflow text */
+                            text-overflow: ellipsis; /* Ellipsis for overflow text */
+                        }
+
+                        .btn-custom {
+                            background-color: #007bff; /* Primary button color */
+                            border-color: #007bff; /* Button border color */
+                            color: #ffffff; /* Button text color */
+                        }
+
+                            .btn-custom:hover {
+                                background-color: #0056b3; /* Darker color for hover */
+                                border-color: #004085; /* Darker border color for hover */
+                            }
+                    </style>
+
+                    <!-- Applicant Name -->
+                    <div class="col-md-6 mb-2">
+                        <div class="field-card">
+                            <label class="field-label">اسم مقدم الطلب:</label>
+                            <p class="field-value">@Model.FullName</p>
+                        </div>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="col-md-6 mb-2">
+                        <div class="field-card">
+                            <label class="field-label">البريد الالكتروني:</label>
+                            <p class="field-value">@Model.Email</p>
+                        </div>
+                    </div>
+
+                    <!-- Phone Number -->
+                    <div class="col-md-6 mb-2">
+                        <div class="field-card">
+                            <label class="field-label">رقم الهاتف:</label>
+                            <p class="field-value">@Model.PhoneNumber</p>
+                        </div>
+                    </div>
+
+                    <!-- Room Number -->
+                    <div class="col-md-6 mb-2">
+                        <div class="field-card">
+                            <label class="field-label">رقم القاعة:</label>
+                            <p class="field-value">@Model.RoomNo</p>
+                        </div>
+                    </div>
+
+                    <!-- Booking Date -->
+                    <div class="col-md-6 mb-2">
+                        <div class="field-card">
+                            <label class="field-label">تاريخ الحجز:</label>
+                            <p class="field-value">@Model.BookingDate.ToString("yyyy-MM-dd")</p>
+                        </div>
+                    </div>
+
+                    <!-- Seat Capacity -->
+                    <div class="col-md-6 mb-2">
+                        <div class="field-card">
+                            <label class="field-label">الاستيعاب:</label>
+                            <p class="field-value">@Model.SeatCapacity</p>
+                        </div>
+                    </div>
+
+                    <!-- Booking Start -->
+                    <div class="col-md-6 mb-2">
+                        <div class="field-card">
+                            <label class="field-label">بداية الحجز:</label>
+                            <p class="field-value">@Model.BookingStart</p>
+                        </div>
+                    </div>
+
+                    <!-- Booking End -->
+                    <div class="col-md-6 mb-2">
+                        <div class="field-card">
+                            <label class="field-label">نهاية الحجز:</label>
+                            <p class="field-value">@Model.BookingEnd</p>
+                        </div>
+                    </div>
+
+                    <!-- Booking Status -->
+                    <div class="col-md-6 mb-2">
+                        <div class="field-card">
+                            <label class="field-label">حالة الحجز:</label>
+                            <p class="field-value">@Model.BookingStatusAR</p>
+                        </div>
+                    </div>
+
+                    <!-- Room Type -->
+                    <div class="col-md-6 mb-2">
+                        <div class="field-card">
+                            <label class="field-label">نوع القاعة:</label>
+                            <p class="field-value">@Model.RoomAR</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Buttons -->
+                <div class="d-flex justify-content-end mt-4">
+                    <button type="submit" class="btn btn-success px-5" title="قبول">قبول</button>
+                    <button type="button" class="btn btn-danger px-5" title="رفض" data-bs-toggle="modal" data-bs-target="#rejectModal">رفض</button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
@@ -133,6 +166,8 @@
         </div>
     </div>
 </div>
+
+
 
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
