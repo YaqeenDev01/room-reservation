@@ -79,7 +79,7 @@ ViewData["Title"] = "الصفحة الرئيسية";
                     <td>@item.RoomAR</td>
                     <td>@item.SeatCapacity</td>
                     <td>
-                        <a asp-action="Add" asp-route-id="@item.Guid" class="btn btn-sm btn-primary">حجز</a>
+                        <a asp-action="AddBooking" asp-route-id="@item.Guid" class="btn btn-sm btn-primary">حجز</a>
                     </td>
                 </tr>
             }
