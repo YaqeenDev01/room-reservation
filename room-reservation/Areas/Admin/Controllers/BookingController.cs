@@ -1,39 +1,35 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using room_reservation.Domain;
 using room_reservation.Models;
 using room_reservation.ViewModel;
-using System.Linq;
 using System.Security.Claims;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-
-
-namespace room_reservation.Controllers
+namespace room_reservation.Areas.Admin.Controllers;
+[Area("Admin")]
+[Authorize(Roles = "Admin, SiteAdmin")]
+public class BookingController : Controller
 {
     
-    public class BookingController : Controller
+    private readonly BookingDomain _BookingDomain;
+    private readonly FloorDomain _floorDomain;
+    private readonly BuildingDomain _buildingDomain;
+    private readonly RoomDomain _roomDomain;
+    private readonly RoomTypeDomain _roomTypeDomain;
+    private readonly UserDomain _userDomain;
+    
+    public BookingController(BookingDomain bookingDomain,BuildingDomain buildingDomain, FloorDomain floorDomain, RoomDomain roomDomain ,RoomTypeDomain roomTypeDomain,UserDomain userDomain)
     {
-
-        private readonly BookingDomain _BookingDomain;
-        private readonly FloorDomain _floorDomain;
-        private readonly BuildingDomain _buildingDomain;
-        private readonly RoomDomain _roomDomain;
-        private readonly RoomTypeDomain _roomTypeDomain;
-        private readonly UserDomain _userDomain;
-        
-        public BookingController(BookingDomain bookingDomain,BuildingDomain buildingDomain, FloorDomain floorDomain, RoomDomain roomDomain ,RoomTypeDomain roomTypeDomain,UserDomain userDomain)
-        {
-            _BookingDomain = bookingDomain;
-            _buildingDomain = buildingDomain;
-            _floorDomain = floorDomain;
-            _roomDomain = roomDomain;
-            _roomTypeDomain = roomTypeDomain;
-            _userDomain = userDomain;
+        _BookingDomain = bookingDomain;
+        _buildingDomain = buildingDomain;
+        _floorDomain = floorDomain;
+        _roomDomain = roomDomain;
+        _roomTypeDomain = roomTypeDomain;
+        _userDomain = userDomain;
 
 
-        }
+    }
+
 
         [Authorize]
         [HttpGet]
@@ -77,22 +73,7 @@ namespace room_reservation.Controllers
             return await _floorDomain.GetFloorByBuildingId(id);
 
         }
-        // All bookings shown to admin 
-        // view the bookings page 
-        // public async Task<IActionResult> ViewBooking()
-        // {
-        //     var booking = await _BookingDomain.GetAllBooking();
-        //     return View(booking);
-        // }
-        //
-        // All bookings of the same building shown to the site admin
-        // public async Task<IActionResult> ViewBooking()
-        // {
-        //     var userEmail = User.FindFirst(ClaimTypes.Email).Value;
-        //     var booking = await _BookingDomain.GetBuildingBookings(userEmail);
-        //     return View(booking);
-        // }
-        
+    
         // User bookings
         [Authorize]
         public async Task<IActionResult>ViewBooking()
@@ -109,7 +90,7 @@ namespace room_reservation.Controllers
             return View(await _BookingDomain.getAllBookingByRoomGuid(id));
         }
         [HttpPost]
-        [ValidateAntiForgeryToken]
+     
         [Authorize]
         public async Task<IActionResult> AddBooking(BookingViewModel booking)
         {
@@ -142,15 +123,16 @@ namespace room_reservation.Controllers
             
         }
 
-// Change to cancel and user booking statues to change it to cancel 
-
-public async Task<IActionResult> Cancel(Guid id)
+  // Change to cancel and user booking statues to change it to cancel 
+     [Authorize]
+        public async Task<IActionResult> Cancel(Guid id)
         {
             
                 await _BookingDomain.CancelBooking(id,User.FindFirst(ClaimTypes.Email).Value);
                 return Json(new { success = true });
                 
         }
+        [Authorize]
         [HttpGet]
         public IActionResult BookingDetails(Guid id) {
             return View(_BookingDomain.getBookingByid(id));
@@ -168,35 +150,86 @@ public async Task<IActionResult> Cancel(Guid id)
             return View();
 
         }
-       
-
-        //[HttpPost]
-        //public async Task<IActionResult> ApproveBooking(Guid id)
-        //{
-        //    bool result = await _BookingDomain.ApproveBooking(id);
-        //               return RedirectToAction(nameof(Index));
-
-        //}
-
-        //[HttpPost]
-        //public async Task<IActionResult> RejectBooking(Guid id, string rejectReason)
-        //{
-        //    bool result = await _BookingDomain.RejectBooking(id, rejectReason);
-
-        //    return RedirectToAction(nameof(Index));
-
-
-        //}
-
-       
+ 
+  
+ 
+    [Authorize(Roles = "Admin")]
+    // All bookings shown to admin 
+    // view the bookings page 
+    public async Task<IActionResult> ViewAllBooking()
+    {
+        var booking = await _BookingDomain.GetAllBooking();
+        return View(booking);
     }
-}
-        
+    //All bookings of the same building shown to the site admin
 
+    [Authorize(Roles = "Admin, SiteAdmin")]
+    public async Task<IActionResult> ViewBuildingBookings()
+    {
+        var userEmail = User.FindFirst(ClaimTypes.Email).Value;
+        var booking = await _BookingDomain.GetBuildingBookings(userEmail);
+        return View(booking);
+    }
+    
+  
+    [Authorize(Roles = "Admin, SiteAdmin")]
+    
+    [HttpPost]
+    public async Task<IActionResult> ApproveBooking(Guid id)
+    {
+       
+            
+        bool result = await _BookingDomain.ApproveBooking(id,User.FindFirst(ClaimTypes.Email)?.Value);
+        if (result)
+        {
+            return Json(new { success = true });
+        }
+        return Json(new { success = false });
+    }
 
+    [Authorize(Roles = "Admin, SiteAdmin")]
+
+    [HttpPost]
+    public async Task<IActionResult> RejectBooking(Guid id, string rejectReason)
+    {
+        bool result = await _BookingDomain.RejectBooking(id, rejectReason,User.FindFirst(ClaimTypes.Email)?.Value);
+        if (result)
+        {
+            return Json(new { success = true });
+        }
+        return Json(new { success = false });
+    }
+
+    [Authorize(Roles = "Admin, SiteAdmin")]
+    public async Task<IActionResult> Orders()
+    {
+        var userEmail = User.FindFirst(ClaimTypes.Email)?.Value;
+        var orders = await _BookingDomain.GetExtrnalBooking(userEmail);
+        return View(orders);
+    }
     
 
+    [Authorize(Roles = "Admin, SiteAdmin")]
+    [HttpGet]
+    public async Task<IActionResult> OrderInfo(Guid id)
+    {
+
+        return View(await _BookingDomain.GetBookingByGuid(id));
+    }
+    [HttpPost]
+    public async Task<IActionResult> OrderInfo( BookingViewModel booking)
+    {
+        if (ModelState.IsValid)
+        {
+
+            _BookingDomain.Orderinfo(booking);
+            return View ( );
+        }
+        return View();
 
 
-
-  
+    }
+    
+    
+    
+}
