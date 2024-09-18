@@ -9,7 +9,12 @@ using System;
 using System.Linq;
 using System.Runtime.ConstrainedExecution;
 using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
+using System.Xml;
+using OfficeOpenXml;
 
 namespace room_reservation.Controllers
 {
@@ -41,7 +46,7 @@ namespace room_reservation.Controllers
         {
             ViewBag.Building = new SelectList(await _BuildingDomain.GetAllBuilding(), "BuildingId", "BuildingNameAr");
             ViewBag.Roles = new SelectList(await _RoleDomain.GetAllRoles(), "Id", "RoleName");
-            return View();    
+            return View();
 
         }
 
@@ -51,7 +56,7 @@ namespace room_reservation.Controllers
         {
             ViewBag.Building = new SelectList(await _BuildingDomain.GetAllBuilding(), "BuildingId", "BuildingNameAr");
             ViewBag.Roles = new SelectList(await _RoleDomain.GetAllRoles(), "Id", "RoleName");
-            
+
             try
             {
                 if (ModelState.IsValid)
@@ -70,14 +75,14 @@ namespace room_reservation.Controllers
                         permissionViewModel.BuildingId = null;
                     }
 
-                    
-                   
+
+
                     int check = await _PermissionDomain.AddPermission(permissionViewModel, User.FindFirst(ClaimTypes.Email).Value, Int32.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value));
 
-                    
+
                     if (check == 1)
                     {
-                        
+
                         return Json(new { success = true, message = "أُضِيفت الصلاحية بنجاح" });
                     }
                     else if (check == -2)
@@ -111,7 +116,7 @@ namespace room_reservation.Controllers
             var user = await _UserDomain.GetUserByEmail(email);
             if (user != null)
             {
-                return Json(new { success = true, fullNameAR = user.FullNameAR, phoneNumber = user.PhoneNumber, college = user.CollegeName, department = user.DepartmentName});
+                return Json(new { success = true, fullNameAR = user.FullNameAR, phoneNumber = user.PhoneNumber, college = user.CollegeName, department = user.DepartmentName });
             }
             else
             {
@@ -156,7 +161,7 @@ namespace room_reservation.Controllers
                     var result = await _PermissionDomain.UpdatePermission(permissionViewModel, User.FindFirst(ClaimTypes.Email).Value, Int32.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value));
                     if (result)
                     {
-                        
+
                         return Json(new { success = true, message = "عُدِّلت الصلاحية بنجاح" });
                     }
                     else
@@ -169,12 +174,12 @@ namespace room_reservation.Controllers
                     return Json(new { success = false, message = ex.Message });
                 }
             }
-  
+
 
             return Json(new { success = false, message = "بيانات غير صالحة" });
         }
 
- 
+
 
         [Authorize(Roles = "Admin")]
         [HttpPost]
@@ -183,7 +188,7 @@ namespace room_reservation.Controllers
             var check = await _PermissionDomain.DeletePermission(guid, User.FindFirst(ClaimTypes.Email).Value, Int32.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value));
             if (check != null)
             {
-              
+
                 return Json(new { success = true, message = "حُذِفت الصلاحية" });
             }
             else
@@ -191,6 +196,43 @@ namespace room_reservation.Controllers
                 return Json(new { success = false, message = "لم تُحذَف الصلاحية" });
             }
         }
+
+
+        public async Task<ActionResult> ExportPermission()
+        {
+            var dataPermissions = await _PermissionDomain.GetExportablePermissions();
+
+            using (var package = new ExcelPackage())
+            {
+                var worksheet = package.Workbook.Worksheets.Add("Permissions");
+
+                worksheet.Cells[1, 1].Value = "البريد الإلكتروني";
+                worksheet.Cells[1, 2].Value = "الصلاحية";
+                worksheet.Cells[1, 3].Value = "المبنى";
+                worksheet.Cells[1, 4].Value = "رقم المبنى";
+
+                // Add data rows
+                int row = 2;
+                foreach (var permission in dataPermissions)
+                {
+                    worksheet.Cells[row, 1].Value = permission.Email;
+                    worksheet.Cells[row, 2].Value = permission.RoleName;
+                    worksheet.Cells[row, 3].Value = permission.BuildingName;
+                    worksheet.Cells[row, 4].Value = permission.BuildingNum == 0 ? "غير محدد" : permission.BuildingNum.ToString();
+                    row++;
+                }
+
+                // Generate the file
+                var stream = new MemoryStream();
+                package.SaveAs(stream);
+                stream.Position = 0;
+
+                var fName = $"Permissions-{DateTime.Now:yyyyMMddHHmmss}.xlsx";
+                return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fName);
+            }
+        }
+
+
 
 
 

@@ -204,6 +204,23 @@ namespace room_reservation.Domain
              
             
         }
+        public async Task<IEnumerable<PermissionViewModel>> GetExportablePermissions()
+        {
+            return await _context.tblPermissions
+                .Include(r => r.Role)
+                .Include(b => b.Building)
+                .Where(p => !p.IsDeleted)
+                .Select(p => new PermissionViewModel
+                {
+                    Email = p.Email ,
+                    RoleName = p.Role.RoleNameAR, 
+                    BuildingName = p.Building != null ? p.Building.BuildingNameAr : "غير محدد", 
+                    BuildingNum = p.Building != null ? p.Building.BuildingNo : 0 
+                })
+                .ToListAsync();
+        }
+
+
 
     }
 }
