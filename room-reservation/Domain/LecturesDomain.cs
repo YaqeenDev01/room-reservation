@@ -34,7 +34,7 @@ namespace room_reservation.Domain
         }
 
         // Check if a lecture exists with the same parameters
-        public bool IsLectureExists(string buildingNo, string roomNo, DateTime lectureDate, TimeSpan startLectureTime, TimeSpan endLectureTime , string semester)
+        public bool IsLectureExists(int buildingNo, int roomNo, DateTime lectureDate, TimeSpan startLectureTime, TimeSpan endLectureTime , string semester)
         {
             return _context.tblLectures.Any(l => l.BuildingNo == buildingNo
                                                 && l.RoomNo == roomNo
@@ -45,7 +45,7 @@ namespace room_reservation.Domain
         }
 
         // Check if a lecture overlaps with existing lectures
-        public async Task<bool> IsLectureOverlapping(string buildingNo, string roomNo, DateTime lectureDate, TimeSpan startLectureTime, TimeSpan endLectureTime, string semester)
+        public async Task<bool> IsLectureOverlapping(int buildingNo, int roomNo, DateTime lectureDate, TimeSpan startLectureTime, TimeSpan endLectureTime, string semester)
         {
             return await _context.tblLectures.AnyAsync(l =>
                 l.BuildingNo == buildingNo &&

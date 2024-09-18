@@ -7,9 +7,11 @@ namespace room_reservation.Models
 
         public int Id { get; set; }
 
-        public string BuildingNo { get; set; }
+        public int BuildingNo { get; set; }
 
-        public string RoomNo { get; set; }
+        public int RoomNo { get; set; }
+
+        public string BuildingNameAR {  get; set; }
 
         public string Semester { get; set; }
 

@@ -12,12 +12,12 @@ namespace room_reservation.ViewModel
         [Required(ErrorMessage = "هذا الحقل مطلوب")]
         [DisplayName(" رقم المبنى")]
         [Range(1, 9999, ErrorMessage = "رقم المبنى لايمكن ان يكون سالبًا ")]
-        public string BuildingNo { get; set; }
+        public int BuildingNo { get; set; }
 
         [Required(ErrorMessage = "هذا الحقل مطلوب")]
         [DisplayName("رقم القاعة")]
         [Range(1, 9999, ErrorMessage = "رقم القاعة لايمكن ان يكون سالبًا")]
-        public string RoomNo { get; set; }
+        public int RoomNo { get; set; }
 
         [Required(ErrorMessage = "هذا الحقل مطلوب")]
         [DisplayName("الفصل الدراسي")]
@@ -38,6 +38,8 @@ namespace room_reservation.ViewModel
         [Required(ErrorMessage = "هذا الحقل مطلوب")]
         [DisplayName("مدة المحاضرة")]
         public decimal LectureDurations { get; set; }
+
+        public string BuildingNameAR { get; set; }
     }
 }
 

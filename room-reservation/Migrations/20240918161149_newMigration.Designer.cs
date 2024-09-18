@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using room_reservation.Models;
 
@@ -11,9 +12,10 @@ using room_reservation.Models;
 namespace room_reservation.Migrations
 {
     [DbContext(typeof(KFUSpaceContext))]
-    partial class KFUSpaceContextModelSnapshot : ModelSnapshot
+    [Migration("20240918161149_newMigration")]
+    partial class newMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
