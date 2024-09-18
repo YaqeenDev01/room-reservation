@@ -56,10 +56,11 @@
                                 @x.BookingStatues.StatuesAR
                             </td>
                             <td>
-                                <a asp-action="BookingDetails" asp-route-id="@x.guid" class="btn btn-sm btn-primary">عرض</a>
+                                <a asp-action="BookingDetails" asp-route-id="@x.guid" class="btn btn-primary btn-small-adjust">عرض</a>
 
-                                <a  onclick="confirmDelete(@x.guid)" data-id="@x.guid" id="cancel" class="btn btn-sm btn-danger delete-btn">إلغاء</a>
+                                <a onclick="confirmDelete(@x.guid)" data-id="@x.guid" id="cancel" class="btn btn-danger delete-btn btn-small-adjust">إلغاء</a>
                             </td>
+                            
                         </tr>
                     }
                 }

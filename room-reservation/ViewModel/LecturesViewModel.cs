@@ -1,5 +1,8 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Collections;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using room_reservation.Models;
 
 namespace room_reservation.ViewModel
 {
@@ -9,10 +12,10 @@ namespace room_reservation.ViewModel
 
         public int Id { get; set; }
 
-        [Required(ErrorMessage = "هذا الحقل مطلوب")]
-        [DisplayName(" رقم المبنى")]
-        [Range(1, 9999, ErrorMessage = "رقم المبنى لايمكن ان يكون سالبًا ")]
-        public int BuildingNo { get; set; }
+        //[Required(ErrorMessage = "هذا الحقل مطلوب")]
+        //[DisplayName(" رقم المبنى")]
+        //[Range(1, 9999, ErrorMessage = "رقم المبنى لايمكن ان يكون سالبًا ")]
+        //public int BuildingNo { get; set; }
 
         [Required(ErrorMessage = "هذا الحقل مطلوب")]
         [DisplayName("رقم القاعة")]
@@ -39,6 +42,8 @@ namespace room_reservation.ViewModel
         [DisplayName("مدة المحاضرة")]
         public decimal LectureDurations { get; set; }
 
+        [Required(ErrorMessage = "هذا الحقل مطلوب")]
+        [DisplayName("اسم المبنى")]
         public string BuildingNameAR { get; set; }
     }
 }

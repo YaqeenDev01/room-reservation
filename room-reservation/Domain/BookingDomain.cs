@@ -42,43 +42,18 @@ namespace room_reservation.Domain
                 FullName = x.FullName,
                 Email = x.Email,
                 Duration = x.Duration,
-                RejectReason = x.RejectReason, 
+                RejectReason = x.RejectReason,
                 FloorNo = x.Room.Floor.FloorNo,
-                BuildingNameAr = x.Room.Floor.Building.BuildingNameAr, 
-                SeatCapacity=x.Room.SeatCapacity,
+                BuildingNameAr = x.Room.Floor.Building.BuildingNameAr,
+                SeatCapacity = x.Room.SeatCapacity,
                 UserBuildingAR = x.UserBuildingAR,
-                
-                
-                //Bookings.BookingStatues = booking.BookingStatues
-                //Bookings.RejectReason = booking.RejectReason;
-                //Bookings.Duration = booking.Duration;
-                //Bookings.Email = booking.Email;
-                //Bookings.FullName = booking.FullName;
-                //Bookings.PhoneNumber = booking.PhoneNumber;
 
+
+               
 
             }).ToListAsync();
         }
-        
-        // public async Task<IEnumerable<LecturesViewModel>> getAlllectures()
-        // {
-        //
-        //     return await _context.tblLectures.Select(x => new LecturesViewModel
-        //     {
-        //         Id = x.Id,
-        //         BuildingNo = x.BuildingNo,
-        //         RoomNo = x.RoomNo,
-        //         LectureDate = x.LectureDate,
-        //         StartLectureTime = x.StartLectureTime,
-        //         EndLectureTime = x.EndLectureTime,
-        //         //LectureDurations = x.LectureDurations,
-        //         Semester = x.Semester
-        //
-        //
-        //     }).ToListAsync();
-        //
-        //
-        // }
+
         public async Task<IEnumerable<tblBookings>> getAllBooking()
         {
             return await _context.tblBookings.ToListAsync();
@@ -111,9 +86,9 @@ namespace room_reservation.Domain
                 Bookings.IsDeleted = false;
                 Bookings.RoomId = room.Id;
                 //if (user.CollegeCode == Booking.BuildingNameAr) this solution works but it is better to use numbers
-                
+
                 // if the user is from the same uni or  building or from the  department of Information Techonolgy they can book directly 
-                if((user.CollegeCode == building.Code)||(user.DepartmentCode==building.Code)||(user.DepartmentCode=="01"))
+                if ((user.CollegeCode == building.Code) || (user.DepartmentCode == building.Code) || (user.DepartmentCode == "01"))
                 {
                     Bookings.BookingStatuesId = 1;
                 }
@@ -121,19 +96,19 @@ namespace room_reservation.Domain
                 {
                     Bookings.BookingStatuesId = 2;
                 }
-              _context.tblBookings.Add(Bookings);
-              await _context.SaveChangesAsync();
-              //  var bookingLog = new BookingsLog();
-              //  bookingLog.BookingId = Booking.BookingId;
-              //  bookingLog.BookedBy = user.Email;
-              //  bookingLog.GrantedBy =" ";
-              //  bookingLog.BookingStatus = Booking.BookingStatuesId;
-              //  bookingLog.OperationDate=DateTime.Now;
-              //  bookingLog.AdditionalDetails = "";
-              // _context.BookingsLog.Add(bookingLog);
-              // await _context.SaveChangesAsync();
-               
-               
+                _context.tblBookings.Add(Bookings);
+                await _context.SaveChangesAsync();
+                //  var bookingLog = new BookingsLog();
+                //  bookingLog.BookingId = Booking.BookingId;
+                //  bookingLog.BookedBy = user.Email;
+                //  bookingLog.GrantedBy =" ";
+                //  bookingLog.BookingStatus = Booking.BookingStatuesId;
+                //  bookingLog.OperationDate=DateTime.Now;
+                //  bookingLog.AdditionalDetails = "";
+                // _context.BookingsLog.Add(bookingLog);
+                // await _context.SaveChangesAsync();
+
+
                 return 1;
             }
             catch (Exception ex)
@@ -209,37 +184,13 @@ namespace room_reservation.Domain
             await _context.SaveChangesAsync();
 
         }
-        //public string DetailsBooking(BookingViewModel booking)
-        //{
-        //    try
-        //    {
-        //        tblBookings Bookings = getBookingByGuid(booking.guid);
-        //        Bookings.Id = booking.Id;
-        //        Bookings.BookingDate = booking.BookingDate;
-        //        Bookings.BookingStart = booking.BookingStart;
-        //        Bookings.BookingEnd = booking.BookingEnd;
-        //        //Bookings.BookingStatues = booking.BookingStatues;
-        //        //Bookings.RejectReason = booking.RejectReason;
-        //        //Bookings.Duration = booking.Duration;
-        //        //Bookings.Email = booking.Email;
-        //        //Bookings.FullName = booking.FullName;
-        //        //Bookings.PhoneNumber = booking.PhoneNumber;
-
-
-        //        return "successful";
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        // تسجيل الخطأ أو معالجته هنا
-        //        return $"Error: {ex.Message}";
-        //    }
-        //}
+        
 
         public BookingViewModel DetailsBooking(BookingViewModel booking)
         {
             try
             {
-                tblBookings bookings = getBookingByGuid(booking.guid);
+                tblBookings bookings =  getBookingByGuid(booking.guid);
 
                 if (bookings == null)
                 {
@@ -307,6 +258,34 @@ namespace room_reservation.Domain
 
             return true;
         }
+        public  bool IsBookingExist(string BuildingNameAr, int roomNo, DateTime BookingDate, TimeSpan BookingStart, TimeSpan BookingEnd)
+        {
+            return  _context.tblBookings.Any(b => b.Room.Floor.Building.BuildingNameEn == BuildingNameAr
+                                                && b.Room.RoomNo == roomNo
+                                                && b.BookingDate == BookingDate
+
+                                                && b.BookingStart == BookingStart
+                                                && b.BookingEnd == BookingEnd);
+        }
+        public async Task<bool> IsBookingOverlapping(string BuildingNameAr, int roomNo, DateTime BookingDate, TimeSpan BookingStart, TimeSpan BookingEnd)
+        {
+            return await _context.tblBookings.AnyAsync(b =>
+               b.Room.Floor.Building.BuildingNameAr == BuildingNameAr
+                                                && b.Room.RoomNo == roomNo
+                                                && b.BookingDate == BookingDate &&
+                
+               
+                     (b.BookingStart < BookingEnd && b.BookingEnd > BookingStart));
+        }
+        public async Task<bool> IsLectureTimeAvailable(string BuildingNameAR,int roomNo, DateTime bookingDate, TimeSpan bookingStart, TimeSpan bookingEnd)
+        {
+            return !await _context.tblLectures.AnyAsync(l => l.BuildingNameAR == BuildingNameAR &&
+
+                l.RoomNo == roomNo &&
+
+                l.LectureDate == bookingDate &&
+                (l.StartLectureTime < bookingEnd && l.EndLectureTime > bookingStart));
+        }
 
         //        // جلب المستخدم بناءً على البريد الإلكتروني
         //        var user = await _userDomain.GetUserByEmail(Booking.Email);
@@ -341,8 +320,8 @@ namespace room_reservation.Domain
         //        return 0;
         //    }
         //}
-        
-   public async Task<IEnumerable<BookingViewModel>> GetUserBookings(string userEmail)
+
+        public async Task<IEnumerable<BookingViewModel>> GetUserBookings(string userEmail)
         {
             var user = await _userDomain.GetUserByEmail(userEmail);
 

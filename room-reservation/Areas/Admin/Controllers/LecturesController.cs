@@ -41,8 +41,10 @@ namespace room_reservation.Areas.Admin.Controllers
             if (ModelState.IsValid)
             {
                 bool exists = _lecturesDomain.IsLectureExists(
-                    lectures.BuildingNo,
+                    //lectures.BuildingNo,
+                    
                     lectures.RoomNo,
+                    lectures.BuildingNameAR,
                     lectures.LectureDate,
                     lectures.StartLectureTime,
                     lectures.EndLectureTime,
@@ -55,8 +57,9 @@ namespace room_reservation.Areas.Admin.Controllers
                 }
 
                 bool isOverlapping = await _lecturesDomain.IsLectureOverlapping(
-                    lectures.BuildingNo,
+                    //lectures.BuildingNo,
                     lectures.RoomNo,
+                    lectures.BuildingNameAR,
                     lectures.LectureDate,
                     lectures.StartLectureTime,
                     lectures.EndLectureTime,
@@ -65,7 +68,7 @@ namespace room_reservation.Areas.Admin.Controllers
 
                 if (isOverlapping)
                 {
-                    return Json(new { success = false, message = "وقت المحاضرة يتعارض مع محاضرة أخرى في نفس الفصل" });
+                    return Json(new { success = false, message = "وقت المحاضرة يتعارض مع محاضرة أخرى " });
                 }
 
                 try
@@ -116,8 +119,9 @@ namespace room_reservation.Areas.Admin.Controllers
             if (ModelState.IsValid)
             {
                 bool exists = _lecturesDomain.IsLectureExists(
-                    lectures.BuildingNo,
+                    //lectures.BuildingNo,
                     lectures.RoomNo,
+                    lectures.BuildingNameAR,
                     lectures.LectureDate,
                     lectures.StartLectureTime,
                     lectures.EndLectureTime,
@@ -130,8 +134,9 @@ namespace room_reservation.Areas.Admin.Controllers
                 }
 
                 bool isOverlapping = await _lecturesDomain.IsLectureOverlapping(
-                    lectures.BuildingNo,
+                    //lectures.BuildingNo,
                     lectures.RoomNo,
+                    lectures.BuildingNameAR,
                     lectures.LectureDate,
                     lectures.StartLectureTime,
                     lectures.EndLectureTime,
@@ -140,7 +145,7 @@ namespace room_reservation.Areas.Admin.Controllers
 
                 if (isOverlapping)
                 {
-                    return Json(new { success = false, message = "وقت المحاضرة يتعارض مع محاضرة أخرى في نفس الفصل" });
+                    return Json(new { success = false, message = "وقت المحاضرة يتعارض مع محاضرة أخرى " });
                 }
 
                 try
@@ -162,7 +167,7 @@ namespace room_reservation.Areas.Admin.Controllers
             }
             return Json(new { success = false, message = "فشلت العملية" });
         }
-
+        
         // POST: /Lecture/Delete
         [HttpPost]
         public async Task<IActionResult> DeleteLecture(int id)
