@@ -59,6 +59,7 @@ namespace room_reservation.ViewModel
         public int SeatCapacity { get; set; }
         public Guid RoomGuid { get; set; }
         public Guid BuildingGuid { get; set; }
+        public string GrantByEmail { get; set; }
 
 
 

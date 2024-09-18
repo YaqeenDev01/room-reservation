@@ -92,6 +92,7 @@ namespace room_reservation.Domain
             var buildingId =  await _context.tblBuildings.FirstOrDefaultAsync(x => x.Guid == Guid && x.IsDeleted == false);
             BuildingViewModel models = new BuildingViewModel
             {
+                BuildingId = buildingId.Id,
                 Guid = buildingId.Guid,
                 BuildingNameAr = buildingId.BuildingNameAr,
                 BuildingNo = buildingId.BuildingNo,

@@ -1,6 +1,6 @@
 ﻿@model IEnumerable<room_reservation.ViewModel.LecturesViewModel>
 @{
-    ViewData["Title"] = "Manage Lectures";
+    ViewData["Title"] = " ادارة المحاضرات";
 }
 
 <div class="block mb-4">
@@ -22,9 +22,10 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
+                        
                             <div class="form-group">
-                                <label for="BuildingNo">رقم المبنى</label>
-                                <input type="text" id="BuildingNo" class="form-control" />
+                                <label for="BuildingNameAR">اسم المبنى</label>
+                                <input type="text" id="BuildingNameAR" class="form-control" />
                             </div>
                             <div class="form-group">
                                 <label for="Semester">الفصل الدراسي</label>
@@ -42,10 +43,7 @@
                                 <label for="LectureDate">تاريخ المحاضرة</label>
                                 <input type="datetime-local" id="LectureDate" class="form-control" />
                             </div>
-                           @*  <div class="form-group">
-                                <label for="LectureDuration">مدة المحاضرة</label>
-                                <input type="number" id="LectureDuration" class="form-control" />
-                            </div> *@
+
                             <div class="form-group">
                                 <label for="RoomNo">رقم القاعة</label>
                                 <input type="text" id="RoomNo" class="form-control" />
@@ -66,12 +64,12 @@
         <table class="table table-hover js-dataTable">
             <thead>
                 <tr>
-                    <th>رقم المبنى</th>
+                   
+                    <th>اسم المبنى</th>
                     <th>الفصل الدراسي</th>
                     <th>وقت بدءالمحاضرة</th>
                     <th>وقت انتهاءالمحاضرة</th>
                     <th>تاريخ المحاضرة</th>
-                    @* <th>مدة المحاضرة</th> *@
                     <th>رقم القاعة</th>
                     <th class="text-end"></th>
                 </tr>
@@ -81,7 +79,8 @@
                     foreach (var x in Model)
                     {
                         <tr>
-                            <td>@x.BuildingNo</td>
+                           
+                            <td>@x.BuildingNameAR</td>
                             <td>@x.Semester</td>
                             <td>@x.StartLectureTime</td>
                             <td>@x.EndLectureTime</td>
@@ -100,7 +99,6 @@
         </table>
     </div>
 </div>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
 <script>
     $(document).ready(function () {

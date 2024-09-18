@@ -23,7 +23,8 @@ namespace room_reservation.Domain
             return await _context.tblLectures.Select(x => new LecturesViewModel
             {
                 Id = x.Id,
-                BuildingNo = x.BuildingNo,
+                //BuildingNo = x.BuildingNo,
+                BuildingNameAR = x.BuildingNameAR,
                 RoomNo = x.RoomNo,
                 LectureDate = x.LectureDate,
                 StartLectureTime = x.StartLectureTime,
@@ -34,10 +35,12 @@ namespace room_reservation.Domain
         }
 
         // Check if a lecture exists with the same parameters
-        public bool IsLectureExists(int buildingNo, int roomNo, DateTime lectureDate, TimeSpan startLectureTime, TimeSpan endLectureTime , string semester)
+        public bool IsLectureExists(/*int buildingNo*/int roomNo,string BuildingNameAR ,DateTime lectureDate, TimeSpan startLectureTime, TimeSpan endLectureTime , string semester)
         {
-            return _context.tblLectures.Any(l => l.BuildingNo == buildingNo
-                                                && l.RoomNo == roomNo
+            return _context.tblLectures.Any(l => /*l.BuildingNo == buildingNo*/
+                                                
+                                               /* &&*/ l.RoomNo == roomNo
+                                                && l.BuildingNameAR == BuildingNameAR
                                                 && l.LectureDate == lectureDate
                                                 && l.Semester == semester
                                                 && l.StartLectureTime == startLectureTime
@@ -45,11 +48,13 @@ namespace room_reservation.Domain
         }
 
         // Check if a lecture overlaps with existing lectures
-        public async Task<bool> IsLectureOverlapping(int buildingNo, int roomNo, DateTime lectureDate, TimeSpan startLectureTime, TimeSpan endLectureTime, string semester)
+        public async Task<bool> IsLectureOverlapping(/*int buildingNo,*/ int roomNo, string BuildingNameAR, DateTime lectureDate, TimeSpan startLectureTime, TimeSpan endLectureTime, string semester)
         {
             return await _context.tblLectures.AnyAsync(l =>
-                l.BuildingNo == buildingNo &&
+                //l.BuildingNo == buildingNo &&
+                
                 l.RoomNo == roomNo &&
+                l.BuildingNameAR == BuildingNameAR &&
                 l.LectureDate == lectureDate &&
                 l.Semester == semester &&
                 (l.StartLectureTime < endLectureTime && l.EndLectureTime > startLectureTime));
@@ -73,8 +78,9 @@ namespace room_reservation.Domain
             return new LecturesViewModel
             {
                 Id = lecture.Id,
-                BuildingNo = lecture.BuildingNo,
-                RoomNo = lecture.RoomNo,
+                BuildingNameAR = lecture.BuildingNameAR,
+                //BuildingNo = lecture.BuildingNo,
+                RoomNo = lecture.RoomNo,    
                 StartLectureTime = lecture.StartLectureTime,
                 EndLectureTime = lecture.EndLectureTime,
                 LectureDate = lecture.LectureDate,
@@ -90,7 +96,8 @@ namespace room_reservation.Domain
             {
                 var lectureInfo = new tblLectures
                 {
-                    BuildingNo = lectures.BuildingNo,
+                    //BuildingNo = lectures.BuildingNo,
+                    BuildingNameAR = lectures.BuildingNameAR,
                     RoomNo = lectures.RoomNo,
                     StartLectureTime = lectures.StartLectureTime,
                     EndLectureTime = lectures.EndLectureTime,
@@ -121,7 +128,8 @@ namespace room_reservation.Domain
                     return 0; // Lecture not found
                 }
 
-                lectureInfo.BuildingNo = lectures.BuildingNo;
+                //lectureInfo.BuildingNo = lectures.BuildingNo;
+                lectureInfo.BuildingNameAR = lectures.BuildingNameAR;
                 lectureInfo.RoomNo = lectures.RoomNo;
                 lectureInfo.StartLectureTime = lectures.StartLectureTime;
                 lectureInfo.EndLectureTime = lectures.EndLectureTime;

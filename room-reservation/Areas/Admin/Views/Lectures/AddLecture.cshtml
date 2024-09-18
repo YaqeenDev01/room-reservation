@@ -9,11 +9,12 @@
             <div class="col-md-8">
                 <form id="LectureForm" method="post">
                     <div class="row">
-                        <!-- Building Number -->
+                        <!-- Building Name -->
+                       
                         <div class="col-md-6 mb-4">
-                            <label asp-for="BuildingNo" class="control-label">رقم المبنى</label>
-                            <input asp-for="BuildingNo" class="form-control" />
-                            <span asp-validation-for="BuildingNo" class="text-danger"></span>
+                            <label asp-for="BuildingNameAR" class="control-label">اسم المبنى</label>
+                            <input asp-for="BuildingNameAR" class="form-control" />
+                            <span asp-validation-for="BuildingNameAR" class="text-danger"></span>
                         </div>
 
                         <!-- Lecture Date -->
@@ -67,8 +68,7 @@
     </div>
 </div>
 
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+       
 
         <script>
             $(document).ready(function () {
