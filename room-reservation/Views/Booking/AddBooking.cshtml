@@ -18,6 +18,8 @@
             <form id="bookingForm" method="post">
                 <div class="row">
                     <input type="hidden" asp-for="RoomGuid" />
+                        <input type="hidden" asp-for="BuildingGuid" />
+
                    
 
                     <div class="col-md-6">
@@ -91,7 +93,7 @@
                             event.preventDefault(); // Prevent the default form submission
 
                             $.ajax({
-                                url: '@Url.Action("Add")', // URL to the controller action
+                                url: '@Url.Action("AddBooking")', // URL to the controller action
                                 type: 'POST',
                                 data: $(this).serialize(),
                                 success: function (response) {

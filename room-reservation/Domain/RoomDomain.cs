@@ -73,7 +73,7 @@ namespace room_reservation.Domain
             try
             {
                 return await  _context.tblRooms
-                    .Where(r => r.guid == guid && !r.IsDeleted)
+                    .Include(x => x.Floor).ThenInclude(x => x.Building).Where(r => r.guid == guid && !r.IsDeleted)
                     .Select(r => new RoomViewModel
                     {
                         Id = r.Id,
@@ -82,10 +82,12 @@ namespace room_reservation.Domain
                         IsActive = r.IsActive,
                         FloorId = r.FloorId,
                         RoomTypeId = r.RoomTypeId,
+                        Guid = r.guid,
                         RoomType = r.RoomType,
                         FloorNo = r.Floor.FloorNo,
                         BuildingNameAr = r.Floor.Building.BuildingNameAr,
-                        Guid = r.Floor.Building.Guid,
+                        BuildingGuid = r.Floor.Building.Guid,
+                       
                     })
                     .FirstOrDefaultAsync();
 

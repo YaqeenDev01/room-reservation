@@ -107,7 +107,7 @@ $(document).ready(function () {
         scroller: true,
         dom: '<"table_wrapper"t><"bottom_bar"ip><"clear">',
         language: {
-            url: "Assets/lib/DataTable/js/dataTable_ar.json",
+            url: "../Assets/lib/DataTable/js/dataTable_ar.json",
         },
     });
 });
