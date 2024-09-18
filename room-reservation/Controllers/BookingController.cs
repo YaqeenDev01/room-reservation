@@ -8,11 +8,12 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics.Eventing.Reader;
 
 
 namespace room_reservation.Controllers
 {
-    
+
     public class BookingController : Controller
     {
 
@@ -22,8 +23,8 @@ namespace room_reservation.Controllers
         private readonly RoomDomain _roomDomain;
         private readonly RoomTypeDomain _roomTypeDomain;
         private readonly UserDomain _userDomain;
-        
-        public BookingController(BookingDomain bookingDomain,BuildingDomain buildingDomain, FloorDomain floorDomain, RoomDomain roomDomain ,RoomTypeDomain roomTypeDomain,UserDomain userDomain)
+
+        public BookingController(BookingDomain bookingDomain, BuildingDomain buildingDomain, FloorDomain floorDomain, RoomDomain roomDomain, RoomTypeDomain roomTypeDomain, UserDomain userDomain)
         {
             _BookingDomain = bookingDomain;
             _buildingDomain = buildingDomain;
@@ -39,34 +40,34 @@ namespace room_reservation.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            
-            
+
+
             // building name , floor no , capacity() 
-                ViewBag.Building = new SelectList(await _buildingDomain.GetAllBuilding(),"Guid","BuildingNameAr");
-                ViewBag.RoomTypes = new SelectList(await _roomTypeDomain.GetAllRoomTypes(), "guid", "RoomAR");
-           
-                return View();
-                
+            ViewBag.Building = new SelectList(await _buildingDomain.GetAllBuilding(), "Guid", "BuildingNameAr");
+            ViewBag.RoomTypes = new SelectList(await _roomTypeDomain.GetAllRoomTypes(), "guid", "RoomAR");
+
+            return View();
+
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public async Task<IActionResult> Index(Guid? buildingGuid, Guid? floorGuid,Guid? roomTypeGuid,int? seatCapacity)
+        public async Task<IActionResult> Index(Guid? buildingGuid, Guid? floorGuid, Guid? roomTypeGuid, int? seatCapacity)
         {
-           // var rooms = await _roomDomain.GetAllRooms();
+            // var rooms = await _roomDomain.GetAllRooms();
             // building name , floor no , capacity() 
-            ViewBag.Building = new SelectList(await _buildingDomain.GetAllBuilding(),"Guid","BuildingNameAr",buildingGuid);
-            ViewBag.RoomTypes = new SelectList(await _roomTypeDomain.GetAllRoomTypes(), "guid", "RoomAR",roomTypeGuid);
-       
-       
+            ViewBag.Building = new SelectList(await _buildingDomain.GetAllBuilding(), "Guid", "BuildingNameAr", buildingGuid);
+            ViewBag.RoomTypes = new SelectList(await _roomTypeDomain.GetAllRoomTypes(), "guid", "RoomAR", roomTypeGuid);
+
+
             var rooms = await _roomDomain.GetRoomByFilter(buildingGuid, floorGuid, roomTypeGuid, seatCapacity);
             return View(rooms);
- 
+
 
         }
-        
-        
-        
+
+
+
         public async Task<IList<FloorViewModel>> getFloorbyGuid(Guid id)
         {
             return await _floorDomain.GetFloorByBuildingGuid(id);
@@ -84,7 +85,7 @@ namespace room_reservation.Controllers
             var booking = await _BookingDomain.GetAllBooking();
             return View(booking);
         }
-        
+
         // All bookings of the same building shown to the site admin
         // public async Task<IActionResult> ViewBooking()
         // {
@@ -92,7 +93,7 @@ namespace room_reservation.Controllers
         //     var booking = await _BookingDomain.GetBuildingBookings(userEmail);
         //     return View(booking);
         // }
-        
+
         // User bookings
         // public async Task<IActionResult> Book()
         // {
@@ -101,49 +102,102 @@ namespace room_reservation.Controllers
         //     return View(booking);
         // }
 
+
         [Authorize]
         [HttpGet]
         public async Task<IActionResult> AddBooking(Guid id)
         {
             return View(await _BookingDomain.getAllBookingByRoomGuid(id));
         }
+        [Authorize]
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize]
+
+
         public async Task<IActionResult> AddBooking(BookingViewModel booking)
         {
-                booking.Email =User.FindFirst(ClaimTypes.Email).Value;
-                
-                try
-                {
-                    if (ModelState.IsValid)
-                    {
-                        int check =  await _BookingDomain.AddBooking(booking);
-                        if (check == 1)
-                        {
-                            return Json(new { success = true, message = "تم الحجز بنجاح" });
+            booking.Email = User.FindFirst(ClaimTypes.Email)?.Value;
 
-                        }
-                        else
-                        {
-                            return Json(new { success = false, message = "لم يتم الحجز" });
-                        }
-                    }
-                    else
-                    {
-                        return Json(new { success = false, message = "لابد من إدخال بيانات الحجز" });
-                    }
-                }
-                catch (Exception ex)
+            try
+            {
+                // Check if the booking exists
+                bool exists = await _BookingDomain.IsBookingExist(
+                    booking.BuildingNameAr, // Uncomment and use the relevant property
+                    booking.RoomNo,         // Uncomment and use the relevant property
+                    booking.BookingDate,
+                    booking.BookingStart,
+                    booking.BookingEnd
+                );
+
+                if (exists)
                 {
-                    return Json(new { success = false, message = ex.Message });
+                    return Json(new { success = false, message = "هذا الحجز موجود مسبقاً." });
                 }
-            
+
+                // Check for overlapping bookings
+                bool isOverlapping = await _BookingDomain.IsBookingOverlapping(
+                    booking.BuildingNameAr, // Uncomment and use the relevant property
+                    booking.RoomNo,         // Uncomment and use the relevant property
+                    booking.BookingDate,
+                    booking.BookingStart,
+                    booking.BookingEnd
+                );
+
+                if (isOverlapping)
+                {
+                    return Json(new { success = false, message = "يوجد حجز متعارض." });
+                }
+
+                // Check for lecture time conflicts
+                bool isLectureTimeAvailable = await _BookingDomain.IsLectureTimeAvailable(
+                    booking.BuildingNameAr, // Uncomment and use the relevant property
+                    booking.RoomNo,         // Uncomment and use the relevant property
+                    booking.BookingDate,
+                    booking.BookingStart,
+                    booking.BookingEnd
+                );
+
+                if (!isLectureTimeAvailable)
+                {
+                    return Json(new { success = false, message = "هذا الوقت محجوز لمحاضرة." });
+                }
+
+                // Proceed with adding the booking
+                int check = await _BookingDomain.AddBooking(booking);
+                if (check == 1)
+                {
+                    return Json(new { success = true, message = "تم الحجز بنجاح" });
+                }
+                else
+                {
+                    return Json(new { success = false, message = "لم يتم الحجز" });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+
+            // Check if the model state is valid after the try-catch
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.ToDictionary(
+                    kvp => kvp.Key,
+                    kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).ToArray()
+                );
+
+                return Json(new { success = false, errors });
+            }
         }
 
-// Change to cancel and user booking statues to change it to cancel 
 
-public async Task<IActionResult> Cancel(Guid id)
+
+
+
+        // Change to cancel and user booking statues to change it to cancel 
+
+        public async Task<IActionResult> Cancel(Guid id)
         {
             
                 await _BookingDomain.CancelBooking(id,User.FindFirst(ClaimTypes.Email).Value);

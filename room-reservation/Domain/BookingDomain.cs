@@ -69,7 +69,7 @@ namespace room_reservation.Domain
 
                 tblBookings Bookings = new tblBookings();
                 Bookings.Id = Booking.BookingId;
-                Bookings.BookingDate = DateTime.Now;
+                Bookings.BookingDate = Booking.BookingDate  ;
                 Bookings.BookingStart = Booking.BookingStart;
                 Bookings.BookingEnd = Booking.BookingEnd;
                 Bookings.BookingStatues = Booking.BookingStatues;
@@ -251,7 +251,7 @@ namespace room_reservation.Domain
             bookingLog.BookedBy = booking.Email;
             bookingLog.GrantedBy =userEmail;
             bookingLog.BookingStatus = booking.BookingStatuesId;
-            bookingLog.OperationDate=DateTime.Now;
+            bookingLog.OperationDate = booking.BookingDate;
             bookingLog.AdditionalDetails = "قبول الطلب";
             _context.BookingsLog.Add(bookingLog);
             await _context.SaveChangesAsync();
@@ -280,41 +280,48 @@ namespace room_reservation.Domain
             bookingLog.BookedBy = booking.Email;
             bookingLog.GrantedBy =userEmail;
             bookingLog.BookingStatus = booking.BookingStatuesId;
-            bookingLog.OperationDate=DateTime.Now;
+            bookingLog.OperationDate=booking.BookingDate;
             bookingLog.AdditionalDetails = "رفض الطلب";
             _context.BookingsLog.Add(bookingLog);
             await _context.SaveChangesAsync();
 
             return true;
         }
-        public  bool IsBookingExist(string BuildingNameAr, int roomNo, DateTime BookingDate, TimeSpan BookingStart, TimeSpan BookingEnd)
+        public async Task<bool> IsBookingExist(string buildingNameAr, int roomNo, DateTime bookingDate, TimeSpan bookingStart, TimeSpan bookingEnd)
         {
-            return  _context.tblBookings.Any(b => b.Room.Floor.Building.BuildingNameEn == BuildingNameAr
-                                                && b.Room.RoomNo == roomNo
-                                                && b.BookingDate == BookingDate
-
-                                                && b.BookingStart == BookingStart
-                                                && b.BookingEnd == BookingEnd);
+            return await _context.tblBookings
+                .Include(b => b.Room)                      // Include Room
+                    .ThenInclude(r => r.Floor)             // Include Floor from Room
+                        .ThenInclude(f => f.Building)      // Include Building from Floor
+                .AnyAsync(b => b.Room.Floor.Building.BuildingNameAr == buildingNameAr
+                              && b.Room.RoomNo == roomNo
+                              && b.BookingDate == bookingDate
+                              && b.BookingStart == bookingStart
+                              && b.BookingEnd == bookingEnd);
         }
-        public async Task<bool> IsBookingOverlapping(string BuildingNameAr, int roomNo, DateTime BookingDate, TimeSpan BookingStart, TimeSpan BookingEnd)
-        {
-            return await _context.tblBookings.AnyAsync(b =>
-               b.Room.Floor.Building.BuildingNameAr == BuildingNameAr
-                                                && b.Room.RoomNo == roomNo
-                                                && b.BookingDate == BookingDate &&
-                
-               
-                     (b.BookingStart < BookingEnd && b.BookingEnd > BookingStart));
-        }
-        public async Task<bool> IsLectureTimeAvailable(string BuildingNameAR,int roomNo, DateTime bookingDate, TimeSpan bookingStart, TimeSpan bookingEnd)
-        {
-            return !await _context.tblLectures.AnyAsync(l => l.BuildingNameAR == BuildingNameAR &&
 
+        public async Task<bool> IsBookingOverlapping(string buildingNameAr, int roomNo, DateTime bookingDate, TimeSpan bookingStart, TimeSpan bookingEnd)
+        {
+            return await _context.tblBookings
+                .Include(b => b.Room)                     // Include Room
+                    .ThenInclude(r => r.Floor)            // Include Floor from Room
+                        .ThenInclude(f => f.Building)     // Include Building from Floor
+                .AnyAsync(b => b.Room.Floor.Building.BuildingNameAr == buildingNameAr
+                              && b.Room.RoomNo == roomNo
+                              && b.BookingDate == bookingDate
+                              && (b.BookingStart < bookingEnd && b.BookingEnd > bookingStart));
+        }
+
+        public async Task<bool> IsLectureTimeAvailable(string buildingNameAr, int roomNo, DateTime bookingDate, TimeSpan bookingStart, TimeSpan bookingEnd)
+        {
+            return !await _context.tblLectures.AnyAsync(l =>
+                l.BuildingNameAR == buildingNameAr &&
                 l.RoomNo == roomNo &&
-
                 l.LectureDate == bookingDate &&
                 (l.StartLectureTime < bookingEnd && l.EndLectureTime > bookingStart));
         }
+
+
 
         //        // جلب المستخدم بناءً على البريد الإلكتروني
         //        var user = await _userDomain.GetUserByEmail(Booking.Email);
@@ -456,7 +463,7 @@ namespace room_reservation.Domain
                 BookingViewModel Bookings = new BookingViewModel
                 {
                     BookingId = bookinfo.Id,
-                    BookingDate = DateTime.Now,
+                    BookingDate = bookinfo.BookingDate,
                     BookingStart = bookinfo.BookingStart,
                     BookingEnd = bookinfo.BookingEnd,
                     BookingStatues = bookinfo.BookingStatues,

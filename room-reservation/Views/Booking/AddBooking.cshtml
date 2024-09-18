@@ -57,11 +57,12 @@
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <div class="mb-4">
-                            <label asp-for="BookingDate" class="control-label cb-1"> التاريخ </label>
-                            <input asp-for="BookingDate" type="datetime" class="form-control"/>
-                            <span asp-validation-for="BookingDate" class="text-danger"></span>
-                        </div>
+                            <div class="col-md-6 mb-4">
+                                <label asp-for="BookingDate" class="control-label">تاريخ الحجز</label>
+                                <input asp-for="BookingDate" class="form-control" type="date" />
+                                <span asp-validation-for="BookingDate" class="text-danger"></span>
+                            </div>
+                       
                     </div>
                     <div class="col-md-6">
                         <div class="mb-4">
@@ -99,7 +100,7 @@
                                     if (response.success) {
                                         Swal.fire({
                                             title: '!نجحت العملية',
-                                            text: ' تم الحجز بنجاح',
+                                            text: response.message,
                                             icon: 'success'
                                         }).then(() => {
                                             window.location.href = '@Url.Action("Index")'; // Redirect to Index page after success
@@ -107,7 +108,7 @@
                                     } else {
                                         Swal.fire({
                                             title: '!فشلت العملية',
-                                            text: 'لم يتم الحجز  ',
+                                            text: response.message,
                                             icon: 'error'
                                         });
                                     }
@@ -115,7 +116,7 @@
                                 error: function () {
                                     Swal.fire({
                                         title: 'خطأ!',
-                                        text: 'حدث خطأ غير متوقع',
+                                        text: response.message,
                                         icon: 'error'
                                     });
                                 }
