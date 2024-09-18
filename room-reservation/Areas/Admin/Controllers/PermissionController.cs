@@ -80,6 +80,10 @@ namespace room_reservation.Controllers
                         
                         return Json(new { success = true, message = "أُضِيفت الصلاحية بنجاح" });
                     }
+                    else if (check == -2)
+                    {
+                        return Json(new { success = false, message = "المستخدم ليس موظف في الكلية" });
+                    }
                     else
                     {
                         return Json(new { success = false, message = "لم تُضَاف الصلاحية" });

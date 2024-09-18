@@ -1,12 +1,15 @@
 ﻿
 @model IEnumerable<room_reservation.ViewModel.PermissionViewModel>
+@{
+    ViewData["Title"] = "إدارة الصلاحيات";
 
+}
 <div class="block mb-4">
     <div class="block-header border-bottom px-4 py-3">
         <h5 class="m-0">إدارة الصلاحيات</h5>
         <div class="d-flex gap-2">
             <div class="form-group">
-                <input id="search" type="text" class="form-control table__quick_search"
+                <input  type="text" class="form-control table__quick_search"
                        placeholder="البحث السريع ...">
             </div>
 
@@ -22,7 +25,7 @@
         </div>
     </div>
     <div class="block-body">
-        <table id="datatable" class="table table-hover js-dataTable">
+        <table class="table table-hover js-dataTable">
             <thead>
                 <tr>
                     <th>البريد الإلكتروني</th>
@@ -32,7 +35,7 @@
                     
                 </tr>
             </thead>
-            <tbody id="table-body">
+            <tbody>
                
                 @{
                     foreach (var data in Model)

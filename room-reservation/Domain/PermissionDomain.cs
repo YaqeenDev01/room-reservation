@@ -92,6 +92,14 @@ namespace room_reservation.Domain
                 {
                     return -1;
                 }
+                if (permission.RoleId == 2)
+                {
+                    if (await _context.tblBuildings.Where(b => b.Id == permission.BuildingId).Select(b => b.BuildingNameAr).FirstOrDefaultAsync() != user.CollegeName)
+                    {
+                        return -2;
+                    }
+                    
+                }
                 var permissionInfo = new tblPermissions
                 {
                     Email = user.Email,            
