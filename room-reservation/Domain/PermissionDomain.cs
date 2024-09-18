@@ -105,7 +105,7 @@ namespace room_reservation.Domain
                 await _context.SaveChangesAsync();
                 
                 var permissionLog = new PermissionsLog();
-                var role = await _context.tblRoles.FirstOrDefaultAsync(r => r.Id== permission.RoleId);
+                var role = await _context.tblRoles.FirstOrDefaultAsync(r => r.Id == permission.RoleId);
 
                 permissionLog.PermissionType = role.RoleNameAR;
                 permissionLog.GrantedBy = createdBy;

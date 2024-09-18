@@ -54,61 +54,62 @@
     </div>
 </div>
 @section Scripts {
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+    
     <script>
-    $(document).ready(function () {
-       
-        $(document).on('click', '.delete-btn', function (event) {
-            event.preventDefault();  
+        $(document).ready(function () {
+            // Attach event listener for delete buttons
+            $('.delete-btn').on('click', function (event) {
+                event.preventDefault();
 
-            const id = $(this).data('id');  
+                // Get the GUID from the clicked delete button
+                var id = $(this).data('id');
 
-            Swal.fire({
-                title: 'هل أنت متأكد؟',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'نعم، احذف!',
-                cancelButtonText: 'إلغاء'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                   
-                    $.ajax({
-                        url: '@Url.Action("DeletePermission")',  
-                        type: 'POST',
-                        data: { guid: id }, 
-                        success: function (response) {
-                            if (response.success) {       
-                                Swal.fire(
-                                    'نجحت العملية!',
-                                    'حٌذِفت الصلاحية.',
-                                    'success'
-                                ).then(() => {
-                                    window.location.reload();  
+                // Trigger SweetAlert2 for confirmation
+                Swal.fire({
+                    title: "هل أنت متأكد؟",
+                    text: "",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "نعم، احذف!",
+                    cancelButtonText: "إلغاء"
+                }).then((result) => {
+                    if (result.value) {
+                        // Proceed with the AJAX request to delete the permission
+                        $.ajax({
+                            url: '@Url.Action("DeletePermission")',
+                            type: 'POST',
+                            data: { guid: id },
+                            success: function (response) {
+                                if (response.success) {
+                                    Swal.fire({
+                                        title: 'نجحت العملية!',
+                                        text: 'حُذِفت الصلاحية.',
+                                        icon: 'success'
+                                    }).then(() => {
+                                        location.reload(); // Reload the page after deletion
+                                    });
+                                } else {
+                                    Swal.fire({
+                                        title: 'فشلت العملية!',
+                                        text: 'لم تُحذف الصلاحية.',
+                                        icon: 'error'
+                                    });
+                                }
+                            },
+                            error: function () {
+                                Swal.fire({
+                                    title: 'خطأ!',
+                                    text: 'حدث خطأ غير متوقع.',
+                                    icon: 'error'
                                 });
-                            } else {
-                                Swal.fire(
-                                    'فشلت العملية!',
-                                    'لم تُحذَف الصلاحية.',
-                                    'error'
-                                );
                             }
-                        },
-                        error: function () {
-                            // Show error alert if the AJAX request itself fails
-                            Swal.fire(
-                                'خطأ!',
-                                'حدث خطأ غير متوقع.',
-                                'error'
-                            );
-                        }
-                    });
-                }
+                        });
+                    }
+                });
             });
         });
-    });
-
     </script>
-    }
+}
+
