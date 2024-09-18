@@ -115,7 +115,6 @@ namespace room_reservation.Domain
                 {
 
                 RoomNo = room.RoomNo,
-                
                 SeatCapacity = room.SeatCapacity,
                 IsActive = room.IsActive,
                 FloorId = floor.Id,
@@ -161,7 +160,7 @@ namespace room_reservation.Domain
         
         public async Task<IEnumerable<RoomViewModel>> GetRoomByFilter(Guid? buildingGuid, Guid? floorGuid,Guid? roomTypeGuid,int? seatCapacity )
         {
-            var rooms= await _context.tblRooms.Include(rt => rt.RoomType).Include(f => f.Floor)
+            var rooms= await _context.tblRooms.Where(rooms=>!rooms.IsDeleted && !rooms.IsActive).Include(rt => rt.RoomType).Include(f => f.Floor)
                 .ThenInclude(b => b.Building)
                 .Where(x => 
                   (!buildingGuid.HasValue || x.Floor.Building.Guid == buildingGuid) && 

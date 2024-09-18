@@ -79,19 +79,19 @@ namespace room_reservation.Controllers
         }
         // All bookings shown to admin 
         // view the bookings page 
-        // public async Task<IActionResult> Book()
-        // {
-        //     var booking = await _BookingDomain.GetAllBooking();
-        //     return View(booking);
-        // }
-        
-        // All bookings of the same building shown to the site admin
         public async Task<IActionResult> ViewBooking()
         {
-            var userEmail = User.FindFirst(ClaimTypes.Email).Value;
-            var booking = await _BookingDomain.GetBuildingBookings(userEmail);
+            var booking = await _BookingDomain.GetAllBooking();
             return View(booking);
         }
+        
+        // All bookings of the same building shown to the site admin
+        // public async Task<IActionResult> ViewBooking()
+        // {
+        //     var userEmail = User.FindFirst(ClaimTypes.Email).Value;
+        //     var booking = await _BookingDomain.GetBuildingBookings(userEmail);
+        //     return View(booking);
+        // }
         
         // User bookings
         // public async Task<IActionResult> Book()
@@ -103,93 +103,50 @@ namespace room_reservation.Controllers
 
         [Authorize]
         [HttpGet]
-[Authorize]
-[HttpGet]
-public async Task<IActionResult> AddBooking(Guid id)
-{
-    return View(await _BookingDomain.getAllBookingByRoomGuid(id));
-}
-
-[HttpPost]
-[ValidateAntiForgeryToken]
-[Authorize]
-public async Task<IActionResult> AddBooking(BookingViewModel booking)
-{
-    booking.Email = User.FindFirst(ClaimTypes.Email).Value;
-
-    try
-    {
-        if (ModelState.IsValid)
+        public async Task<IActionResult> AddBooking(Guid id)
         {
-            // Check if the booking exists
-            bool exists = _BookingDomain.IsBookingExist(
-                booking.BuildingNameAr,
-                booking.RoomNo,
-                booking.BookingDate,
-                booking.BookingStart,
-                booking.BookingEnd);
-
-            if (exists)
-            {
-                return Json(new { success = false, message = "هذا الحجز موجود بالفعل." });
-            }
-
-            // Check for overlapping bookings
-            bool isOverlapping = await _BookingDomain.IsBookingOverlapping(
-                booking.BuildingNameAr,
-                booking.RoomNo,
-                booking.BookingDate,
-                booking.BookingStart,
-                booking.BookingEnd);
-
-            if (isOverlapping)
-            {
-                return Json(new { success = false, message = "يوجد حجز متداخل." });
-            }
-
-            // Check for lecture time conflicts
-            bool isLectureTimeAvailable = await _BookingDomain.IsLectureTimeAvailable(
-                booking.BuildingNameAr,
-                booking.RoomNo,
-                booking.BookingDate,
-                booking.BookingStart,
-                booking.BookingEnd);
-
-            if (!isLectureTimeAvailable)
-            {
-                return Json(new { success = false, message = "هذا الوقت محجوز لمحاضرة." });
-            }
-
-            // Proceed with adding the booking
-            int check = await _BookingDomain.AddBooking(booking);
-            if (check == 1)
-            {
-                return Json(new { success = true, message = "تم الحجز بنجاح" });
-            }
-            else
-            {
-                return Json(new { success = false, message = "لم يتم الحجز" });
-            }
+            return View(await _BookingDomain.getAllBookingByRoomGuid(id));
         }
-        else
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize]
+        public async Task<IActionResult> AddBooking(BookingViewModel booking)
         {
-            return Json(new { success = false, message = "لابد من إدخال بيانات الحجز" });
+                booking.Email =User.FindFirst(ClaimTypes.Email).Value;
+                
+                try
+                {
+                    if (ModelState.IsValid)
+                    {
+                        int check =  await _BookingDomain.AddBooking(booking);
+                        if (check == 1)
+                        {
+                            return Json(new { success = true, message = "تم الحجز بنجاح" });
+
+                        }
+                        else
+                        {
+                            return Json(new { success = false, message = "لم يتم الحجز" });
+                        }
+                    }
+                    else
+                    {
+                        return Json(new { success = false, message = "لابد من إدخال بيانات الحجز" });
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return Json(new { success = false, message = ex.Message });
+                }
+            
         }
-    }
-    catch (Exception ex)
-    {
-        return Json(new { success = false, message = ex.Message });
-    }
-}
-
-
 
 // Change to cancel and user booking statues to change it to cancel 
 
 public async Task<IActionResult> Cancel(Guid id)
         {
             
-                await _BookingDomain.CancelBooking(id);
+                await _BookingDomain.CancelBooking(id,User.FindFirst(ClaimTypes.Email).Value);
                 return Json(new { success = true });
                 
         }
@@ -213,7 +170,9 @@ public async Task<IActionResult> Cancel(Guid id)
         [HttpPost]
         public async Task<IActionResult> ApproveBooking(Guid id)
         {
-            bool result = await _BookingDomain.ApproveBooking(id);
+       
+            
+            bool result = await _BookingDomain.ApproveBooking(id,User.FindFirst(ClaimTypes.Email)?.Value);
             if (result)
             {
                 return Json(new { success = true });
@@ -224,7 +183,7 @@ public async Task<IActionResult> Cancel(Guid id)
         [HttpPost]
         public async Task<IActionResult> RejectBooking(Guid id, string rejectReason)
         {
-            bool result = await _BookingDomain.RejectBooking(id, rejectReason);
+            bool result = await _BookingDomain.RejectBooking(id, rejectReason,User.FindFirst(ClaimTypes.Email)?.Value);
             if (result)
             {
                 return Json(new { success = true });
