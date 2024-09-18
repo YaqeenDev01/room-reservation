@@ -17,13 +17,13 @@ namespace room_reservation.Domain
         private readonly PermissionDomain _permissionDomain;
         private readonly BuildingDomain _buildingDomain;
 
-        public BookingDomain(KFUSpaceContext context, UserDomain userDomain, RoomDomain roomDomain, PermissionDomain permissionDomain)
+        public BookingDomain(KFUSpaceContext context, UserDomain userDomain, RoomDomain roomDomain, PermissionDomain permissionDomain,BuildingDomain buildingDomain)
         {
             _context = context;
             _userDomain = userDomain;
             _roomDomain = roomDomain;
             _permissionDomain = permissionDomain;
-            _buildingDomain = _buildingDomain;
+            _buildingDomain = buildingDomain;
         }
         [Authorize]
         public async Task<IEnumerable<BookingViewModel>> GetAllBooking()
@@ -106,14 +106,14 @@ namespace room_reservation.Domain
                 Bookings.Email = user.Email;
                 Bookings.FullName = user.FullNameAR;
                 Bookings.PhoneNumber = user.PhoneNumber;
-                Bookings.UserBuildingAR = user.DepartmentName;
                 Bookings.guid = Guid.NewGuid();
                 Bookings.IsDeleted = false;
                 Bookings.RoomId = room.Id;
-                //if (user.CollegeCode == Booking.BuildingNameAr) this solution works but it is better to use numbers
+                Bookings.UserBuildingAR = user.DepartmentName;
+                if (user.DepartmentName == Booking.BuildingNameAr)// this solution works but it is better to use numbers
                 
                 // if the user is from the same uni or  building or from the  department of Information Techonolgy they can book directly 
-                if((user.CollegeCode == building.Code)||(user.DepartmentCode==building.Code)||(user.DepartmentCode=="01"))
+              //  if((user.CollegeCode == building.Code)||(user.DepartmentCode==building.Code)||(user.DepartmentCode=="01"))
                 {
                     Bookings.BookingStatuesId = 1;
                 }
@@ -123,15 +123,15 @@ namespace room_reservation.Domain
                 }
               _context.tblBookings.Add(Bookings);
               await _context.SaveChangesAsync();
-              //  var bookingLog = new BookingsLog();
-              //  bookingLog.BookingId = Booking.BookingId;
-              //  bookingLog.BookedBy = user.Email;
-              //  bookingLog.GrantedBy =" ";
-              //  bookingLog.BookingStatus = Booking.BookingStatuesId;
-              //  bookingLog.OperationDate=DateTime.Now;
-              //  bookingLog.AdditionalDetails = "";
-              // _context.BookingsLog.Add(bookingLog);
-              // await _context.SaveChangesAsync();
+               var bookingLog = new BookingsLog();
+               bookingLog.BookingId = Bookings.Id;
+               bookingLog.BookedBy = user.Email;
+               bookingLog.GrantedBy =user.Email;
+               bookingLog.BookingStatus = Bookings.BookingStatuesId;
+               bookingLog.OperationDate=DateTime.Now;
+               bookingLog.AdditionalDetails = "حجز قاعة";
+              _context.BookingsLog.Add(bookingLog);
+              await _context.SaveChangesAsync();
                
                
                 return 1;
@@ -144,17 +144,20 @@ namespace room_reservation.Domain
         }
         public async Task<BookingViewModel> getAllBookingByRoomGuid(Guid id)
         {
-            var room = await _context.tblRooms.Include(x => x.RoomType).Include(x => x.Floor).ThenInclude(x => x.Building).FirstOrDefaultAsync(x => x.guid == id);
-
+            var room = await _context.tblRooms.Where(room=>!room.IsDeleted && !room.IsActive).Include(x => x.RoomType).Include(x => x.Floor).ThenInclude(x => x.Building).FirstOrDefaultAsync(x => x.guid == id);
+        //    var booking = await _context.tblBookings.Include(b=>b).FirstOrDefaultAsync(x => x.guid == id);
             return new BookingViewModel
             {
+              //  BookingId = booking.Id,
+              
                 FloorNo = room.Floor.FloorNo,
                 BuildingNameAr = room.Floor.Building.BuildingNameAr,
                 SeatCapacity = room.SeatCapacity,
                 RoomNo = room.RoomNo,
                 RoomGuid = room.guid,
                 RoomAR = room.RoomType.RoomTypeAR,
-                BookingDate = DateTime.Now
+                BookingDate = DateTime.Now,
+                BuildingGuid = room.Floor.Building.Guid
             };
         }
 
@@ -201,11 +204,20 @@ namespace room_reservation.Domain
 
 
 
-        public async Task CancelBooking(Guid id)
+        public async Task CancelBooking(Guid id,String userEmail)
         {
 
             tblBookings Bookings = getBookingByGuid(id);
             Bookings.BookingStatuesId = 4;
+            await _context.SaveChangesAsync();
+            var bookingLog = new BookingsLog();
+            bookingLog.BookingId = Bookings.Id;
+            bookingLog.BookedBy = userEmail;
+            bookingLog.GrantedBy =userEmail;
+            bookingLog.BookingStatus = Bookings.BookingStatuesId;
+            bookingLog.OperationDate=DateTime.Now;
+            bookingLog.AdditionalDetails = "تم إلغاء الحجز";
+            _context.BookingsLog.Add(bookingLog);
             await _context.SaveChangesAsync();
 
         }
@@ -271,7 +283,7 @@ namespace room_reservation.Domain
 
         }
 
-        public async Task<bool> ApproveBooking(Guid id)
+        public async Task<bool> ApproveBooking(Guid id,string userEmail)
         {
             var booking = await _context.tblBookings.FirstOrDefaultAsync(b => b.guid == id);
 
@@ -282,13 +294,21 @@ namespace room_reservation.Domain
 
             booking.BookingStatuesId = 1;
             _context.tblBookings.Update(booking);
-
             await _context.SaveChangesAsync();
-
+       
+            var bookingLog = new BookingsLog();
+            bookingLog.BookingId = booking.Id;
+            bookingLog.BookedBy = booking.Email;
+            bookingLog.GrantedBy =userEmail;
+            bookingLog.BookingStatus = booking.BookingStatuesId;
+            bookingLog.OperationDate=DateTime.Now;
+            bookingLog.AdditionalDetails = "قبول الطلب";
+            _context.BookingsLog.Add(bookingLog);
+            await _context.SaveChangesAsync();
             return true;
         }
 
-        public async Task<bool> RejectBooking(Guid id, string rejectReason)
+        public async Task<bool> RejectBooking(Guid id, string rejectReason,string userEmail)
         {
             var booking = await _context.tblBookings.FirstOrDefaultAsync(b => b.guid == id);
 
@@ -303,6 +323,16 @@ namespace room_reservation.Domain
 
             _context.tblBookings.Update(booking);
 
+            await _context.SaveChangesAsync();
+            
+            var bookingLog = new BookingsLog();
+            bookingLog.BookingId = booking.Id;
+            bookingLog.BookedBy = booking.Email;
+            bookingLog.GrantedBy =userEmail;
+            bookingLog.BookingStatus = booking.BookingStatuesId;
+            bookingLog.OperationDate=DateTime.Now;
+            bookingLog.AdditionalDetails = "رفض الطلب";
+            _context.BookingsLog.Add(bookingLog);
             await _context.SaveChangesAsync();
 
             return true;
