@@ -1,4 +1,5 @@
 ﻿@using Microsoft.EntityFrameworkCore.Metadata.Internal
+@using System.Security.Claims
 @model IEnumerable<RoomViewModel>
 @{
     
@@ -79,7 +80,15 @@ ViewData["Title"] = "الصفحة الرئيسية";
                     <td>@item.RoomAR</td>
                     <td>@item.SeatCapacity</td>
                     <td>
-                        <a asp-action="AddBooking" asp-route-id="@item.Guid" class="btn btn-sm btn-primary">حجز</a>
+                                    @{
+                                        var userType = User.FindFirst("UserType")?.Value;
+                                        if (userType == "عضو هيئة التدريس")
+                                        {
+                                        <a asp-action="AddBooking" asp-route-id="@item.Guid" class="btn btn-sm btn-primary">حجز</a>
+                                        }
+                                    }
+
+                       
                     </td>
                 </tr>
             }

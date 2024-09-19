@@ -187,7 +187,7 @@ namespace room_reservation.Controllers
                 }
                 else
                 {
-
+                    
                     string role = "";
                     PermissionViewModel permission = await _PermissionDomain.GetPermissionByEmail(user.Email);
                     
@@ -198,6 +198,7 @@ namespace room_reservation.Controllers
                     {
                         role = permission.RoleName;
                     }
+                    Claim userTypeClaim = new Claim("UserType", user.UserType);
                     var identity = new ClaimsIdentity(new[]
                     {
                     new Claim(ClaimTypes.Name , user.FullNameEN),
@@ -206,10 +207,13 @@ namespace room_reservation.Controllers
                     new Claim(ClaimTypes.Role, role),
                     new Claim(ClaimTypes.GivenName, user.FullNameAR),
                     new Claim(ClaimTypes.Gender,user.GenderAR),
-                 
-                    
+                    userTypeClaim
 
-                }, CookieAuthenticationDefaults.AuthenticationScheme);
+
+
+
+
+                }, CookieAuthenticationDefaults.AuthenticationScheme) ;
 
                     var principal = new ClaimsPrincipal(identity);
 
