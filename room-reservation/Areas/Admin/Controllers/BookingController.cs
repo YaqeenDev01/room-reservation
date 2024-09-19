@@ -233,7 +233,7 @@ public class BookingController : Controller
     
     public async Task<ActionResult> ExportBooking()
     {
-        var dataPermissions = await _BookingDomain.GetExportableBookings();
+        var dataBookings = await _BookingDomain.GetExportableBookings();
 
         using (var package = new ExcelPackage())
         {
@@ -256,33 +256,37 @@ public class BookingController : Controller
          
             // Add data rows
             int row = 2;
-            foreach (var permission in dataPermissions)
+            foreach (var Booking in dataBookings)
             {
-                worksheet.Cells[row, 1].Value = permission.FullName;
-                worksheet.Cells[row, 2].Value = permission.Email;
-                worksheet.Cells[row, 3].Value = permission.PhoneNumber;
-                worksheet.Cells[row, 4].Value = permission.UserBuildingAR;
-                worksheet.Cells[row, 5].Value = permission.BuildingNameAr;
-                worksheet.Cells[row, 6].Value = permission.FloorNo;
-                worksheet.Cells[row, 7].Value = permission.RoomNo;
-                worksheet.Cells[row, 8].Value = permission.RoomAR;
-                worksheet.Cells[row, 9].Value = permission.BookingDate;
-                worksheet.Cells[row, 10].Value = permission.BookingStart;
-                worksheet.Cells[row, 11].Value = permission.BookingEnd;
-                worksheet.Cells[row, 12].Value = permission.Duration;
-                worksheet.Cells[row, 13].Value = permission.RejectReason;
-                worksheet.Cells[row, 14].Value = permission.BookingStatusAR;
+                worksheet.Cells[row, 1].Value = Booking.FullName;
+                worksheet.Cells[row, 2].Value = Booking.Email;
+                worksheet.Cells[row, 3].Value = Booking.PhoneNumber;
+                worksheet.Cells[row, 4].Value = Booking.UserBuildingAR;
+                worksheet.Cells[row, 5].Value = Booking.BuildingNameAr;
+                worksheet.Cells[row, 6].Value = Booking.FloorNo;
+                worksheet.Cells[row, 7].Value = Booking.RoomNo;
+                worksheet.Cells[row, 8].Value = Booking.RoomAR;
+                worksheet.Cells[row, 9].Value = Booking.BookingDate;
+                worksheet.Cells[row, 9].Style.Numberformat.Format = "yyyy-MM-dd";
+                worksheet.Cells[row, 10].Value = Booking.BookingStart;
+                worksheet.Cells[row, 10].Style.Numberformat.Format = "hh:mm";
+                worksheet.Cells[row, 11].Value = Booking.BookingEnd;
+                worksheet.Cells[row, 11].Style.Numberformat.Format = "hh:mm";
+                worksheet.Cells[row, 12].Value = Booking.Duration;
+                worksheet.Cells[row, 13].Value = Booking.RejectReason;
+                worksheet.Cells[row, 14].Value = Booking.BookingStatusAR;
 
     
                 row++;
             }
+            worksheet.Column(4).Width = 15; // Adjust based on your content
 
             // Generate the file
             var stream = new MemoryStream();
             package.SaveAs(stream);
             stream.Position = 0;
 
-            var fName = $"Bookings-{DateTime.Now:yyyyMMddHHmmss}.xlsx";
+            var fName = $"الحجوزات -{DateTime.Now:yyyyMMddHHmmss}.xlsx";
             return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fName);
         }
     }
