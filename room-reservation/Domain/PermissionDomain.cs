@@ -144,13 +144,22 @@ namespace room_reservation.Domain
                 return false;
             }
         }
-        public async Task<bool> UpdatePermission(PermissionViewModel permissionViewModel, string createdBy, int permissionId)
+        public async Task<int> UpdatePermission(PermissionViewModel permissionViewModel, string createdBy, int permissionId)
         {
             try
             {
+                var user = await _context.tblUsers.FirstOrDefaultAsync(u => u.Email == permissionViewModel.Email);
                 var permission = await _context.tblPermissions
                     .FirstOrDefaultAsync(x => x.guid == permissionViewModel.Guid);
+                if (permission.RoleId == 2)
+                {
+                    if (await _context.tblBuildings.Where(b => b.Id == permissionViewModel.BuildingId).Select(b => b.BuildingNameAr).FirstOrDefaultAsync() != user.CollegeName)
+                    {
+                        return -1;
+                    }
 
+                }
+                
                 permission.Email = permissionViewModel.Email;
                 permission.RoleId = permissionViewModel.RoleId;
                 permission.BuildingId = permissionViewModel.BuildingId == 0 ? (int?)null : permissionViewModel.BuildingId;
@@ -169,11 +178,11 @@ namespace room_reservation.Domain
                 permissionLog.OperationType = "تعديل صلاحية";
                 await AddPermissionLog(permissionLog);
 
-                return true;
+                return 1;
             }
             catch (Exception ex)
             {
-                return false;
+                return 0;
             }
         }
         public async Task<tblPermissions> DeletePermission(Guid guid, string createdBy, int permissionId)

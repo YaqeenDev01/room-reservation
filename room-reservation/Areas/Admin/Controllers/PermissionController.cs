@@ -159,10 +159,14 @@ namespace room_reservation.Controllers
                 try
                 {
                     var result = await _PermissionDomain.UpdatePermission(permissionViewModel, User.FindFirst(ClaimTypes.Email).Value, Int32.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value));
-                    if (result)
+                    if (result == 1)
                     {
 
                         return Json(new { success = true, message = "عُدِّلت الصلاحية بنجاح" });
+                    }
+                    else if (result == -1)
+                    {
+                         Json (new { success = false, message = "المستخدم غير موظف في الكلية"});
                     }
                     else
                     {
