@@ -69,7 +69,7 @@ namespace room_reservation.Domain
 
                 tblBookings Bookings = new tblBookings();
                 Bookings.Id = Booking.BookingId;
-                Bookings.BookingDate = Booking.BookingDate  ;
+                Bookings.BookingDate = Booking.BookingDate;
                 Bookings.BookingStart = Booking.BookingStart;
                 Bookings.BookingEnd = Booking.BookingEnd;
                 Bookings.BookingStatues = Booking.BookingStatues;
@@ -81,6 +81,7 @@ namespace room_reservation.Domain
                 Bookings.Email = user.Email;
                 Bookings.FullName = user.FullNameAR;
                 Bookings.PhoneNumber = user.PhoneNumber;
+                Bookings.UserBuildingAR = user.DepartmentName;
                 Bookings.guid = Guid.NewGuid();
                 Bookings.IsDeleted = false;
                 Bookings.RoomId = room.Id;
@@ -97,15 +98,15 @@ namespace room_reservation.Domain
                 }
               _context.tblBookings.Add(Bookings);
               await _context.SaveChangesAsync();
-              //  var bookingLog = new BookingsLog();
-              //  bookingLog.BookingId = Booking.BookingId;
-              //  bookingLog.BookedBy = user.Email;
-              //  bookingLog.GrantedBy =" ";
-              //  bookingLog.BookingStatus = Booking.BookingStatuesId;
-              //  bookingLog.OperationDate=DateTime.Now;
-              //  bookingLog.AdditionalDetails = "";
-              // _context.BookingsLog.Add(bookingLog);
-              // await _context.SaveChangesAsync();
+               var bookingLog = new BookingsLog();
+               bookingLog.BookingId = Bookings.Id;
+               bookingLog.BookedBy = user.Email;
+               bookingLog.GrantedBy =user.Email;
+               bookingLog.BookingStatus = Bookings.BookingStatuesId;
+               bookingLog.OperationDate=DateTime.Now;
+               bookingLog.AdditionalDetails = "حجز قاعة";
+              _context.BookingsLog.Add(bookingLog);
+              await _context.SaveChangesAsync();
                
                
                 return 1;
@@ -160,7 +161,7 @@ namespace room_reservation.Domain
                 BookingStart = BookingId.BookingStart,
                 BookingEnd = BookingId.BookingEnd,
 
-
+                UserBuildingAR = BookingId.UserBuildingAR,
                 BookingStatuesId = BookingId.BookingStatues.Id,
                 BookingStatusAR = BookingId.BookingStatues.StatuesAR,
                 RoomTypeId = BookingId.Room.RoomTypeId,
