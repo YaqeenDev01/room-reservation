@@ -10,9 +10,8 @@
             <div class="form-group">
                 <input type="text" class="form-control table__quick_search" placeholder="البحث السريع ..." id="quickSearch">
             </div>
-            <a type="button" class="btn btn-primary" href="@Url.Action("AddLecture","Lectures")">
-                إضافة محاضرة
-            </a>
+            <a asp-action="ExportLecture" id="btnExport" class="btn btn-primary" />تقرير</a>
+
             <!-- Add Lecture Modal -->
             <div class="modal fade" id="add_lecture" tabindex="-1" aria-labelledby="add_lectureLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">

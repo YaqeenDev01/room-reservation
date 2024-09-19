@@ -1,10 +1,14 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using OfficeOpenXml;
 using room_reservation.Domain;
 using room_reservation.ViewModel;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
+using System.Xml;
+using OfficeOpenXml;
 
 namespace room_reservation.Areas.Admin.Controllers
 {
@@ -174,6 +178,45 @@ namespace room_reservation.Areas.Admin.Controllers
         {
             await _lecturesDomain.DeleteLecture(id);
             return Json(new { success = true });
+        }
+        public async Task<ActionResult> ExportLecture()
+        {
+            var dataLecture = await _lecturesDomain.GetExportableLectures();
+
+            using (var package = new ExcelPackage())
+            {
+                var worksheet = package.Workbook.Worksheets.Add("Lectures");
+
+                worksheet.Cells[1, 1].Value = "اسم المبنى";
+                worksheet.Cells[1, 2].Value = "الفصل الدراسي";
+                worksheet.Cells[1, 3].Value = "رقم القاعة ";
+                worksheet.Cells[1, 4].Value = "تاريخ الحجز";
+                worksheet.Cells[1, 5].Value = "بداية الحجز";
+                worksheet.Cells[1, 6].Value = "نهاية الحجز";
+
+
+
+                // Add data rows
+                int row = 2;
+                foreach (var lectures in dataLecture)
+                {
+                    worksheet.Cells[row, 1].Value = lectures.BuildingNameAR;
+                    worksheet.Cells[row, 2].Value = lectures.Semester;
+                    worksheet.Cells[row, 3].Value = lectures.RoomNo;
+                    worksheet.Cells[row, 4].Value = lectures.LectureDate;
+                    worksheet.Cells[row, 5].Value=lectures.StartLectureTime;
+                    worksheet.Cells[row, 6].Value=lectures.EndLectureTime;  
+                    row++;
+                }
+
+                // Generate the file
+                var stream = new MemoryStream();
+                package.SaveAs(stream);
+                stream.Position = 0;
+
+                var fName = $"Lectures-{DateTime.Now:yyyyMMddHHmmss}.xlsx";
+                return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fName);
+            }
         }
     }
 }
