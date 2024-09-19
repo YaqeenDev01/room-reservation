@@ -191,14 +191,14 @@ namespace room_reservation.Areas.Admin.Controllers
 
             using (var package = new ExcelPackage())
             {
-                var worksheet = package.Workbook.Worksheets.Add("Lectures");
+                var worksheet = package.Workbook.Worksheets.Add("المحاضرات");
 
                 worksheet.Cells[1, 1].Value = "اسم المبنى";
                 worksheet.Cells[1, 2].Value = "الفصل الدراسي";
                 worksheet.Cells[1, 3].Value = "رقم القاعة ";
-                worksheet.Cells[1, 4].Value = "تاريخ الحجز";
-                worksheet.Cells[1, 5].Value = "بداية الحجز";
-                worksheet.Cells[1, 6].Value = "نهاية الحجز";
+                worksheet.Cells[1, 4].Value = "تاريخ المحاضرة";
+                worksheet.Cells[1, 5].Value = "وقت بدء المحاضرة";
+                worksheet.Cells[1, 6].Value = "وقت انتهاء المحاضرة ";
 
                 // Add data rows
                 int row = 2;
@@ -229,7 +229,7 @@ namespace room_reservation.Areas.Admin.Controllers
                 package.SaveAs(stream);
                 stream.Position = 0;
 
-                var fName = $"Lectures-{DateTime.Now:yyyyMMdd}.xlsx";
+                var fName = $"المحاضرات-{DateTime.Now:yyyyMMdd}.xlsx";
                 return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fName);
             }
         }
