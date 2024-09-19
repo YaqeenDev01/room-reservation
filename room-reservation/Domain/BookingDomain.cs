@@ -490,6 +490,30 @@ namespace room_reservation.Domain
             }
 
         }
+        public async Task<IEnumerable<BookingViewModel>> GetExportableBookings()
+        {
+            return await _context.tblBookings
+                .Where(b => !b.IsDeleted).Include(x=>x.BookingStatues).Include(x=>x.Room).ThenInclude(x=>x.Floor).ThenInclude(x=>x.Building)
+                .Select(b => new BookingViewModel
+                {
+                    FullName =b.FullName,
+                    Email = b.Email ,
+                    PhoneNumber = b.PhoneNumber,
+                    BuildingNameAr = b.Room.Floor.Building.BuildingNameAr,
+                    FloorNo = b.Room.Floor.FloorNo,
+                    RoomNo = b.Room.RoomNo,
+                    RoomAR = b.Room.RoomType.RoomTypeAR,
+                    BookingDate = b.BookingDate,
+                    BookingStart = b.BookingStart,
+                    BookingEnd = b.BookingEnd,
+                    Duration = b.Duration,
+                    RejectReason = b.RejectReason,
+                    BookingStatusAR = b.BookingStatues.StatuesAR,
+                    UserBuildingAR = b.UserBuildingAR,
+                 
+                })
+                .ToListAsync();
+        }   
     }
 }
 

@@ -74,7 +74,7 @@
                 <input type="text" class="form-control table__quick_search"
                        placeholder="البحث السريع ...">
             </div>
-            <a asp-action ="ExportPermission"id="btnExport"  class="btn btn-primary" />تقرير</a>
+            <a asp-action ="ExportPermission"id="btnExport"  class="btn btn-primary" >تقرير</a>
 
             <!-- <a class="btn btn-primary" asp-action="AddPermission">إضافة صلاحية</a>-->
             <!-- Add Section Modal -->
@@ -111,7 +111,7 @@
                             <td>@data.RoleName</td>
                             <td>
                                 <a asp-area="Admin" asp-controller="Permission" asp-action="EditPermission" asp-route-guid="@data.Guid" class="btn btn-success">تعديل</a>
-                                <a data-id="@data.Guid" class="btn btn-danger delete-btn">حذف</a>
+                                <a onclick="confirmDelete('guid-value')" data-id="guid-value" class="btn btn-danger delete-btn">حذف</a>
                             </td>
                         </tr>
                     }

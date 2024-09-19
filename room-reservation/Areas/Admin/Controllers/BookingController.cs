@@ -6,6 +6,7 @@ using room_reservation.Models;
 using room_reservation.ViewModel;
 using System.Security.Claims;
 namespace room_reservation.Areas.Admin.Controllers;
+using OfficeOpenXml;
 [Area("Admin")]
 [Authorize(Roles = "Admin, SiteAdmin")]
 public class BookingController : Controller
@@ -229,6 +230,63 @@ public class BookingController : Controller
 
 
     }
+    
+    public async Task<ActionResult> ExportBooking()
+    {
+        var dataPermissions = await _BookingDomain.GetExportableBookings();
+
+        using (var package = new ExcelPackage())
+        {
+            var worksheet = package.Workbook.Worksheets.Add("Bookings");
+
+            worksheet.Cells[1, 1].Value = "الاسم الكامل";
+            worksheet.Cells[1, 2].Value = "البريد الإلكتروني";
+            worksheet.Cells[1, 3].Value = "رقم الجوال";
+            worksheet.Cells[1, 4].Value = "اسم مبنى المستخدم";
+            worksheet.Cells[1, 5].Value = "اسم المبنى";
+            worksheet.Cells[1, 6].Value = "رقم الطابق";
+            worksheet.Cells[1, 7].Value = "رقم القاعة";
+            worksheet.Cells[1, 8].Value = "نوع القاعة";
+            worksheet.Cells[1, 9].Value = "تاريخ الحجز";
+            worksheet.Cells[1, 10].Value = "بداية الحجز";
+            worksheet.Cells[1, 11].Value = "نهاية الحجز";
+            worksheet.Cells[1, 12].Value = "مدة الحجز";
+            worksheet.Cells[1, 13].Value = "سبب الرفض";
+            worksheet.Cells[1, 14].Value = "حالة الحجز";
+         
+            // Add data rows
+            int row = 2;
+            foreach (var permission in dataPermissions)
+            {
+                worksheet.Cells[row, 1].Value = permission.FullName;
+                worksheet.Cells[row, 2].Value = permission.Email;
+                worksheet.Cells[row, 3].Value = permission.PhoneNumber;
+                worksheet.Cells[row, 4].Value = permission.UserBuildingAR;
+                worksheet.Cells[row, 5].Value = permission.BuildingNameAr;
+                worksheet.Cells[row, 6].Value = permission.FloorNo;
+                worksheet.Cells[row, 7].Value = permission.RoomNo;
+                worksheet.Cells[row, 8].Value = permission.RoomAR;
+                worksheet.Cells[row, 9].Value = permission.BookingDate;
+                worksheet.Cells[row, 10].Value = permission.BookingStart;
+                worksheet.Cells[row, 11].Value = permission.BookingEnd;
+                worksheet.Cells[row, 12].Value = permission.Duration;
+                worksheet.Cells[row, 13].Value = permission.RejectReason;
+                worksheet.Cells[row, 14].Value = permission.BookingStatusAR;
+
+    
+                row++;
+            }
+
+            // Generate the file
+            var stream = new MemoryStream();
+            package.SaveAs(stream);
+            stream.Position = 0;
+
+            var fName = $"Bookings-{DateTime.Now:yyyyMMddHHmmss}.xlsx";
+            return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fName);
+        }
+    }
+
     
     
     
