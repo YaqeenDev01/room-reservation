@@ -81,8 +81,8 @@ ViewData["Title"] = "الصفحة الرئيسية";
                     <td>@item.SeatCapacity</td>
                     <td>
                                     @{
-                                        var userType = User.FindFirst("UserType")?.Value;
-                                        if (userType == "عضو هيئة التدريس")
+
+                                        if (User.FindFirst("UserType")?.Value == "عضو هيئة التدريس" || User.FindFirst(ClaimTypes.Role)?.Value == "Admin" || User.FindFirst(ClaimTypes.Role)?.Value == "SiteAdmin")
                                         {
                                         <a asp-action="AddBooking" asp-route-id="@item.Guid" class="btn btn-sm btn-primary">حجز</a>
                                         }
