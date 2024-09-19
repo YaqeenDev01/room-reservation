@@ -166,12 +166,14 @@
                             <ul>
                                 @if (User.FindFirst(ClaimTypes.Role).Value == "Admin") 
                                 {
+                                    <li> <a asp-action="Index" asp-controller="Booking" asp-area="Admin" class="active"><span>إضافة حجز</span></a></li>
                                     <li> <a asp-action="ViewAllBooking" asp-controller="Booking" asp-area="Admin" class="active"><span>عرض جميع الحجوزات</span></a></li> 
                                     <li> <a asp-action="ViewBooking" asp-controller="Booking" asp-area="Admin" class="active"><span>عرض حجوزاتي</span></a></li>
 
                                 }
                                 @if (User.FindFirst(ClaimTypes.Role).Value == "SiteAdmin")
                                 {
+                                    <li> <a asp-action="Index" asp-controller="Booking" asp-area="Admin" class="active"><span>إضافة حجز</span></a></li>
                                     <li> <a asp-action="ViewBuildingBookings" asp-controller="Booking" asp-area="Admin" class="active"><span>عرض جميع الحجوزات</span></a></li>
                                     <li> <a asp-action="ViewBooking" asp-controller="Booking" asp-area="Admin" class="active"><span>عرض حجوزاتي</span></a></li>
                                     <li> <a asp-action="Orders" asp-controller="Booking" asp-area="Admin" class="active"><span>عرض طلبات الحجز</span></a></li>
