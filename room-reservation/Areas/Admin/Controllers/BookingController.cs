@@ -286,7 +286,7 @@ public class BookingController : Controller
             package.SaveAs(stream);
             stream.Position = 0;
 
-            var fName = $"Bookings-{DateTime.Now:yyyyMMddHHmmss}.xlsx";
+            var fName = $"الحجوزات -{DateTime.Now:yyyyMMddHHmmss}.xlsx";
             return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fName);
         }
     }
