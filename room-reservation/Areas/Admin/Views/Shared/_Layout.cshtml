@@ -163,7 +163,7 @@
                             </a>
 
                             <ul>
-                                @if (User.FindFirst(ClaimTypes.Role).Value == "Admin")
+                                @if (User.FindFirst(ClaimTypes.Role).Value == "Admin" || User.FindFirst(ClaimTypes.Role)?.Value == "SiteAdmin")
                                 {
                                     <li> <a asp-action="Index" asp-controller="Lectures" asp-area="Admin" class="active"><span>عرض المحاضرات </span></a></li>
                                     <li> <a asp-action="Addlecture" asp-controller="Lectures" asp-area="Admin" class="active"><span>اضافة حجز</span></a></li>
