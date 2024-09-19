@@ -172,5 +172,19 @@ namespace room_reservation.Domain
                 return 0; // Failed to delete
             }
         }
+        public async Task<IEnumerable<LecturesViewModel>> GetExportableLectures()
+        {
+            return await _context.tblLectures.Select(l => new LecturesViewModel
+                {
+                    BuildingNameAR = l.BuildingNameAR,
+                    RoomNo = l.RoomNo,
+                    Semester = l.Semester,
+                    LectureDate = l.LectureDate,
+                    StartLectureTime = l.StartLectureTime,
+                    EndLectureTime= l.EndLectureTime,
+                })
+                .ToListAsync();
+        }
+
     }
 }
