@@ -13,7 +13,7 @@ using OfficeOpenXml;
 namespace room_reservation.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize(Roles = "SiteAdmin")]
+    [Authorize(Roles = "Admin, SiteAdmin")]
     public class LecturesController : Controller
     {
         private readonly LecturesDomain _lecturesDomain;
@@ -24,6 +24,7 @@ namespace room_reservation.Areas.Admin.Controllers
         }
 
         // GET: /Lecture/
+        [Authorize(Roles = "Admin, SiteAdmin")]
         public async Task<IActionResult> Index()
         {
             var lectures = await _lecturesDomain.GetAllLectures();
@@ -31,6 +32,7 @@ namespace room_reservation.Areas.Admin.Controllers
         }
 
         // GET: /Lecture/Add
+        [Authorize(Roles = "Admin, SiteAdmin")]
         [HttpGet]
         public IActionResult AddLecture()
         {
@@ -38,6 +40,7 @@ namespace room_reservation.Areas.Admin.Controllers
         }
 
         // POST: /Lecture/Add
+        [Authorize(Roles = "Admin, SiteAdmin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddLecture(LecturesViewModel lectures)
@@ -104,6 +107,7 @@ namespace room_reservation.Areas.Admin.Controllers
         }
 
         // GET: /Lecture/Edit
+        [Authorize(Roles = "Admin, SiteAdmin")]
         [HttpGet]
         public async Task<IActionResult> EditLecture(int id)
         {
@@ -116,6 +120,7 @@ namespace room_reservation.Areas.Admin.Controllers
         }
 
         // POST: /Lecture/Edit
+        [Authorize(Roles = "Admin, SiteAdmin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditLecture(LecturesViewModel lectures)
@@ -171,8 +176,9 @@ namespace room_reservation.Areas.Admin.Controllers
             }
             return Json(new { success = false, message = "فشلت العملية" });
         }
-        
+
         // POST: /Lecture/Delete
+        [Authorize(Roles = "Admin, SiteAdmin")]
         [HttpPost]
         public async Task<IActionResult> DeleteLecture(int id)
         {
@@ -194,8 +200,6 @@ namespace room_reservation.Areas.Admin.Controllers
                 worksheet.Cells[1, 5].Value = "بداية الحجز";
                 worksheet.Cells[1, 6].Value = "نهاية الحجز";
 
-
-
                 // Add data rows
                 int row = 2;
                 foreach (var lectures in dataLecture)
@@ -204,20 +208,32 @@ namespace room_reservation.Areas.Admin.Controllers
                     worksheet.Cells[row, 2].Value = lectures.Semester;
                     worksheet.Cells[row, 3].Value = lectures.RoomNo;
                     worksheet.Cells[row, 4].Value = lectures.LectureDate;
-                    worksheet.Cells[row, 5].Value=lectures.StartLectureTime;
-                    worksheet.Cells[row, 6].Value=lectures.EndLectureTime;  
+                    worksheet.Cells[row, 4].Style.Numberformat.Format = "yyyy-MM-dd";
+                    worksheet.Cells[row, 5].Value = lectures.StartLectureTime;
+                    worksheet.Cells[row, 5].Style.Numberformat.Format = "hh:mm";
+                    worksheet.Cells[row, 6].Value = lectures.EndLectureTime;
+                    worksheet.Cells[row, 6].Style.Numberformat.Format = "hh:mm";
                     row++;
                 }
+
+                // Set column widths to fit content
+                worksheet.Column(1).Width = 15; // Adjust based on your content
+                worksheet.Column(2).Width = 15; // Adjust based on your content
+                worksheet.Column(3).Width = 10; // Adjust based on your content
+                worksheet.Column(4).Width = 15; // Adjust based on your content
+                worksheet.Column(5).Width = 10; // Adjust based on your content
+                worksheet.Column(6).Width = 10; // Adjust based on your content
 
                 // Generate the file
                 var stream = new MemoryStream();
                 package.SaveAs(stream);
                 stream.Position = 0;
 
-                var fName = $"Lectures-{DateTime.Now:yyyyMMddHHmmss}.xlsx";
+                var fName = $"Lectures-{DateTime.Now:yyyyMMdd}.xlsx";
                 return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fName);
             }
         }
+
     }
 }
 
