@@ -1,0 +1,121 @@
+﻿@model IEnumerable<UserViewModel>;
+@{
+    ViewData["Title"]="إدارة المستخدمين";
+}
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+
+
+
+            // Attach event listener for delete buttons
+            $('.delete-btn').on('click', function (event) {
+                event.preventDefault();
+
+                // Get the GUID from the clicked delete button
+                var id = $(this).data('id');
+
+                // Trigger SweetAlert2 for confirmation
+                Swal.fire({
+                    title: "هل أنت متأكد؟",
+                    text: "",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "نعم، احذف!",
+                    cancelButtonText: "إلغاء"
+                }).then((result) => {
+                    if (result.value) {
+                        // Proceed with the AJAX request to delete the permission
+                        $.ajax({
+                            url: '@Url.Action("DeleteUser")',
+                            type: 'POST',
+                            data: { id: id },
+                            success: function (response) {
+                                if (response.success) {
+                                    Swal.fire({
+                                        title: 'نجحت العملية!',
+                                        text: 'حُذِفت الصلاحية.',
+                                        icon: 'success'
+                                    }).then(() => {
+                                        location.reload(); // Reload the page after deletion
+                                    });
+                                } else {
+                                    Swal.fire({
+                                        title: 'فشلت العملية!',
+                                        text: 'لم تُحذف الصلاحية.',
+                                        icon: 'error'
+                                    });
+                                }
+                            },
+                            error: function () {
+                                Swal.fire({
+                                    title: 'خطأ!',
+                                    text: 'حدث خطأ غير متوقع.',
+                                    icon: 'error'
+                                });
+                            }
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+}
+<div class="block mb-4">
+    <div class="block-header border-bottom px-4 py-3">
+        <h5 class="m-0">إدارة المستخدمين</h5>
+        <div class="d-flex gap-2">
+            <div class="form-group">
+                <form asp-controller="User" asp-action="Index" >
+                    <input type="text" class="form-control table__quick_search" name="searchString"
+                           placeholder="البحث السريع ...">
+                </form>
+            </div>
+           
+        </div>
+    </div>
+    <div class="block-body">
+        <table class="table table-hover js-dataTable">
+            <thead>
+            <tr>
+                <th>الاسم الكامل</th>
+                <th>الإيميل</th>
+                <th>نوع المستخدم</th>
+                <th class=""></th>
+            </tr>
+            </thead>
+            <tbody>
+            @{
+                foreach (var x in Model)
+                {
+
+                    <tr>
+                        <td>
+                            @x.FullNameAR
+
+                        </td>
+                        <td>
+                            @x.Email
+
+                        </td>
+                        <td>
+                            @x.UserType
+
+                        </td>
+                        <td>
+                            <a asp-action="EditUser" asp-route-id="@x.UserId" class="btn btn-success">تعديل</a>
+                            <a  data-id="@x.UserId" class="btn  btn-danger delete-btn">حذف</a>
+                        </td>
+                    </tr>
+                }
+            }
+                          
+                    
+                
+               
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,174 @@
+﻿@model room_reservation.ViewModel.UserViewModel;
+
+
+<!-- span is the validation for each input as required-->
+
+@{
+ViewData["Title"]="إضافة مستخدم جديد";
+}
+
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#userForm').submit(function (event) {
+                event.preventDefault(); // Prevent the default form submission
+
+                $.ajax({
+                    url: '@Url.Action("AddUser")',
+                    type: 'POST',
+                    data: $(this).serialize(), // Serialize form data
+                    success: function (response) {
+                        if (response.success) {
+                            Swal.fire({
+                                title: 'نجحت العملية!',
+                                text: response.message,
+                                icon: 'success'
+                            }).then(() => {
+                                window.location.href = '@Url.Action("Index")'; // Redirect to the Index page
+                            });
+                        } else {
+                            // Clear previous errors
+                            $('.text-danger').text('');
+
+                            if (response.errors) {
+                                // Loop through the errors and display them under each field
+                                $.each(response.errors, function (key, errorMessages) {
+                                    var field = $('[name="' + key + '"]');
+                                    var errorContainer = field.siblings('.text-danger');
+
+                                    // If an error container exists, set the error message(s)
+                                    if (errorContainer.length) {
+                                        errorContainer.text(errorMessages.join(', '));
+                                    }
+                                });
+                            } else {
+                                Swal.fire({
+                                    title: 'فشلت العملية!',
+                                    text: response.message || 'حدث خطأ غير متوقع',
+                                    icon: 'error'
+                                });
+                            }
+                        }
+                    },
+                    error: function () {
+                        Swal.fire({
+                            title: 'خطأ!',
+                            text: 'حدث خطأ غير متوقع',
+                            icon: 'error'
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+    }
+
+<div class="block mb-4">
+    <div class="block-header border-bottom px-4 py-4">
+        <h5 class="m-0">إضافة مستخدم</h5>
+    </div>
+    <div class="block-body py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <form asp-action="AddUser" id="userForm">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="row">
+                        <!-- START ITEM -->
+                        <div class="col-md-6">
+                            <div class="mb-4">
+                                <label asp-for="FullNameAR" class="control-label">الاسم الكامل باللغة العربية</label>
+                                <input asp-for="FullNameAR" class="form-control" />
+                                <span asp-validation-for="FullNameAR" class="text-danger"></span>
+                            </div>
+                        </div><!-- END ITEM -->
+                        <!-- START ITEM -->
+                        <div class="col-md-6">
+                            <div class="mb-4">
+                                <label asp-for="FullNameEN" class="control-label">الاسم الكامل باللغة الإنجليزية</label>
+                                <input asp-for="FullNameEN" class="form-control" />
+                                <span asp-validation-for="FullNameEN" class="text-danger"></span>
+                            </div>
+                        </div><!-- END ITEM -->
+                        <!-- START ITEM -->
+                        <div class="col-md-12">
+                            <div class="mb-4">
+                                <label asp-for="Email" class="control-label">البريد الإلكتروني</label>
+                                <input asp-for="Email" class="form-control" />
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
+                        </div><!-- END ITEM -->
+                        <!-- START ITEM -->
+                        <div class="col-md-6">
+                            <div class="mb-4">
+                                <label asp-for="Password" class="control-label">كلمة المرور</label>
+                                <input asp-for="Password" type="password" class="form-control" />
+                                <span asp-validation-for="Password" class="text-danger"></span>
+                            </div>
+                        </div><!-- END ITEM -->
+                        <!-- START ITEM -->
+                        <div class="col-md-6">
+                            <div class="mb-4">
+                                <label asp-for="PhoneNumber" class="control-label">رقم الهاتف</label>
+                                <input asp-for="PhoneNumber" class="form-control" />
+                                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                            </div>
+                        </div><!-- END ITEM -->
+                        <!-- START ITEM -->
+                        <div class="col-md-6">
+                            <div class="mb-4">
+                                <label asp-for="CollegeName" class="control-label">الكلية</label>
+                                <select asp-for="CollegeName" class="form-control" asp-items="@ViewBag.CollegeName">
+                                    <option value="0">غير محدد</option>
+                                </select>
+                                <span asp-validation-for="CollegeName" class="text-danger"></span>
+                            </div>
+                        </div><!-- END ITEM -->
+                        <!-- START ITEM -->
+                        <div class="col-md-12">
+                            <div class="mb-4">
+                                <label asp-for="CollegeCode" class="control-label">رمز الكلية</label>
+                                <input asp-for="CollegeCode" class="form-control" />
+                                <span asp-validation-for="CollegeCode" class="text-danger"></span>
+                            </div>
+                        </div><!-- END ITEM -->
+                        <!-- START ITEM -->
+                        <div class="col-md-12">
+                            <div class="mb-4">
+                                <label asp-for="DepartmentName" class="control-label">القسم</label>
+                                <input asp-for="DepartmentName" class="form-control" />
+                                <span asp-validation-for="DepartmentName" class="text-danger"></span>
+                            </div>
+                        </div><!-- END ITEM -->
+                        <!-- START ITEM -->
+                        <div class="col-md-12">
+                            <div class="mb-4">
+                                <label asp-for="DepartmentCode" class="control-label">رمز القسم</label>
+                                <input asp-for="DepartmentCode" class="form-control" />
+                                <span asp-validation-for="DepartmentCode" class="text-danger"></span>
+                            </div>
+                        </div><!-- END ITEM -->
+                        <!-- START ITEM -->
+                        <div class="col-md-6">
+                            <div class="mb-4">
+                                <label asp-for="UserType" class="control-label">نوع المستخدم</label>
+                                <select asp-for="UserType" class="form-control" asp-items="@ViewBag.UserType"></select>
+                                <span asp-validation-for="UserType" class="text-danger"></span>
+                            </div>
+                        </div><!-- END ITEM -->
+                    </div><!-- END ROW -->
+
+                    <div class="d-flex justify-content-start">
+                        <button type="submit" class="btn btn-primary px-5" title="حفظ">حفظ</button>
+                    </div>
+                </form>
+
+                  
+               
+               
+
+
+            </div>
+        </div>
+    </div>
+</div>

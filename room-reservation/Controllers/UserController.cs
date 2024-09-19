@@ -22,120 +22,120 @@ namespace room_reservation.Controllers
             _PermissionDomain = PermissionDomain;
 
         }
-        public async Task <IActionResult> Index(String searchString)
-        {
+        //public async Task <IActionResult> Index(String searchString)
+        //{
           
           
-            var users = await _UserDomain.GetAllUsers();
-            if (!String.IsNullOrEmpty(searchString))
-            {
-                users = users
-                    .Where(u => u.FullNameAR.Contains(searchString)||u.FullNameEN.Contains(searchString)||u.Email.Contains(searchString))
-                    .ToList();
-            }
+        //    var users = await _UserDomain.GetAllUsers();
+        //    if (!String.IsNullOrEmpty(searchString))
+        //    {
+        //        users = users
+        //            .Where(u => u.FullNameAR.Contains(searchString)||u.FullNameEN.Contains(searchString)||u.Email.Contains(searchString))
+        //            .ToList();
+        //    }
             
-            return View(users);
-        }
+        //    return View(users);
+        //}
 
 
-        [HttpGet]
-        public IActionResult AddUser()
-        {
-            ViewBag.UserType = new SelectList(new List<string>
-            {
+        //[HttpGet]
+        //public IActionResult AddUser()
+        //{
+        //    ViewBag.UserType = new SelectList(new List<string>
+        //    {
          
-                "منسق الكلية",
-                "مدير النظام"
+        //        "منسق الكلية",
+        //        "مدير النظام"
               
-            });
-            return View();
-        }
+        //    });
+        //    return View();
+        //}
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddUser(UserViewModel user) {
-            //is model state valid to check if the user has entered data or not and if not it will send that the [Required (ErrorMessage="")] in view model
-            ViewBag.UserType = new SelectList(new List<string>
-            {
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> AddUser(UserViewModel user) {
+        //    //is model state valid to check if the user has entered data or not and if not it will send that the [Required (ErrorMessage="")] in view model
+        //    ViewBag.UserType = new SelectList(new List<string>
+        //    {
                
-                "منسق الكلية",
-                "مدير النظام"
+        //        "منسق الكلية",
+        //        "مدير النظام"
               
-            });
-            try
-            {
-                if (ModelState.IsValid)
-                {
-                    await _UserDomain.AddUser(user);
-                    return Json(new { success = true, message = "Added successfully" });
-                }
-                else
-                {
-                    return Json(new { success = false, message = "Invalid data" });
-                }
+        //    });
+        //    try
+        //    {
+        //        if (ModelState.IsValid)
+        //        {
+        //            await _UserDomain.AddUser(user);
+        //            return Json(new { success = true, message = "Added successfully" });
+        //        }
+        //        else
+        //        {
+        //            return Json(new { success = false, message = "Invalid data" });
+        //        }
 
-            }
-            catch (Exception ex)
-            {
-                return Json(new {success = false, messgae =  ex.Message});
-            }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return Json(new {success = false, messgae =  ex.Message});
+        //    }
            
 
         
-        }
-        [HttpGet]
-        public async Task<IActionResult> EditUser(int id)
-        {
-            ViewBag.UserType = new SelectList(new List<string>
-            {
+        //}
+        //[HttpGet]
+        //public async Task<IActionResult> EditUser(int id)
+        //{
+        //    ViewBag.UserType = new SelectList(new List<string>
+        //    {
                
-                "منسق الكلية",
-                "مدير النظام"
+        //        "منسق الكلية",
+        //        "مدير النظام"
               
-            });
-            var user =_UserDomain.getUserById(id);
-            if (user == null)
-            {
-                return NotFound(); // Handle the case where the user doesn't exist
-            }
+        //    });
+        //    var user =_UserDomain.getUserById(id);
+        //    if (user == null)
+        //    {
+        //        return NotFound(); // Handle the case where the user doesn't exist
+        //    }
 
-            return View(user);
-        }
+        //    return View(user);
+        //}
 
-        [HttpPost]
-        public async Task<IActionResult> EditUser(UserViewModel user)
-        {
-            ViewBag.UserType = new SelectList(new List<string>
-            {
+        //[HttpPost]
+        //public async Task<IActionResult> EditUser(UserViewModel user)
+        //{
+        //    ViewBag.UserType = new SelectList(new List<string>
+        //    {
                
-                "منسق الكلية",
-                "مدير النظام"
+        //        "منسق الكلية",
+        //        "مدير النظام"
               
-            });
-            try
-            {
-                if (ModelState.IsValid)
-                {
-                    int check =await _UserDomain.EditUser(user);
-                    if (check == 1)
-                    {
-                        return Json(new { success = true, message = "ع\u064fد\u0651\u0650ل\u064eت البيانات بنجاح" });
-                    } else
-                    {
-                        return Json(new { success = false, message = "لم ت\u064fعد\u0651\u064eل المعلومات" });
-                    }
+        //    });
+        //    try
+        //    {
+        //        if (ModelState.IsValid)
+        //        {
+        //            int check =await _UserDomain.EditUser(user);
+        //            if (check == 1)
+        //            {
+        //                return Json(new { success = true, message = "ع\u064fد\u0651\u0650ل\u064eت البيانات بنجاح" });
+        //            } else
+        //            {
+        //                return Json(new { success = false, message = "لم ت\u064fعد\u0651\u064eل المعلومات" });
+        //            }
 
-                }
-                else
-                {
-                    return Json(new { success = false, message = "Model state is invalid" });
-                }
-            }
-            catch (Exception exception)
-            {
-                return Json(new { success = false, message = exception.Message });
-            }
-        }
+        //        }
+        //        else
+        //        {
+        //            return Json(new { success = false, message = "Model state is invalid" });
+        //        }
+        //    }
+        //    catch (Exception exception)
+        //    {
+        //        return Json(new { success = false, message = exception.Message });
+        //    }
+        //}
         // [HttpGet]
         // public IActionResult Delete(int id)
         // {
@@ -143,11 +143,7 @@ namespace room_reservation.Controllers
         //     return View(_UserDomain.getUserById(id));
         // }
         // [HttpPost]
-        public async Task<IActionResult> Delete(int id)
-        {
-           await _UserDomain.DeleteUser(id);
-           return Json(new { success = true });
-        }
+        
         [HttpGet]
         [AllowAnonymous] //Allow any one to enter this page
         public async Task <IActionResult> Login()

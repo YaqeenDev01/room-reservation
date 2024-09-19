@@ -46,6 +46,10 @@ namespace room_reservation.Domain
                     Password = user.Password,
                     PhoneNumber = user.PhoneNumber,
                     UserType = user.UserType,
+                    CollegeName = user.CollegeName,
+                    CollegeCode = user.CollegeCode,
+                    DepartmentName = user.DepartmentName,
+                    DepartmentCode = user.DepartmentCode,
                     IsDeleted = false
 
 
@@ -103,6 +107,10 @@ namespace room_reservation.Domain
                 userInfo.Password = user.Password;
                 userInfo.FullNameEN = user.FullNameEN;
                 userInfo.UserType = user.UserType;
+                userInfo.CollegeCode = user.CollegeCode;
+                userInfo.DepartmentName = user.DepartmentName;
+                userInfo.DepartmentCode = user.DepartmentCode;
+                userInfo.DepartmentName = user.DepartmentName;
                 userInfo.IsDeleted = false;
                 _context.tblUsers.Update(userInfo);
                 await _context.SaveChangesAsync();
