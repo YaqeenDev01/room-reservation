@@ -238,5 +238,20 @@ namespace room_reservation.Domain
                         //
                         //
                 }
+                
+                
+                public async Task<IEnumerable<FloorViewModel>> GetExportableFloor()
+                {
+                    return await _context.tblFloors
+                        .Include(f => f.Building)
+                        .Where(f => !f.IsDeleted)
+                        .Select(f => new FloorViewModel
+                        {
+                            BuildingNo = f.Building.BuildingNo,
+                            BuildingNameAr =f.Building.BuildingNameAr,
+                            FloorNo = f.FloorNo,
+                        })
+                        .ToListAsync();
+                }
     }
 }
