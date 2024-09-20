@@ -216,15 +216,17 @@ namespace room_reservation.Domain
                         return 0;
                     }
                 }
-                public async Task DeleteFloor(Guid id, string Email)
+                public async Task<tblFloors> DeleteFloor(Guid guid, string Email)
                 {
                 
 
-                        tblFloors floor = GetFloorById(id);                        // is deleted will delete the record in web 
+                       var floor = _context.tblFloors.Include(b => b.Building).FirstOrDefault(x => x.Guid == guid);
+                        // is deleted will delete the record in web 
                         floor.IsDeleted = true;
                        // var user= await _userDomain.GetUserByEmail(Email);
                         // remove will delete the record from Db
                        // _context.tblFloors.Remove(floorInfo);
+                       
                         await _context.SaveChangesAsync();
                         var floorLog = new FloorsLog();
                         floorLog.FloorId = floor.Id;
@@ -234,7 +236,8 @@ namespace room_reservation.Domain
                         floorLog.AdditionalDetails="";
                         _context.FloorsLog.Add(floorLog);
                         await _context.SaveChangesAsync();;
-                        
+
+                        return floor;
                         //
                         //
                 }

@@ -143,12 +143,21 @@ namespace room_reservation.Controllers
             return await _FloorDomain.GetFloorByBuildingGuid(id);
             
         }
-        public async Task<IActionResult> Delete(Guid id)
+        [HttpPost]
+        public async Task<IActionResult> Delete(Guid guid)
         {
             // var floor=await _FloorDomain.GetFloorByGuid(id);
             // floor.Email =User.FindFirst(ClaimTypes.Email).Value;
-            await _FloorDomain.DeleteFloor(id,User.FindFirst(ClaimTypes.Email).Value);
-            return Json(new { success = true });
+           var check = await _FloorDomain.DeleteFloor(guid,User.FindFirst(ClaimTypes.Email).Value);
+            if (check != null)
+            {
+
+                return Json(new { success = true, message = "حُذِف الطابق" });
+            }
+            else
+            {
+                return Json(new { success = false, message = "لم يُحذف الطابق" });
+            }
         }
         
         

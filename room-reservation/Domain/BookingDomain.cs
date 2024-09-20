@@ -69,7 +69,7 @@ namespace room_reservation.Domain
 
                 tblBookings Bookings = new tblBookings();
                 Bookings.Id = Booking.BookingId;
-                Bookings.BookingDate = Booking.BookingDate;
+                Bookings.BookingDate =Booking.BookingDate; 
                 Bookings.BookingStart = Booking.BookingStart;
                 Bookings.BookingEnd = Booking.BookingEnd;
                 Bookings.BookingStatues = Booking.BookingStatues;
