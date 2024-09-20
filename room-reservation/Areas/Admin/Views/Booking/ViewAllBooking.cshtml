@@ -48,7 +48,10 @@
                             </td>
                             <td>
                                 <a asp-action="BookingDetails" asp-route-id="@x.guid" class="btn btn-sm btn-primary">عرض</a>
-                                <a  onclick="confirmDelete(@x.guid)" data-id="@x.guid" id="cancel" class="btn btn-sm btn-danger delete-btn">إلغاء</a>
+                                @if (!x.IsDeleted) // Check if the booking is not canceled
+                                {
+                                <a data-id="@x.guid" id="cancel" class="btn btn-sm btn-danger delete-btn">إلغاء</a>
+                                }
                             </td>
                         </tr>
                     }
@@ -59,9 +62,7 @@
         </table>
     </div>
 </div>
-@* *@
-@* <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> *@
-@* <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script> *@
+
 
 @section Scripts {
 <script>
