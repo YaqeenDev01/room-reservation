@@ -179,10 +179,10 @@ namespace room_reservation.Domain
 
 
 
-        public async Task CancelBooking(Guid id,String userEmail)
+        public async Task<tblBookings> CancelBooking(Guid guid,String userEmail)
         {
 
-            tblBookings Bookings = getBookingByGuid(id);
+            var Bookings = _context.tblBookings.FirstOrDefault(x => x.guid == guid);
             Bookings.BookingStatuesId = 4;
             await _context.SaveChangesAsync();
             var bookingLog = new BookingsLog();
@@ -194,7 +194,7 @@ namespace room_reservation.Domain
             bookingLog.AdditionalDetails = "تم إلغاء الحجز";
             _context.BookingsLog.Add(bookingLog);
             await _context.SaveChangesAsync();
-
+            return Bookings;
         }
         
 
@@ -276,15 +276,15 @@ namespace room_reservation.Domain
 
             await _context.SaveChangesAsync();
             
-            var bookingLog = new BookingsLog();
-            bookingLog.BookingId = booking.Id;
-            bookingLog.BookedBy = booking.Email;
-            bookingLog.GrantedBy =userEmail;
-            bookingLog.BookingStatus = booking.BookingStatuesId;
-            bookingLog.OperationDate=booking.BookingDate;
-            bookingLog.AdditionalDetails = "رفض الطلب";
-            _context.BookingsLog.Add(bookingLog);
-            await _context.SaveChangesAsync();
+            // var bookingLog = new BookingsLog();
+            // bookingLog.BookingId = booking.Id;
+            // bookingLog.BookedBy = booking.Email;
+            // bookingLog.GrantedBy =userEmail;
+            // bookingLog.BookingStatus = booking.BookingStatuesId;
+            // bookingLog.OperationDate=booking.BookingDate;
+            // bookingLog.AdditionalDetails = "رفض الطلب";
+            // _context.BookingsLog.Add(bookingLog);
+            // await _context.SaveChangesAsync();
 
             return true;
         }

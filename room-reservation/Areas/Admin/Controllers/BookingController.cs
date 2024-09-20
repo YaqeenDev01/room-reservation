@@ -126,11 +126,20 @@ public class BookingController : Controller
 
   // Change to cancel and user booking statues to change it to cancel 
      [Authorize]
-        public async Task<IActionResult> Cancel(Guid id)
+     [HttpPost]
+        public async Task<IActionResult> Cancel(Guid guid)
         {
             
-                await _BookingDomain.CancelBooking(id,User.FindFirst(ClaimTypes.Email).Value);
-                return Json(new { success = true });
+              var check=   await _BookingDomain.CancelBooking(guid,User.FindFirst(ClaimTypes.Email).Value);
+                if (check != null)
+                {
+
+                    return Json(new { success = true, message = "تم إلغاء الحجز" });
+                }
+                else
+                {
+                    return Json(new { success = false, message = "لم يتم إلغاء الحجز" });
+                }
                 
         }
         [Authorize]
