@@ -5,6 +5,7 @@ using room_reservation.Domain;
 using room_reservation.Models;
 using room_reservation.ViewModel;
 using System.Security.Claims;
+using OfficeOpenXml;
 namespace room_reservation.Controllers
 {
     [Area("Admin")]
@@ -142,12 +143,55 @@ namespace room_reservation.Controllers
             return await _FloorDomain.GetFloorByBuildingGuid(id);
             
         }
-        public async Task<IActionResult> Delete(Guid id)
+        [HttpPost]
+        public async Task<IActionResult> Delete(Guid guid)
         {
             // var floor=await _FloorDomain.GetFloorByGuid(id);
             // floor.Email =User.FindFirst(ClaimTypes.Email).Value;
-            await _FloorDomain.DeleteFloor(id,User.FindFirst(ClaimTypes.Email).Value);
-            return Json(new { success = true });
+           var check = await _FloorDomain.DeleteFloor(guid,User.FindFirst(ClaimTypes.Email).Value);
+            if (check != null)
+            {
+
+                return Json(new { success = true, message = "حُذِف الطابق" });
+            }
+            else
+            {
+                return Json(new { success = false, message = "لم يُحذف الطابق" });
+            }
+        }
+        
+        
+        public async Task<ActionResult> ExportFloor()
+        {
+            var dataFloors = await _FloorDomain.GetExportableFloor();
+
+            using (var package = new ExcelPackage())
+            {
+                var worksheet = package.Workbook.Worksheets.Add("الطوابق");
+
+      
+
+                worksheet.Cells[1, 1].Value = "رقم المبنى";
+                worksheet.Cells[1, 2].Value = "اسم المبنى";
+                worksheet.Cells[1, 3].Value = "رقم الطابق";
+                // Add data rows
+                int row = 2;
+                foreach (var floor in dataFloors)
+                {
+                    worksheet.Cells[row, 1].Value = floor.BuildingNo;
+                    worksheet.Cells[row, 2].Value = floor.BuildingNameAr;
+                    worksheet.Cells[row, 3].Value = floor.FloorNo;
+                    row++;
+                }
+
+                // Generate the file
+                var stream = new MemoryStream();
+                package.SaveAs(stream);
+                stream.Position = 0;
+
+                var fName = $"الطوابق-{DateTime.Now:yyyyMMddHHmmss}.xlsx";
+                return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fName);
+            }
         }
         
         
