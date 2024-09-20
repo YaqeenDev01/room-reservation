@@ -165,6 +165,7 @@ public class BookingController : Controller
     //All bookings of the same building shown to the site admin
 
     [Authorize(Roles = "Admin, SiteAdmin")]
+    [HttpGet]
     public async Task<IActionResult> ViewBuildingBookings()
     {
         var userEmail = User.FindFirst(ClaimTypes.Email).Value;

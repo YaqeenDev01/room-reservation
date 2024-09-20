@@ -145,7 +145,7 @@ namespace room_reservation.Controllers
         // [HttpPost]
         
         [HttpGet]
-        [AllowAnonymous] //Allow any one to enter this page
+        [AllowAnonymous] 
         public async Task <IActionResult> Login()
         {
             try
@@ -217,13 +217,17 @@ namespace room_reservation.Controllers
                         CookieAuthenticationDefaults.AuthenticationScheme,
                         principal);
 
-                    if (role == "Admin" || role == "SiteAdmin")
+                    if (role == "SiteAdmin")
                     {
-                        return RedirectToAction("Index", "Home", new { area = "Admin" });
+                        return RedirectToAction("ViewBuildingBookings", "Booking", new { area = "Admin" });
+                    }
+                    else if (role == "Admin")
+                    {
+                        return RedirectToAction("ViewAllBooking", "Booking", new { area = "Admin" });
                     }
                     else
                     {
-                        return RedirectToAction("Index", "Home",new {area=" "});
+                        return RedirectToAction("Index", "Booking",new {area=" "});
                     }
                 }
             }
