@@ -104,7 +104,7 @@ namespace room_reservation.Domain
                bookingLog.BookedBy = user.Email;
                bookingLog.GrantedBy =user.Email;
                bookingLog.BookingStatus = Bookings.BookingStatuesId;
-               bookingLog.OperationDate=DateTime.Now;
+               bookingLog.OperationDate=Bookings.BookingDate;
                bookingLog.AdditionalDetails = "حجز قاعة";
               _context.BookingsLog.Add(bookingLog);
               await _context.SaveChangesAsync();

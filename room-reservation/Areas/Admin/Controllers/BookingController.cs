@@ -83,49 +83,96 @@ public class BookingController : Controller
             var booking = await _BookingDomain.GetUserBookings(userEmail);
             return View(booking);
         }
+    [Authorize]
+    [HttpGet]
+    public async Task<IActionResult> AddBooking(Guid id)
+    {
+        return View(await _BookingDomain.getAllBookingByRoomGuid(id));
+    }
+    [Authorize]
 
-        [Authorize]
-        [HttpGet]
-        public async Task<IActionResult> AddBooking(Guid id)
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+
+
+    public async Task<IActionResult> AddBooking(BookingViewModel booking)
+    {
+        booking.Email = User.FindFirst(ClaimTypes.Email)?.Value;
+
+        try
         {
-            return View(await _BookingDomain.getAllBookingByRoomGuid(id));
+            // Check if the booking exists
+            bool exists = await _BookingDomain.IsBookingExist(
+                booking.BuildingNameAr, // Uncomment and use the relevant property
+                booking.RoomNo,         // Uncomment and use the relevant property
+                booking.BookingDate,
+                booking.BookingStart,
+                booking.BookingEnd
+            );
+
+            if (exists)
+            {
+                return Json(new { success = false, message = "هذا الحجز موجود مسبقاً." });
+            }
+
+            // Check for overlapping bookings
+            bool isOverlapping = await _BookingDomain.IsBookingOverlapping(
+                booking.BuildingNameAr, // Uncomment and use the relevant property
+                booking.RoomNo,         // Uncomment and use the relevant property
+                booking.BookingDate,
+                booking.BookingStart,
+                booking.BookingEnd
+            );
+
+            if (isOverlapping)
+            {
+                return Json(new { success = false, message = "يوجد حجز متعارض." });
+            }
+
+            // Check for lecture time conflicts
+            bool isLectureTimeAvailable = await _BookingDomain.IsLectureTimeAvailable(
+                booking.BuildingNameAr, // Uncomment and use the relevant property
+                booking.RoomNo,         // Uncomment and use the relevant property
+                booking.BookingDate,
+                booking.BookingStart,
+                booking.BookingEnd
+            );
+
+            if (!isLectureTimeAvailable)
+            {
+                return Json(new { success = false, message = "هذا الوقت محجوز لمحاضرة." });
+            }
+
+            // Proceed with adding the booking
+            int check = await _BookingDomain.AddBooking(booking);
+            if (check == 1)
+            {
+                return Json(new { success = true, message = "تم الحجز بنجاح" });
+            }
+            else
+            {
+                return Json(new { success = false, message = "لم يتم الحجز" });
+            }
         }
-        [HttpPost]
-     
-        [Authorize]
-        public async Task<IActionResult> AddBooking(BookingViewModel booking)
+        catch (Exception ex)
         {
-                booking.Email =User.FindFirst(ClaimTypes.Email).Value;
-                
-                try
-                {
-                    if (ModelState.IsValid)
-                    {
-                        int check =  await _BookingDomain.AddBooking(booking);
-                        if (check == 1)
-                        {
-                            return Json(new { success = true, message = "تم الحجز بنجاح" });
-
-                        }
-                        else
-                        {
-                            return Json(new { success = false, message = "لم يتم الحجز" });
-                        }
-                    }
-                    else
-                    {
-                        return Json(new { success = false, message = "لابد من إدخال بيانات الحجز" });
-                    }
-                }
-                catch (Exception ex)
-                {
-                    return Json(new { success = false, message = ex.Message });
-                }
-            
+            return Json(new { success = false, message = ex.Message });
         }
 
-  // Change to cancel and user booking statues to change it to cancel 
-     [Authorize]
+        // Check if the model state is valid after the try-catch
+        if (!ModelState.IsValid)
+        {
+            var errors = ModelState.ToDictionary(
+                kvp => kvp.Key,
+                kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).ToArray()
+            );
+
+            return Json(new { success = false, errors });
+        }
+    }
+
+    // Change to cancel and user booking statues to change it to cancel 
+    [Authorize]
      [HttpPost]
         public async Task<IActionResult> Cancel(Guid guid)
         {
