@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Authorization;
+ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using room_reservation.Domain;
@@ -186,7 +186,7 @@ public class BookingController : Controller
     [Authorize(Roles = "Admin, SiteAdmin")]
     
     [HttpPost]
-    public async Task<IActionResult> ApproveBooking(Guid id)
+    public async Task<IActionResult> ApproveBooking(Guid id , string userEmail)
     {
        
             
@@ -201,7 +201,7 @@ public class BookingController : Controller
     [Authorize(Roles = "Admin, SiteAdmin")]
 
     [HttpPost]
-    public async Task<IActionResult> RejectBooking(Guid id, string rejectReason)
+    public async Task<IActionResult> RejectBooking(Guid id, string rejectReason, string userEmail)
     {
         bool result = await _BookingDomain.RejectBooking(id, rejectReason,User.FindFirst(ClaimTypes.Email)?.Value);
         if (result)

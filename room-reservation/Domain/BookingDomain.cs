@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using room_reservation.Models;
@@ -276,16 +276,16 @@ namespace room_reservation.Domain
             _context.tblBookings.Update(booking);
 
             await _context.SaveChangesAsync();
-            
-            // var bookingLog = new BookingsLog();
-            // bookingLog.BookingId = booking.Id;
-            // bookingLog.BookedBy = booking.Email;
-            // bookingLog.GrantedBy =userEmail;
-            // bookingLog.BookingStatus = booking.BookingStatuesId;
-            // bookingLog.OperationDate=booking.BookingDate;
-            // bookingLog.AdditionalDetails = "رفض الطلب";
-            // _context.BookingsLog.Add(bookingLog);
-            // await _context.SaveChangesAsync();
+
+            var bookingLog = new BookingsLog();
+            bookingLog.BookingId = booking.Id;
+            bookingLog.BookedBy = booking.Email;
+            bookingLog.GrantedBy = userEmail;
+            bookingLog.BookingStatus = booking.BookingStatuesId;
+            bookingLog.OperationDate = booking.BookingDate;
+            bookingLog.AdditionalDetails = "رفض الطلب";
+            _context.BookingsLog.Add(bookingLog);
+            await _context.SaveChangesAsync();
 
             return true;
         }
